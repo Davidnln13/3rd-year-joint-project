@@ -1,6 +1,7 @@
 #pragma once
 #include <Box2D\Box2D.h>
 #include <SFML\Graphics.hpp>
+#include <Thor\Math.hpp>
 
 /// <summary>
 /// Startup project, will have all the necessary project settings done and ready to go
