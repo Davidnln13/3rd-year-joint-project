@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\Screen Source Files">
+      <UniqueIdentifier>{37eac194-8515-4849-8896-191bcb1aa5f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Screen Header Files">
+      <UniqueIdentifier>{6b7648d1-ec0e-4f6c-a187-09536fbc85f3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Game.cpp">
@@ -21,10 +27,31 @@
     <ClCompile Include="src\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\ScreenManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MainMenu.cpp">
+      <Filter>Source Files\Screen Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PlayScreen.cpp">
+      <Filter>Source Files\Screen Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Game.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ScreenManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MainMenu.h">
+      <Filter>Header Files\Screen Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\PlayScreen.h">
+      <Filter>Header Files\Screen Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Screen.h">
+      <Filter>Header Files\Screen Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

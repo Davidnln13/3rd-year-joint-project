@@ -127,9 +127,16 @@
   <ItemGroup>
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\MainMenu.cpp" />
+    <ClCompile Include="src\PlayScreen.cpp" />
+    <ClCompile Include="src\ScreenManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Game.h" />
+    <ClInclude Include="include\MainMenu.h" />
+    <ClInclude Include="include\PlayScreen.h" />
+    <ClInclude Include="include\Screen.h" />
+    <ClInclude Include="include\ScreenManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

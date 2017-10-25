@@ -1,21 +1,19 @@
 #include "Game.h"
 
-//updates per millisecond
-static sf::Int32 MS_PER_UPDATE = 10;
+static sf::Int32 MS_PER_UPDATE = 10; //updates per millisecond
 static int METRES_TO_PIXELS = 30; //for use with box2D
 
 /// <summary>
-/// Startup project, will have all the necessary project settings done and ready to go
-/// for Box2D and Thor. I have set up the project in such a way that does not require
-/// any external installation.
-/// Author: Daryl keogh
+/// Author: Daryl Keogh & David Nolan
 /// Date: 17/10/2017
+/// Description: The game class is the basis for our game, we will create any needed objects and will control the main game loop from here
 /// </summary>
 
 Game::Game() :
-	m_window(sf::VideoMode(1280, 720), "David & Daryl year 3 Project"),
+	m_window(sf::VideoMode(1280, 720), "David & Daryl Year 3 Project"),
 	gravity(0.0f, 9.8f),
-	m_world(gravity) //adding gravity to the world
+	m_world(gravity), //adding gravity to the world
+	screenManager()
 {
 	init();
 }
@@ -51,24 +49,35 @@ void Game::run()
 	}
 }
 
+//in here we will update the joystick and key handler objects so we can handle input
 void Game::processEvents()
 {
 	sf::Event event;
 
 	while (m_window.pollEvent(event))
 	{
-		//handle keyboard input here
+		if (event.KeyReleased) //if the current event is a keyReleased event
+		{
+			//if the space key is pressed go to the play screen
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+			{
+				screenManager.goToScreen("playScreen");
+			}
+		}
+
 	}
 }
 
 void Game::update()
 {
-	//update game entities here
+	screenManager.update();
 }
 
 void Game::render()
 {
-	m_window.clear(sf::Color::Blue);
+	m_window.clear();
+
+	screenManager.render(m_window);
 
 	//display anything drawn to the window since the last time we called clear
 	m_window.display();
