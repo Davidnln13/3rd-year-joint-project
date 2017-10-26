@@ -32,5 +32,5 @@ private:
 
 	//Box 2D variables
 	b2Vec2 gravity;
-	b2World m_world; //our world variable, we can add forces to this such as gravity so it affects all b2 bodies
+	
 };

@@ -1,7 +1,9 @@
 #include "Game.h"
 
 static sf::Int32 MS_PER_UPDATE = 10; //updates per millisecond
-static int METRES_TO_PIXELS = 30; //for use with box2D
+float PPM = 30.0f; //Pixels Per Metre, scalar for use with box2D
+static b2Vec2 GRAVITY = b2Vec2(0.0f, 9.8f);
+b2World world = b2World(GRAVITY); //our world variable, we can add forces to this such as gravity so it affects all b2 bodies
 
 /// <summary>
 /// Author: Daryl Keogh & David Nolan
@@ -11,8 +13,6 @@ static int METRES_TO_PIXELS = 30; //for use with box2D
 
 Game::Game() :
 	m_window(sf::VideoMode(1280, 720), "David & Daryl Year 3 Project"),
-	gravity(0.0f, 9.8f),
-	m_world(gravity), //adding gravity to the world
 	screenManager()
 {
 	init();
@@ -34,7 +34,7 @@ void Game::run()
 		dt = clock.restart();
 		lag += dt.asMilliseconds();
 
-		m_world.Step(1 / 60.0f, 8, 3); //simulates the world
+		world.Step(1 / 60.0f, 8, 3); //simulates the world
 
 
 		while (lag > MS_PER_UPDATE)

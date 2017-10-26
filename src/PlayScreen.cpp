@@ -1,7 +1,9 @@
 #include "PlayScreen.h"
 
 PlayScreen::PlayScreen(std::string name) :
-	Screen()
+	Screen(),
+	m_player1(),
+	m_floor(sf::Vector2f(1280, 35), sf::Vector2f(1280 / 2.f, 720 - (35 / 2)))
 {
 	m_name = name;
 }
@@ -14,6 +16,8 @@ void PlayScreen::update()
 void PlayScreen::render(sf::RenderWindow& window)
 {
 	window.clear(sf::Color::Blue);
+	m_player1.render(window); //draw the player
+	m_floor.render(window); //draw the floor
 }
 
 void PlayScreen::start()

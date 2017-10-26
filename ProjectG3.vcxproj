@@ -125,15 +125,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Boundary.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\MainMenu.cpp" />
+    <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\PlayScreen.cpp" />
     <ClCompile Include="src\ScreenManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\Boundary.h" />
     <ClInclude Include="include\Game.h" />
     <ClInclude Include="include\MainMenu.h" />
+    <ClInclude Include="include\Player.h" />
     <ClInclude Include="include\PlayScreen.h" />
     <ClInclude Include="include\Screen.h" />
     <ClInclude Include="include\ScreenManager.h" />

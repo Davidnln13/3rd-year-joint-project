@@ -1,5 +1,8 @@
 #pragma once
 #include "Screen.h"
+#include "Player.h"
+#include "Boundary.h"
+
 /// <summary>
 /// Author: Daryl keogh
 /// Date: 25/10/2017
@@ -18,4 +21,7 @@ public:
 	//getters
 	std::string getName() override;
 private:
+	Player m_player1;
+	//since we will have levels, then boundary objects will be in the level and possibly the player too
+	Boundary m_floor;
 };
