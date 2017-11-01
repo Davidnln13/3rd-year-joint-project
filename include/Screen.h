@@ -13,6 +13,7 @@ public:
 	Screen() : m_active(false) {};
 	virtual void update() = 0;
 	virtual void render(sf::RenderWindow& window) = 0;
+	virtual void handleInput() = 0;
 	virtual void start() = 0;
 	virtual void end() = 0;
 

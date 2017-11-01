@@ -7,7 +7,7 @@
 
 /// <summary>
 /// Startup project, will have all the necessary project settings done and ready to go
-/// for Box2D and Thor. I have set up th eproject in such a way that does not require
+/// for Box2D and Thor. I have set up the project in such a way that does not require
 /// any external installation.
 /// Author: Daryl keogh
 /// Date: 17/10/2017
@@ -28,9 +28,5 @@ private:
 
 	sf::RenderWindow m_window;
 
-	ScreenManager screenManager;
-
-	//Box 2D variables
-	b2Vec2 gravity;
-	
+	ScreenManager m_screenManager;	
 };

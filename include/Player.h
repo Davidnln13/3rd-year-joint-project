@@ -1,22 +1,21 @@
 #pragma once
-#include <Box2D\Box2D.h>
-#include <SFML\Graphics.hpp>
-#include <iostream>
-
-//forwards references, does nto work with static variables, these variable sare located in Game.cpp
-extern b2World world; //defining the box2d world object, saves us from passing it over to every objetc that needs it
-extern float PPM;
+#include "Weapon.h"
 
 class Player
 {
 public:
-	Player();
+	Player(sf::Vector2f size);
+	~Player(); //Any classes that have a box2d body should have that body deleted in here
 
 	void update();
 	void render(sf::RenderWindow& window);
-
+	void moveRight();
+	void moveLeft();
+	void attack();
 
 private:
 	b2Body* m_body;
-	sf::RectangleShape m_playerRect;
+	sf::RectangleShape m_rect;
+	Weapon m_sword;
+	b2RevoluteJoint* m_joint; //the joint between our sword and the player
 };

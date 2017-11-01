@@ -26,6 +26,10 @@ void MainMenu::end()
 	m_active = false;
 }
 
+void MainMenu::handleInput()
+{
+}
+
 std::string MainMenu::getName()
 {
 	return m_name;

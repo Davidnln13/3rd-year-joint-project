@@ -35,3 +35,13 @@ void ScreenManager::goToScreen(std::string screenName)
 		m_currentScreen->start(); //start the new screen
 	}
 }
+
+void ScreenManager::handleKeyboard()
+{
+	m_currentScreen->handleInput();
+}
+
+std::string ScreenManager::getCurrentScreenName()
+{
+	return m_currentScreen->m_name;
+}

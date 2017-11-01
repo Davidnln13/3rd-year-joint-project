@@ -15,6 +15,11 @@ public:
 
 	void goToScreen(std::string screenName);
 
+	void handleKeyboard(); //basic input handling for now
+
+	//Getters
+	std::string getCurrentScreenName();
+
 private:
 	//Declare our different screens here
 	PlayScreen m_playScreen;

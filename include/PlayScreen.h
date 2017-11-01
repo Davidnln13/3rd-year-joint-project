@@ -17,6 +17,7 @@ public:
 	void render(sf::RenderWindow& window) override;
 	void start() override;
 	void end() override;
+	void handleInput() override;
 
 	//getters
 	std::string getName() override;

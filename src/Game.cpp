@@ -13,7 +13,7 @@ b2World world = b2World(GRAVITY); //our world variable, we can add forces to thi
 
 Game::Game() :
 	m_window(sf::VideoMode(1280, 720), "David & Daryl Year 3 Project"),
-	screenManager()
+	m_screenManager()
 {
 	init();
 }
@@ -34,7 +34,9 @@ void Game::run()
 		dt = clock.restart();
 		lag += dt.asMilliseconds();
 
-		world.Step(1 / 60.0f, 8, 3); //simulates the world
+		//if we are on the play screen then simiulate the box2d world physics
+		if(m_screenManager.getCurrentScreenName() == "playScreen")
+			world.Step(1 / 60.0f, 8, 3); //simulates the world
 
 
 		while (lag > MS_PER_UPDATE)
@@ -56,12 +58,17 @@ void Game::processEvents()
 
 	while (m_window.pollEvent(event))
 	{
+		if (event.KeyPressed)
+		{
+			m_screenManager.handleKeyboard();
+		}
+
 		if (event.KeyReleased) //if the current event is a keyReleased event
 		{
 			//if the space key is pressed go to the play screen
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 			{
-				screenManager.goToScreen("playScreen");
+				m_screenManager.goToScreen("playScreen");
 			}
 		}
 
@@ -70,14 +77,14 @@ void Game::processEvents()
 
 void Game::update()
 {
-	screenManager.update();
+	m_screenManager.update();
 }
 
 void Game::render()
 {
 	m_window.clear();
 
-	screenManager.render(m_window);
+	m_screenManager.render(m_window);
 
 	//display anything drawn to the window since the last time we called clear
 	m_window.display();
