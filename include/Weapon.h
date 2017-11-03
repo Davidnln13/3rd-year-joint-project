@@ -17,7 +17,7 @@ public:
 
 	void update();
 	void render(sf::RenderWindow& window);
-	void attack();
+	void attack(b2Vec2 force);
 
 	//getters
 	b2Body* getBody();

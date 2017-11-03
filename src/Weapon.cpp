@@ -1,7 +1,7 @@
 #include "Weapon.h"
 
 Weapon::Weapon() :
-	m_rect(sf::Vector2f(50, 5))
+	m_rect(sf::Vector2f(35, 5))
 {
 	//creating our Box2d body and fixture for the player
 	b2BodyDef bodyDef;
@@ -16,6 +16,7 @@ Weapon::Weapon() :
 	b2FixtureDef boxFixDef;
 	boxFixDef.shape = &boxShape;
 	boxFixDef.density = .2; //giving the sword a mass of .2
+	boxFixDef.isSensor = true;
 	m_body->CreateFixture(&boxFixDef);
 
 	m_rect.setOrigin(m_rect.getSize().x / 2, m_rect.getSize().y / 2); //setting the origin to the center of the box
@@ -31,7 +32,6 @@ Weapon::~Weapon()
 
 void Weapon::update()
 {
-
 }
 
 void Weapon::render(sf::RenderWindow & window)
@@ -41,9 +41,9 @@ void Weapon::render(sf::RenderWindow & window)
 	window.draw(m_rect);
 }
 
-void Weapon::attack()
+void Weapon::attack(b2Vec2 force)
 {
-	m_body->ApplyForceToCenter(b2Vec2(10,0), true);
+	//m_body->ApplyForceToCenter(force, true);
 }
 
 b2Body* Weapon::getBody()

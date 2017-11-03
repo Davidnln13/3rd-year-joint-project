@@ -2,7 +2,7 @@
 
 PlayScreen::PlayScreen(std::string name) :
 	Screen(),
-	m_player1(sf::Vector2f(25, 75)),
+	m_player1(sf::Vector2f(25, 75 )),
 	m_floor(sf::Vector2f(1280, 35), sf::Vector2f(1280 / 2.f, 720 - (35 / 2)))
 {
 	m_name = name;
@@ -32,10 +32,7 @@ void PlayScreen::end()
 
 void PlayScreen::handleInput(JoystickController& controller1, JoystickController& controller2)
 {
-	if (controller1.isButtonHeld("LeftThumbStickLeft"))
-		m_player1.moveLeft();
-	if (controller1.isButtonHeld("LeftThumbStickRight"))
-		m_player1.moveRight();
+	m_player1.handleJoystick(controller1);
 }
 
 std::string PlayScreen::getName()

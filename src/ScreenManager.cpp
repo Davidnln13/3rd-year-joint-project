@@ -3,7 +3,7 @@
 ScreenManager::ScreenManager() :
 	m_playScreen("playScreen"),
 	m_mainScreen("mainMenu"),
-	m_currentScreen(&m_mainScreen) //temporary for now
+	m_currentScreen(&m_playScreen) //temporary for now
 {
 	//asigning our screens to our map 
 	screens[m_playScreen.getName()] = &m_playScreen;

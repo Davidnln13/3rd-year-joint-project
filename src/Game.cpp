@@ -63,11 +63,10 @@ void Game::processEvents()
 		//if a joystick pressed event has occured, handle input from the first controller
 		if (event.type == sf::Event::JoystickButtonPressed)
 		{
-			m_controller1.update();
-			m_controller1.handleInput();
-
 			if (m_screenManager.getCurrentScreenName() == "mainMenu" && m_controller1.isButtonPressed("Start"))
 			{
+				m_controller1.update();
+				m_controller1.handleInput();
 				m_screenManager.goToScreen("playScreen");
 			}
 		}
@@ -103,4 +102,4 @@ void Game::render()
 
 	//display anything drawn to the window since the last time we called clear
 	m_window.display();
-}
+	}

@@ -1,6 +1,8 @@
 #pragma once
 #include "Weapon.h"
 
+class JoystickController;
+
 class Player
 {
 public:
@@ -12,16 +14,22 @@ public:
 	void moveRight();
 	void moveLeft();
 	void attack();
+	void handleJoystick(JoystickController& controller);
+	void createPlayerJoint(bool facingLeft);
 
 private:
+	bool m_isFacingLeft;
+	bool m_canAttack;
+	float m_speed;
+
 	b2Body* m_playerBody;
 	b2Body* m_shoulderBody;
 	b2Body* m_forearmBody;
 	sf::RectangleShape m_playerRect;
-	sf::RectangleShape m_shoulderRect;
 	sf::RectangleShape m_forearmRect;
 	Weapon m_sword;
-	b2RevoluteJoint* m_playerBodyToShoulderJoint; //the joint between our the players body and the players shoulder
-	b2RevoluteJoint* m_shoulderToForearmJoint; //the elbow joint
+	b2PrismaticJoint* m_playerToArmJoint; //the joint between our the players body and the players arm
 	b2RevoluteJoint* m_handWeaponJoint;
 };
+
+#include "JoystickController.h"
