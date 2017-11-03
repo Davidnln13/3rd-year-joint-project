@@ -15,7 +15,7 @@ public:
 
 	void goToScreen(std::string screenName);
 
-	void handleKeyboard(); //basic input handling for now
+	void handleJoystick(JoystickController& controller1, JoystickController& controller); //basic input handling for now
 
 	//Getters
 	std::string getCurrentScreenName();

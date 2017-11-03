@@ -30,13 +30,13 @@ void PlayScreen::end()
 	m_active = false;
 }
 
-void PlayScreen::handleInput()
+void PlayScreen::handleInput(JoystickController& controller1, JoystickController& controller)
 {
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+	if (controller1.isButtonPressed("X"))
 		m_player1.moveLeft();
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+	if (controller1.isButtonPressed("B"))
 		m_player1.moveRight();
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::F))
+	if (controller1.isButtonPressed("Y"))
 		m_player1.attack();
 }
 

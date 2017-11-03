@@ -4,6 +4,7 @@
 #include <SFML\Graphics.hpp>
 #include <Thor\Math.hpp>
 #include "ScreenManager.h"
+#include "JoystickController.h"
 
 /// <summary>
 /// Startup project, will have all the necessary project settings done and ready to go
@@ -29,4 +30,6 @@ private:
 	sf::RenderWindow m_window;
 
 	ScreenManager m_screenManager;	
+	JoystickController m_controller1;
+	JoystickController m_controller2;
 };

@@ -13,7 +13,9 @@ b2World world = b2World(GRAVITY); //our world variable, we can add forces to thi
 
 Game::Game() :
 	m_window(sf::VideoMode(1280, 720), "David & Daryl Year 3 Project"),
-	m_screenManager()
+	m_screenManager(),
+	m_controller1(0), //creating our first controller with index 0, so the first controller connected to the pc will be controller 1/player 1
+	m_controller2(1)
 {
 	init();
 }
@@ -58,18 +60,18 @@ void Game::processEvents()
 
 	while (m_window.pollEvent(event))
 	{
-		if (event.KeyPressed)
-		{
-			m_screenManager.handleKeyboard();
-		}
 
-		if (event.KeyReleased) //if the current event is a keyReleased event
+		if (event.type == sf::Event::JoystickButtonPressed)
 		{
-			//if the space key is pressed go to the play screen
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+			m_controller1.update();
+			m_controller1.handleInput();
+
+			if (m_screenManager.getCurrentScreenName() == "mainMenu" && m_controller1.isButtonPressed("Start"))
 			{
 				m_screenManager.goToScreen("playScreen");
 			}
+			else if(m_screenManager.getCurrentScreenName() != "playScreen")
+				m_screenManager.handleJoystick(m_controller1, m_controller2);
 		}
 
 	}
@@ -77,6 +79,16 @@ void Game::processEvents()
 
 void Game::update()
 {
+	//Update our controllers
+	m_controller1.update();
+
+	if (m_screenManager.getCurrentScreenName() == "playScreen")
+	{
+		m_controller1.handleInput();
+		m_screenManager.handleJoystick(m_controller1, m_controller2);
+	}
+
+
 	m_screenManager.update();
 }
 
