@@ -14,8 +14,14 @@ public:
 	void attack();
 
 private:
-	b2Body* m_body;
-	sf::RectangleShape m_rect;
+	b2Body* m_playerBody;
+	b2Body* m_shoulderBody;
+	b2Body* m_forearmBody;
+	sf::RectangleShape m_playerRect;
+	sf::RectangleShape m_shoulderRect;
+	sf::RectangleShape m_forearmRect;
 	Weapon m_sword;
-	b2RevoluteJoint* m_joint; //the joint between our sword and the player
+	b2RevoluteJoint* m_playerBodyToShoulderJoint; //the joint between our the players body and the players shoulder
+	b2RevoluteJoint* m_shoulderToForearmJoint; //the elbow joint
+	b2RevoluteJoint* m_handWeaponJoint;
 };
