@@ -74,13 +74,13 @@ void JoystickController::handleInput()
 		m_currentState["DpadLeft"] = true;
 
 	//Check if our thumbstick has been moved
-	if (axisY < -dpadDeadzone)
+	if (axisY < -stickDeadzone)
 		m_currentState["LeftThumbStickUp"] = true;
-	else if (axisY > dpadDeadzone)
+	else if (axisY > stickDeadzone)
 		m_currentState["LeftThumbStickDown"] = true;
-	else if (m_stickValue > dpadDeadzone)
+	else if (m_stickValue > stickDeadzone)
 		m_currentState["LeftThumbStickRight"] = true;
-	else if (m_stickValue < -dpadDeadzone)
+	else if (m_stickValue < -stickDeadzone)
 		m_currentState["LeftThumbStickLeft"] = true;
 
 	if (m_triggerAxis > triggerDeadzone)
@@ -91,7 +91,17 @@ void JoystickController::handleInput()
 
 bool JoystickController::isButtonPressed(std::string buttonName)
 {
+	//checks if the button is currently pressed and it was not pressed on the last frame then return true
 	if (m_currentState[buttonName] && m_previousState[buttonName] == false)
+		return true;
+
+	return false;
+}
+
+bool JoystickController::isButtonHeld(std::string buttonName)
+{
+	//checks if the current button is pressed
+	if (m_currentState[buttonName])
 		return true;
 
 	return false;

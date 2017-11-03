@@ -17,9 +17,8 @@ public:
 
 	void handleInput();
 
-	void resetStates(); //resets the state of our gamepad
-
-	bool isButtonPressed(std::string buttonName);
+	bool isButtonPressed(std::string buttonName); //checks if a button was pressed once
+	bool isButtonHeld(std::string buttonName); //Checks if a button is held down on the controller
 
 	//our getters for our triggers and thumbsticks
 	float getTriggerValue() const;
@@ -33,7 +32,7 @@ private:
 
 	//Deadzone for our thumbsticks/dpad/triggers
 	const int dpadDeadzone = 65;
-	const int stickDeadzone = 15;
+	const int stickDeadzone = 55;
 	const int triggerDeadzone = 15;
 
 	float m_triggerAxis; //holds the value of our triggers axis (axisZ)

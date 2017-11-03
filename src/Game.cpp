@@ -60,7 +60,7 @@ void Game::processEvents()
 
 	while (m_window.pollEvent(event))
 	{
-
+		//if a joystick pressed event has occured, handle input from the first controller
 		if (event.type == sf::Event::JoystickButtonPressed)
 		{
 			m_controller1.update();
@@ -70,8 +70,6 @@ void Game::processEvents()
 			{
 				m_screenManager.goToScreen("playScreen");
 			}
-			else if(m_screenManager.getCurrentScreenName() != "playScreen")
-				m_screenManager.handleJoystick(m_controller1, m_controller2);
 		}
 
 	}
@@ -79,12 +77,17 @@ void Game::processEvents()
 
 void Game::update()
 {
-	//Update our controllers
-	m_controller1.update();
-
 	if (m_screenManager.getCurrentScreenName() == "playScreen")
 	{
+		//Update our controllers
+		m_controller1.update();
+		m_controller2.update();
+
+		//check what buttons are pressed on each controller
 		m_controller1.handleInput();
+		m_controller2.handleInput();
+
+		//pass over the joysticks to the screen manager
 		m_screenManager.handleJoystick(m_controller1, m_controller2);
 	}
 
