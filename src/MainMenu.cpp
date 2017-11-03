@@ -26,7 +26,7 @@ void MainMenu::end()
 	m_active = false;
 }
 
-void MainMenu::handleInput(JoystickController& controller1, JoystickController& controller)
+void MainMenu::handleInput(JoystickController& controller1, JoystickController& controller2)
 {
 }
 

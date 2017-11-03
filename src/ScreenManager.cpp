@@ -36,9 +36,9 @@ void ScreenManager::goToScreen(std::string screenName)
 	}
 }
 
-void ScreenManager::handleJoystick(JoystickController& controller1, JoystickController& controller)
+void ScreenManager::handleJoystick(JoystickController& controller1, JoystickController& controller2)
 {
-	m_currentScreen->handleInput(controller1, controller);
+	m_currentScreen->handleInput(controller1, controller2);
 }
 
 std::string ScreenManager::getCurrentScreenName()

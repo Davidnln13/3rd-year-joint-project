@@ -30,14 +30,12 @@ void PlayScreen::end()
 	m_active = false;
 }
 
-void PlayScreen::handleInput(JoystickController& controller1, JoystickController& controller)
+void PlayScreen::handleInput(JoystickController& controller1, JoystickController& controller2)
 {
-	if (controller1.isButtonPressed("X"))
+	if (controller1.isButtonHeld("LeftThumbStickLeft"))
 		m_player1.moveLeft();
-	if (controller1.isButtonPressed("B"))
+	if (controller1.isButtonHeld("LeftThumbStickRight"))
 		m_player1.moveRight();
-	if (controller1.isButtonPressed("Y"))
-		m_player1.attack();
 }
 
 std::string PlayScreen::getName()
