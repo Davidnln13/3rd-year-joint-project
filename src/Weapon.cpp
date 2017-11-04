@@ -43,7 +43,7 @@ void Weapon::render(sf::RenderWindow & window)
 
 void Weapon::attack(b2Vec2 force)
 {
-	//m_body->ApplyForceToCenter(force, true);
+
 }
 
 b2Body* Weapon::getBody()

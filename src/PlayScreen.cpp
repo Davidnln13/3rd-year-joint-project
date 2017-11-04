@@ -2,7 +2,7 @@
 
 PlayScreen::PlayScreen(std::string name) :
 	Screen(),
-	m_player1(sf::Vector2f(25, 75 )),
+	m_player1(sf::Vector2f(1280/ 2.f, 720.f/ 2), sf::Vector2f(25, 75 )),
 	m_floor(sf::Vector2f(1280, 35), sf::Vector2f(1280 / 2.f, 720 - (35 / 2)))
 {
 	m_name = name;

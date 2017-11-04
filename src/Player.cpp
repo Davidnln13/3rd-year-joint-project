@@ -1,22 +1,23 @@
 #include "Player.h"
 
-Player::Player(sf::Vector2f size = sf::Vector2f(15,15)) :
+Player::Player(sf::Vector2f position, sf::Vector2f size = sf::Vector2f(15,15)) :
 	m_playerRect(size),
-	m_forearmRect(sf::Vector2f(15  ,5  )),
+	m_forearmRect(sf::Vector2f(15, 5)),
 	m_sword(),
 	m_canAttack(true),
-	m_speed(0.0f)
+	m_speed(0.0f),
+	m_position(position)
 {
 	//creating our Box2d body and fixture for the player
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;
-	bodyDef.position.Set((1280 / 2.f) / PPM, (720 / 2.f) / PPM); //spawn the player in the center of the screen
+	bodyDef.position.Set(m_position.x / PPM, m_position.y / PPM); //spawn the player in the center of the screen
 	bodyDef.fixedRotation = true;
 	m_playerBody = world.CreateBody(&bodyDef); //add the body to the world
 
 	b2BodyDef forearmDef;
 	forearmDef.type = b2_dynamicBody;
-	forearmDef.position.Set((1280 / 2.f) / PPM, (720 / 2.f) / PPM); //spawn the player in the center of the screen
+	forearmDef.position.Set(m_position.x / PPM, m_position.y / PPM); //spawn the player in the center of the screen
 	forearmDef.fixedRotation = true;
 	m_forearmBody = world.CreateBody(&forearmDef); //add the body to the world
 
@@ -49,26 +50,24 @@ Player::Player(sf::Vector2f size = sf::Vector2f(15,15)) :
 	m_forearmRect.setOutlineThickness(1);
 
 	//Creating the joint between our arm and player
-	b2PrismaticJointDef sjf;
-	sjf.bodyA = m_playerBody;
-	sjf.bodyB = m_forearmBody;
-	sjf.collideConnected = false; //so our sword and player dont collide
-	sjf.enableLimit = true;
-	sjf.lowerTranslation = 0;
-	sjf.upperTranslation = .66;
-	sjf.localAnchorA.Set(0, (2.5) / PPM); //the center of our player
-	sjf.localAnchorB.Set((-5) / PPM,(-5) /PPM);
-	m_playerToArmJoint = (b2PrismaticJoint*)world.CreateJoint(&sjf);
+	m_playerToArmJointDef.bodyA = m_playerBody;
+	m_playerToArmJointDef.bodyB = m_forearmBody;
+	m_playerToArmJointDef.collideConnected = false; //so our arm and player dont collide
+	m_playerToArmJointDef.enableLimit = true;
+	m_playerToArmJointDef.lowerTranslation = 0;
+	m_playerToArmJointDef.upperTranslation = .66;
+	m_playerToArmJointDef.localAnchorA.Set(0, (2.5) / PPM);
+	m_playerToArmJointDef.localAnchorB.Set((-5) / PPM,(-5) /PPM);
+	m_playerToArmJoint = (b2PrismaticJoint*)world.CreateJoint(&m_playerToArmJointDef);
 
 
 	//Creating the joint between our sword and player
-	b2RevoluteJointDef rjd;
-	rjd.bodyA = m_forearmBody;
-	rjd.bodyB = m_sword.getBody();
-	rjd.collideConnected = false; //so our sword and player dont collide
-	rjd.localAnchorA.Set(0, 0); //the center of our player
-	rjd.localAnchorB.Set(-28.5 / PPM, 0);
-	m_handWeaponJoint = (b2RevoluteJoint*)world.CreateJoint(&rjd);
+	m_armToSwordJointDef.bodyA = m_forearmBody;
+	m_armToSwordJointDef.bodyB = m_sword.getBody();
+	m_armToSwordJointDef.collideConnected = false; //so our sword and player dont collide
+	m_armToSwordJointDef.localAnchorA.Set(0, 0); //the center of our player
+	m_armToSwordJointDef.localAnchorB.Set(-28.5 / PPM, 0);
+	m_armToSwordJoint = (b2RevoluteJoint*)world.CreateJoint(&m_armToSwordJointDef);
 
 
 }
@@ -110,13 +109,13 @@ void Player::render(sf::RenderWindow & window)
 
 void Player::moveRight()
 {
-	createPlayerJoint(false);
+	invertPlayerJoint(false);
 	m_playerBody->SetLinearVelocity(b2Vec2(m_speed, m_playerBody->GetLinearVelocity().y));
 }
 
 void Player::moveLeft()
 {
-	createPlayerJoint(true);
+	invertPlayerJoint(true);
 	m_playerBody->SetLinearVelocity(b2Vec2(m_speed, m_playerBody->GetLinearVelocity().y));
 }
 
@@ -156,47 +155,38 @@ void Player::handleJoystick(JoystickController & controller)
 		m_playerBody->SetLinearVelocity(b2Vec2(0, m_playerBody->GetLinearVelocity().y));
 	}
 }
-void Player::createPlayerJoint(bool facingLeft)
+void Player::invertPlayerJoint(bool facingLeft)
 {
 	if (m_isFacingLeft == false && facingLeft || m_isFacingLeft && facingLeft == false)
 	{
-		//Creating the joint between our sword and player
-		b2PrismaticJointDef pjd;
-		pjd.bodyA = m_playerToArmJoint->GetBodyA();
-		pjd.bodyB = m_playerToArmJoint->GetBodyB();
-		pjd.collideConnected = false; //so our sword and player dont collide
-		pjd.enableLimit = true;
+		//Seting parameters to our player to arm joint
+		auto playerToArm = m_playerToArmJointDef;
 		if (facingLeft)
 		{
-			pjd.lowerTranslation = -.66;
-			pjd.upperTranslation = 0;
+			playerToArm.lowerTranslation = -.66;
+			playerToArm.upperTranslation = 0;
 		}
 		else
 		{
-			pjd.lowerTranslation = 0;
-			pjd.upperTranslation = .66;
+			playerToArm.lowerTranslation = 0;
+			playerToArm.upperTranslation = .66;
 		}
-		pjd.localAnchorA.Set(m_playerToArmJoint->GetLocalAnchorA().x, m_playerToArmJoint->GetLocalAnchorA().y); //the center of our player
-		pjd.localAnchorB.Set(m_playerToArmJoint->GetLocalAnchorB().x * -1, m_playerToArmJoint->GetLocalAnchorB().y);
+		playerToArm.localAnchorB.Set(m_playerToArmJointDef.localAnchorB.x * -1, m_playerToArmJointDef.localAnchorB.y);
 		world.DestroyJoint(m_playerToArmJoint);
-		m_playerToArmJoint = (b2PrismaticJoint*)world.CreateJoint(&pjd);
+		m_playerToArmJointDef = playerToArm;
+		m_playerToArmJoint = (b2PrismaticJoint*)world.CreateJoint(&m_playerToArmJointDef);
 
-		//Creating the joint between our sword and player
-		b2RevoluteJointDef rjd;
-		rjd.bodyA = m_forearmBody;
-		rjd.bodyB = m_sword.getBody();
-		rjd.collideConnected = false; //so our sword and player dont collide
-		rjd.localAnchorA.Set(0, 0); //the center of our player
-		rjd.localAnchorB.Set(m_handWeaponJoint->GetLocalAnchorB().x * -1, 0);
-		world.DestroyJoint(m_handWeaponJoint);
-		m_handWeaponJoint = (b2RevoluteJoint*)world.CreateJoint(&rjd);
+		//Setting parameters for our arm to sword joint
+		auto armToSword = m_armToSwordJointDef;
+		armToSword.localAnchorB.Set(m_armToSwordJointDef.localAnchorB.x * -1, m_armToSwordJointDef.localAnchorB.y);
+		world.DestroyJoint(m_armToSwordJoint);
+		m_armToSwordJointDef = armToSword;
+		m_armToSwordJoint = (b2RevoluteJoint*)world.CreateJoint(&m_armToSwordJointDef);
 
 		//set is facing boolean here
 		if (facingLeft)
 			m_isFacingLeft = true;
 		else
 			m_isFacingLeft = false;
-
-		std::cout << "Switched Faces" << std::endl;
 	}
 }
