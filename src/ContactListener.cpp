@@ -9,7 +9,7 @@ void ContactListener::BeginContact(b2Contact * contact)
 	if (fixA->GetBody()->GetUserData() == m_player1 && fixA->GetBody() == m_player1->getJumpSensor()
 		|| fixB->GetBody()->GetUserData() == m_player1 && fixB->GetBody() == m_player1->getJumpSensor())
 	{
-		m_player1->setCanJump(true);
+		m_player1->setCanJump(true); //allow our user to jump
 	}
 	//else if it belongs to the second player then set their boolean for canJump
 	if (fixA->GetBody()->GetUserData() == m_player2 && fixA->GetBody() == m_player2->getJumpSensor()

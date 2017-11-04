@@ -204,8 +204,6 @@ void Player::handleJoystick(JoystickController & controller)
 	if (controller.isButtonPressed("X"))
 		attack();
 
-	std::cout << m_canJump << std::endl;
-
 	if (controller.isButtonPressed("A") && m_canJump)
 	{
 		jump();
@@ -251,10 +249,6 @@ void Player::invertPlayerJoint(bool facingLeft)
 			m_isFacingLeft = true;
 		else
 			m_isFacingLeft = false;
-
-		m_playerBody->SetUserData(this);
-		m_forearmBody->SetUserData(this);
-		m_jumpBody->SetUserData(this);
 	}
 }
 

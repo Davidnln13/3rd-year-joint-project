@@ -3,6 +3,12 @@
 
 class JoystickController; //forward reference for our joystick class
 
+/// <summary>
+/// Author: David Nolan & Daryl Keogh
+/// Date: 03/11/2017
+/// Description: The player class is controlled by a user using a joystick (Xbox 360 or Xbox One Controller), the user can jump, attack and move.
+/// </summary>
+
 class Player
 {
 public:
