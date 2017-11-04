@@ -98,7 +98,7 @@
       <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
     </ProjectReference>
     <PostBuildEvent>
-      <Command>copy $(ProjectDir)dll\*.*  $(ProjectDir)x64\Debug</Command>
+      <Command>copy "$(ProjectDir)dll\*.*" "$(ProjectDir)x64\Debug"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -130,6 +130,7 @@
   <ItemGroup>
     <ClCompile Include="src\Boundary.cpp" />
     <ClCompile Include="src\Button.cpp" />
+    <ClCompile Include="src\ContactListener.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\JoystickController.cpp" />
     <ClCompile Include="src\Main.cpp" />
@@ -143,6 +144,7 @@
   <ItemGroup>
     <ClInclude Include="include\Boundary.h" />
     <ClInclude Include="include\Button.h" />
+    <ClInclude Include="include\ContactListener.h" />
     <ClInclude Include="include\Game.h" />
     <ClInclude Include="include\JoystickController.h" />
     <ClInclude Include="include\MainMenu.h" />

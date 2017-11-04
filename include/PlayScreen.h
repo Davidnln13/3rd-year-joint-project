@@ -2,6 +2,7 @@
 #include "Screen.h"
 #include "Player.h"
 #include "Boundary.h"
+#include "ContactListener.h"
 
 /// <summary>
 /// Author: Daryl keogh
@@ -23,6 +24,8 @@ public:
 	std::string getName() override;
 private:
 	Player m_player1;
+	Player m_player2;
 	//since we will have levels, then boundary objects will be in the level and possibly the player too
 	Boundary m_floor;
+	ContactListener m_contactListener;
 };

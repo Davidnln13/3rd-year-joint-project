@@ -8,6 +8,7 @@ Boundary::Boundary(sf::Vector2f size, sf::Vector2f position):
 	bodyDef.type = b2_staticBody;
 	bodyDef.position.Set(position.x / PPM, position.y / PPM); //spawn the box at this position
 	m_body = world.CreateBody(&bodyDef); //add the body to the world
+	m_body->SetUserData("Boundary");
 
 	b2PolygonShape boxShape;
 	boxShape.SetAsBox((size.x / 2.f) / PPM, (size.y / 2.f) / PPM);

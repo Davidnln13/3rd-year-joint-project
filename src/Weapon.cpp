@@ -18,6 +18,7 @@ Weapon::Weapon() :
 	boxFixDef.density = .2; //giving the sword a mass of .2
 	boxFixDef.isSensor = true;
 	m_body->CreateFixture(&boxFixDef);
+	m_body->SetUserData(this);
 
 	m_rect.setOrigin(m_rect.getSize().x / 2, m_rect.getSize().y / 2); //setting the origin to the center of the box
 	m_rect.setFillColor(sf::Color::Transparent);
