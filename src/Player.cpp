@@ -6,7 +6,9 @@ Player::Player(sf::Vector2f position, sf::Vector2f size = sf::Vector2f(15,15)) :
 	m_sword(),
 	m_canAttack(true),
 	m_speed(0.0f),
-	m_position(position)
+	m_position(position),
+	RAD_TO_DEG(180.f / thor::Pi),
+	DEG_TO_RAD(thor::Pi / 180.f)
 {
 	//creating our Box2d body and fixture for the player
 	b2BodyDef bodyDef;
@@ -17,7 +19,7 @@ Player::Player(sf::Vector2f position, sf::Vector2f size = sf::Vector2f(15,15)) :
 
 	b2BodyDef forearmDef;
 	forearmDef.type = b2_dynamicBody;
-	forearmDef.position.Set(m_position.x / PPM, m_position.y / PPM); //spawn the player in the center of the screen
+	forearmDef.position.Set(m_position.x / PPM, m_position.y / PPM);
 	forearmDef.fixedRotation = true;
 	m_forearmBody = world.CreateBody(&forearmDef); //add the body to the world
 
@@ -29,12 +31,12 @@ Player::Player(sf::Vector2f position, sf::Vector2f size = sf::Vector2f(15,15)) :
 
 	b2FixtureDef playerDef;
 	playerDef.shape = &playerShape;
-	playerDef.density = 1.5; //giving the player a mass of 1
+	playerDef.density = 1.5; //giving the player a mass of 1.5
 	m_playerBody->CreateFixture(&playerDef);
 
 	b2FixtureDef forearmFixDef;
 	forearmFixDef.shape = &forearmShape;
-	forearmFixDef.density = .1f; //giving the player a mass of 1
+	forearmFixDef.density = .1f; //giving the arm a mass of 1
 	forearmFixDef.isSensor = true;
 	m_forearmBody->CreateFixture(&forearmFixDef);
 
@@ -74,7 +76,10 @@ Player::Player(sf::Vector2f position, sf::Vector2f size = sf::Vector2f(15,15)) :
 
 Player::~Player()
 {
+	//deleting our box2d variables from the world
 	world.DestroyBody(m_playerBody);
+	world.DestroyJoint(m_armToSwordJoint);
+	world.DestroyJoint(m_playerToArmJoint);
 }
 
 void Player::update()
@@ -97,10 +102,10 @@ void Player::update()
 void Player::render(sf::RenderWindow & window)
 {
 	m_playerRect.setPosition(m_playerBody->GetPosition().x * PPM, m_playerBody->GetPosition().y * PPM);
-	m_playerRect.setRotation(m_playerBody->GetAngle() * (180.f / thor::Pi)); //have to convert from radians to degrees here
+	m_playerRect.setRotation(m_playerBody->GetAngle() * RAD_TO_DEG); //have to convert from radians to degrees here
 
 	m_forearmRect.setPosition(m_forearmBody->GetPosition().x * PPM, m_forearmBody->GetPosition().y * PPM);
-	m_forearmRect.setRotation(m_forearmBody->GetAngle() * (180.f / thor::Pi)); //have to convert from radians to degrees here
+	m_forearmRect.setRotation(m_forearmBody->GetAngle() * RAD_TO_DEG); //have to convert from radians to degrees here
 
 	window.draw(m_playerRect);
 	window.draw(m_forearmRect);
@@ -123,7 +128,7 @@ void Player::attack()
 {
 	if (m_canAttack)
 	{
-		if(m_isFacingLeft)
+		if (m_isFacingLeft)
 			m_forearmBody->ApplyForceToCenter(b2Vec2(-50, 0), true);
 		else
 			m_forearmBody->ApplyForceToCenter(b2Vec2(50,0), true);

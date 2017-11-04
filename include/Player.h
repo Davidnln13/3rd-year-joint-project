@@ -41,6 +41,10 @@ private:
 	//We hold the definitions as variables so we can easily change joint definition variables on the fly without recreating them each time
 	b2PrismaticJointDef m_playerToArmJointDef;
 	b2RevoluteJointDef m_armToSwordJointDef;
+
+	//Const variables
+	float const RAD_TO_DEG;
+	float const DEG_TO_RAD;
 };
 
 #include "JoystickController.h"
