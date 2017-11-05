@@ -12,7 +12,7 @@ class JoystickController; //forward reference for our joystick class
 class Player
 {
 public:
-	Player(sf::Vector2f position, sf::Vector2f size);
+	Player(sf::Vector2f position, sf::Vector2f size, std::string direction);
 	~Player(); //Any classes that have a box2d body should have that body deleted in here
 
 	void update();
@@ -27,6 +27,8 @@ public:
 	void swordClashed(); //method is invoked when two swords clash with one another
 	void checkCanAttack();
 	void applyArmPushBack(); //aplies a force on oru arm so we push it back into place
+
+	void respawn();
 
 	bool distance(sf::Vector2f point1, sf::Vector2f point2, float distanceCuttOff);
 
@@ -47,6 +49,7 @@ private:
 	sf::Clock m_attackClock;
 
 	sf::Vector2f m_position;
+	b2Vec2 m_startPosition;
 	sf::Vector2f m_armPosDest; //the destination of our arm position
 
 	//Our rectangles to draw our player and forearm

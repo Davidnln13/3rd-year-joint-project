@@ -1,12 +1,13 @@
 #include "Player.h"
 
-Player::Player(sf::Vector2f position, sf::Vector2f size = sf::Vector2f(15, 15)) :
+Player::Player(sf::Vector2f position, sf::Vector2f size = sf::Vector2f(15, 15), std::string direction = "left") :
 	m_canAttack(true),
 	m_canJump(false),
 	m_swordReachedPos(false),
 	m_moveSpeed(7.0f),
 	m_attackRate(0.50f),
 	m_position(position),
+	m_startPosition(position.x / PPM, position.y / PPM),
 	m_playerRect(size),
 	m_forearmRect(sf::Vector2f(15, 5)),
 	m_jumpRect(sf::Vector2f(size.x, 3)),
@@ -14,6 +15,11 @@ Player::Player(sf::Vector2f position, sf::Vector2f size = sf::Vector2f(15, 15)) 
 	RAD_TO_DEG(180.f / thor::Pi),
 	DEG_TO_RAD(thor::Pi / 180.f)
 {
+	if (direction == "left")
+		m_isFacingLeft = true;
+	else if (direction == "right")
+		m_isFacingLeft = false;
+
 	//creating our Box2d body and fixture for the player
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;
@@ -82,10 +88,20 @@ Player::Player(sf::Vector2f position, sf::Vector2f size = sf::Vector2f(15, 15)) 
 	m_playerToArmJointDef.bodyB = m_forearmBody;
 	m_playerToArmJointDef.collideConnected = false; //so our arm and player dont collide
 	m_playerToArmJointDef.enableLimit = true;
-	m_playerToArmJointDef.lowerTranslation = 0;
-	m_playerToArmJointDef.upperTranslation = 2.5f;
+	if (m_isFacingLeft)
+	{
+		m_playerToArmJointDef.lowerTranslation = -2.5;
+		m_playerToArmJointDef.upperTranslation = 0;
+		m_playerToArmJointDef.localAnchorB.Set(5 / PPM, (-5) / PPM);
+	}
+	else
+	{
+		m_playerToArmJointDef.lowerTranslation = 0;
+		m_playerToArmJointDef.upperTranslation = 2.5f;
+		m_playerToArmJointDef.localAnchorB.Set((-5) / PPM, (-5) / PPM);
+	}
 	m_playerToArmJointDef.localAnchorA.Set(0, (2.5f) / PPM);
-	m_playerToArmJointDef.localAnchorB.Set((-5) / PPM,(-5) /PPM);
+
 	m_playerToArmJoint = (b2PrismaticJoint*)world.CreateJoint(&m_playerToArmJointDef);
 
 
@@ -94,7 +110,10 @@ Player::Player(sf::Vector2f position, sf::Vector2f size = sf::Vector2f(15, 15)) 
 	m_armToSwordJointDef.bodyB = m_sword.getBody();
 	m_armToSwordJointDef.collideConnected = false; //so our sword and player dont collide
 	m_armToSwordJointDef.localAnchorA.Set(0, 0); //the center of our player
-	m_armToSwordJointDef.localAnchorB.Set(-28.5f / PPM, 0);
+	if(m_isFacingLeft)
+		m_armToSwordJointDef.localAnchorB.Set(28.5f / PPM, 0);
+	else
+		m_armToSwordJointDef.localAnchorB.Set(-28.5f / PPM, 0);
 	m_armToSwordJoint = (b2RevoluteJoint*)world.CreateJoint(&m_armToSwordJointDef);
 
 	//creating our jump sensor joint
@@ -197,7 +216,7 @@ void Player::moveLeft()
 	if (m_canAttack)
 	{
 		invertPlayerJoint(true);
-		m_playerBody->SetLinearVelocity(b2Vec2(m_moveSpeed, m_playerBody->GetLinearVelocity().y));
+		m_playerBody->SetLinearVelocity(b2Vec2(-m_moveSpeed, m_playerBody->GetLinearVelocity().y));
 	}
 	else
 	{
@@ -265,8 +284,6 @@ void Player::invertPlayerJoint(bool facingLeft)
 {
 	if (m_isFacingLeft == false && facingLeft || m_isFacingLeft && facingLeft == false)
 	{
-		//invert our move speed
-		m_moveSpeed = -m_moveSpeed;
 		//Seting parameters to our player to arm joint
 		auto playerToArm = m_playerToArmJointDef;
 		if (facingLeft)
@@ -326,6 +343,17 @@ void Player::applyArmPushBack()
 		m_forearmBody->ApplyForceToCenter(b2Vec2(4.5f, 0), true);
 	else
 		m_forearmBody->ApplyForceToCenter(b2Vec2(-4.5f, 0), true);
+}
+
+void Player::respawn()
+{
+	//clears forces in the world, this will allow our player to not recieve any forces when respawned
+	world.ClearForces();
+
+	//the following line(s) cause an assertion error, we need a way to reset the player when they die (possibly destroying and recreate the body?)
+	//m_playerBody->SetTransform(b2Vec2(m_startPosition.x, m_startPosition.y), m_playerBody->GetAngle());
+	//m_forearmBody->SetTransform(b2Vec2(m_startPosition.x, m_startPosition.y), m_forearmBody->GetAngle());
+	//m_jumpBody->SetTransform(b2Vec2(m_startPosition.x, m_startPosition.y), m_jumpBody->GetAngle());
 }
 
 bool Player::distance(sf::Vector2f point1, sf::Vector2f point2, float distanceCuttOff)

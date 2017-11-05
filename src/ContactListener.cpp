@@ -12,12 +12,19 @@ void ContactListener::BeginContact(b2Contact * contact)
 	if (canPlayerJump(m_player2, m_player1, *fixA, *fixB))
 		m_player2->setCanJump(true);
 
+	//checking if two swords have collided
 	if (fixA->GetBody() == m_player1->getSwordBody() && fixB->GetBody() == m_player2->getSwordBody()
 		|| fixB->GetBody() == m_player1->getSwordBody() && fixA->GetBody() == m_player2->getSwordBody())
 	{
 		m_player1->swordClashed();
 		m_player2->swordClashed();
 	}
+
+	//checking if a sword has collided with a player, if so, reset the player
+	if (hasSwordHitPlayer(m_player1, m_player2, *fixA, *fixB)) //if a sword has hit the first player then respawn them
+		m_player1->respawn();
+	if (hasSwordHitPlayer(m_player2, m_player1, *fixA, *fixB)) //if a sword has hit the second player then respawn them
+		m_player2->respawn();
 }
 
 void ContactListener::EndContact(b2Contact * contact)
@@ -40,6 +47,17 @@ bool ContactListener::canPlayerJump(Player* player1, Player* player2, b2Fixture&
 	//if the first player passed to this method collides with a body that is not the other players arm/sword then we can jump
 	if (fixA.GetBody() == player1->getJumpBody() && fixB.GetBody() != player2->getArmBody() && fixB.GetBody() != player2->getSwordBody()
 		|| fixB.GetBody() == player1->getJumpBody() && fixA.GetBody() != player2->getArmBody() && fixA.GetBody() != player2->getSwordBody())
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool ContactListener::hasSwordHitPlayer(Player * player1, Player * player2, b2Fixture & fixA, b2Fixture & fixB)
+{
+	if (fixA.GetBody() == player1->getPlayerBody() && fixB.GetBody() == player2->getSwordBody()
+		|| fixB.GetBody() == player1->getPlayerBody() && fixA.GetBody() == player2->getSwordBody())
 	{
 		return true;
 	}

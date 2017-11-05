@@ -16,7 +16,7 @@ Boundary::Boundary(sf::Vector2f size, sf::Vector2f position):
 	b2FixtureDef boxFixDef;
 	boxFixDef.density = 1; 
 	boxFixDef.friction = .7f;
-	boxFixDef.restitution = 0.5f;
+	boxFixDef.restitution = 0.39f;
 	boxFixDef.shape = &boxShape;
 	m_body->CreateFixture(&boxFixDef);
 

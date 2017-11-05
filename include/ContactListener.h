@@ -19,6 +19,7 @@ public:
 	void BeginContact(b2Contact* contact) override;
 	void EndContact(b2Contact* contact) override;
 	bool canPlayerJump(Player* player1, Player* player2, b2Fixture& fixA, b2Fixture& fixB);
+	bool hasSwordHitPlayer(Player* player1, Player* player2, b2Fixture& fixA, b2Fixture& fixB);
 	void setPlayers(Player& player1, Player& player2);
 private:
 	//we hold a pointer to our players so we can invoke methods if their sensor have collided/not collided
