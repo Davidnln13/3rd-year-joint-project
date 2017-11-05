@@ -14,6 +14,7 @@ PlayScreen::PlayScreen(std::string name) :
 void PlayScreen::update()
 {
 	m_player1.update();
+	m_player2.update();
 }
 
 void PlayScreen::render(sf::RenderWindow& window)
@@ -37,6 +38,7 @@ void PlayScreen::end()
 void PlayScreen::handleInput(JoystickController& controller1, JoystickController& controller2)
 {
 	m_player1.handleJoystick(controller1);
+	m_player2.handleJoystick(controller2);
 }
 
 std::string PlayScreen::getName()

@@ -1,13 +1,14 @@
 #include "Weapon.h"
 
-Weapon::Weapon() :
+Weapon::Weapon(sf::Vector2f position) :
 	m_rect(sf::Vector2f(35, 5))
 {
 	//creating our Box2d body and fixture for the player
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;
-	bodyDef.position.Set((1280 / 2.f) / PPM, (720 / 2.f) / PPM);
+	bodyDef.position.Set(position.x / PPM, position.y / PPM);
 	bodyDef.fixedRotation = true;
+	bodyDef.bullet = true; //we set the weapon as a bullet so collision detection for the weapon updates more frequently so we get smoother collisions
 	m_body = world.CreateBody(&bodyDef); //add the body to the world
 
 	b2PolygonShape boxShape;
@@ -45,6 +46,11 @@ void Weapon::render(sf::RenderWindow & window)
 void Weapon::attack(b2Vec2 force)
 {
 
+}
+
+void Weapon::applyForce(b2Vec2 force)
+{
+	m_body->ApplyForceToCenter(force, true);
 }
 
 b2Body* Weapon::getBody()

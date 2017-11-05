@@ -12,12 +12,13 @@ class Weapon
 {
 public:
 
-	Weapon();
+	Weapon(sf::Vector2f position);
 	~Weapon();
 
 	void update();
 	void render(sf::RenderWindow& window);
 	void attack(b2Vec2 force);
+	void applyForce(b2Vec2 force);
 
 	//getters
 	b2Body* getBody();

@@ -24,14 +24,24 @@ public:
 	void setCanJump(bool canJump);
 	void handleJoystick(JoystickController& controller);
 	void invertPlayerJoint(bool facingLeft); //inverts the joints for our player, so we can swap where the weapon and arm is jointed to
+	void swordClashed(bool clashing); //method is invoked when two swords clash with one another
+	void checkCanAttack();
 
 	//Getters
-	b2Body* getJumpSensor();
+	b2Body* getJumpBody();
+	b2Body* getArmBody();
+	b2Body* getPlayerBody();
+	b2Body* getSwordBody();
 private:
 	bool m_isFacingLeft;
 	bool m_canAttack;
 	bool m_canJump;
-	float m_speed;
+	bool m_swordClashing;
+	float m_moveSpeed;
+
+	//Attack variables
+	float m_attackRate;
+	sf::Clock m_attackClock;
 
 	sf::Vector2f m_position;
 

@@ -1,14 +1,16 @@
 #include "Player.h"
 
-Player::Player(sf::Vector2f position, sf::Vector2f size = sf::Vector2f(15,15)) :
+Player::Player(sf::Vector2f position, sf::Vector2f size = sf::Vector2f(15, 15)) :
 	m_canAttack(true),
 	m_canJump(false),
-	m_speed(0.0f),
+	m_swordClashing(false),
+	m_moveSpeed(7.0f),
+	m_attackRate(0.60f),
 	m_position(position),
 	m_playerRect(size),
 	m_forearmRect(sf::Vector2f(15, 5)),
 	m_jumpRect(sf::Vector2f(size.x, 3)),
-	m_sword(),
+	m_sword(position),
 	RAD_TO_DEG(180.f / thor::Pi),
 	DEG_TO_RAD(thor::Pi / 180.f)
 {
@@ -42,7 +44,7 @@ Player::Player(sf::Vector2f position, sf::Vector2f size = sf::Vector2f(15,15)) :
 	forearmShape.SetAsBox((m_forearmRect.getSize().x / 2.f) / PPM, (m_forearmRect.getSize().y / 2.f) / PPM);
 
 	b2PolygonShape jumpShape;
-	jumpShape.SetAsBox(5 / 2.f / PPM, 5 / 2.f / PPM);
+	jumpShape.SetAsBox(m_jumpRect.getSize().x / 2.f / PPM, m_jumpRect.getSize().y / 2.f / PPM);
 
 	b2FixtureDef playerDef;
 	playerDef.shape = &playerShape;
@@ -81,7 +83,7 @@ Player::Player(sf::Vector2f position, sf::Vector2f size = sf::Vector2f(15,15)) :
 	m_playerToArmJointDef.collideConnected = false; //so our arm and player dont collide
 	m_playerToArmJointDef.enableLimit = true;
 	m_playerToArmJointDef.lowerTranslation = 0;
-	m_playerToArmJointDef.upperTranslation = .66f;
+	m_playerToArmJointDef.upperTranslation = 2.5f;
 	m_playerToArmJointDef.localAnchorA.Set(0, (2.5f) / PPM);
 	m_playerToArmJointDef.localAnchorB.Set((-5) / PPM,(-5) /PPM);
 	m_playerToArmJoint = (b2PrismaticJoint*)world.CreateJoint(&m_playerToArmJointDef);
@@ -105,6 +107,8 @@ Player::Player(sf::Vector2f position, sf::Vector2f size = sf::Vector2f(15,15)) :
 	m_jumpSensorJointDef.lowerTranslation = 0;
 	m_jumpSensorJointDef.upperTranslation = 0;
 	m_jumpSensorJoint = (b2PrismaticJoint*)world.CreateJoint(&m_jumpSensorJointDef);
+
+	m_attackClock.restart(); //start our clock when the player is created
 }
 
 Player::~Player()
@@ -117,18 +121,22 @@ Player::~Player()
 
 void Player::update()
 {
-	if (m_playerToArmJoint->GetJointTranslation() >= -0.15 && m_playerToArmJoint->GetJointTranslation() <= 0.15)
-	{
-		m_forearmBody->SetLinearVelocity(b2Vec2(0, 0));
-		m_canAttack = true;
-	}
-	else
+	checkCanAttack(); //checks if we can attack or not
+
+	if (m_swordClashing)
 	{
 		if(m_isFacingLeft)
-			m_forearmBody->ApplyForceToCenter(b2Vec2(1, 0), true);
+			m_forearmBody->ApplyForceToCenter(b2Vec2(150, 0),true);
 		else
-			m_forearmBody->ApplyForceToCenter(b2Vec2(-1, 0), true);
-		m_canAttack = false;
+			m_forearmBody->ApplyForceToCenter(b2Vec2(-150, 0), true);
+	}
+
+	if(m_canAttack == false)
+	{
+		if (m_isFacingLeft)
+			m_forearmBody->ApplyForceToCenter(b2Vec2(4.5f, 0), true);
+		else
+			m_forearmBody->ApplyForceToCenter(b2Vec2(-4.5f, 0), true);
 	}
 }
 
@@ -155,13 +163,13 @@ void Player::render(sf::RenderWindow & window)
 void Player::moveRight()
 {
 	invertPlayerJoint(false);
-	m_playerBody->SetLinearVelocity(b2Vec2(m_speed, m_playerBody->GetLinearVelocity().y));
+	m_playerBody->SetLinearVelocity(b2Vec2(m_moveSpeed, m_playerBody->GetLinearVelocity().y));
 }
 
 void Player::moveLeft()
 {
 	invertPlayerJoint(true);
-	m_playerBody->SetLinearVelocity(b2Vec2(m_speed, m_playerBody->GetLinearVelocity().y));
+	m_playerBody->SetLinearVelocity(b2Vec2(m_moveSpeed, m_playerBody->GetLinearVelocity().y));
 }
 
 void Player::attack()
@@ -169,11 +177,14 @@ void Player::attack()
 	if (m_canAttack)
 	{
 		if (m_isFacingLeft)
-			m_forearmBody->ApplyForceToCenter(b2Vec2(-50, 0), true);
-		else
-			m_forearmBody->ApplyForceToCenter(b2Vec2(50,0), true);
-	}
+			m_forearmBody->ApplyForceToCenter(b2Vec2(-250, 0), true);
+		else 
+			m_forearmBody->ApplyForceToCenter(b2Vec2(250,0), true);
 
+		m_canAttack = false; //make our bool false so we cannot attack again
+
+		m_attackClock.restart();
+	}
 }
 
 void Player::jump()
@@ -192,13 +203,11 @@ void Player::handleJoystick(JoystickController & controller)
 	if (controller.isButtonHeld("LeftThumbStickLeft"))
 	{
 		moved = true;
-		m_speed = -7;
 		moveLeft();
 	}
 	if (controller.isButtonHeld("LeftThumbStickRight"))
 	{
 		moved = true;
-		m_speed = 7;
 		moveRight();
 	}
 	if (controller.isButtonPressed("X"))
@@ -220,17 +229,19 @@ void Player::invertPlayerJoint(bool facingLeft)
 {
 	if (m_isFacingLeft == false && facingLeft || m_isFacingLeft && facingLeft == false)
 	{
+		//invert our move speed
+		m_moveSpeed = -m_moveSpeed;
 		//Seting parameters to our player to arm joint
 		auto playerToArm = m_playerToArmJointDef;
 		if (facingLeft)
 		{
-			playerToArm.lowerTranslation = -.66f;
+			playerToArm.lowerTranslation = -2.5f;
 			playerToArm.upperTranslation = 0;
 		}
 		else
 		{
 			playerToArm.lowerTranslation = 0;
-			playerToArm.upperTranslation = .66f;
+			playerToArm.upperTranslation = 2.5f;
 		}
 		playerToArm.localAnchorB.Set(m_playerToArmJointDef.localAnchorB.x * -1, m_playerToArmJointDef.localAnchorB.y);
 		world.DestroyJoint(m_playerToArmJoint);
@@ -252,7 +263,36 @@ void Player::invertPlayerJoint(bool facingLeft)
 	}
 }
 
-b2Body * Player::getJumpSensor()
+void Player::swordClashed(bool clashing)
+{
+	m_swordClashing = clashing;
+}
+
+void Player::checkCanAttack()
+{
+	//if the time elapsed since teh clock was started/restarted is greater than or equal to our attack rate then set out bool
+	if (m_attackClock.getElapsedTime().asSeconds() >= m_attackRate)
+	{
+		m_canAttack = true;
+	}
+}
+
+b2Body * Player::getJumpBody()
 {
 	return m_jumpBody;
+}
+
+b2Body * Player::getArmBody()
+{
+	return m_forearmBody;
+}
+
+b2Body * Player::getPlayerBody()
+{
+	return m_playerBody;
+}
+
+b2Body * Player::getSwordBody()
+{
+	return m_sword.getBody();
 }
