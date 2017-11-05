@@ -15,8 +15,8 @@ void ContactListener::BeginContact(b2Contact * contact)
 	if (fixA->GetBody() == m_player1->getSwordBody() && fixB->GetBody() == m_player2->getSwordBody()
 		|| fixB->GetBody() == m_player1->getSwordBody() && fixA->GetBody() == m_player2->getSwordBody())
 	{
-		m_player1->swordClashed(true);
-		m_player2->swordClashed(true);
+		m_player1->swordClashed();
+		m_player2->swordClashed();
 	}
 }
 
@@ -33,13 +33,6 @@ void ContactListener::EndContact(b2Contact * contact)
 	{
 		m_player2->setCanJump(false);
 	}
-
-
-	if (fixA->GetBody() == m_player1->getSwordBody() || fixB->GetBody() == m_player1->getSwordBody())
-		m_player1->swordClashed(false);
-
-	if (fixA->GetBody() == m_player2->getSwordBody() || fixB->GetBody() == m_player2->getSwordBody())
-		m_player2->swordClashed(false);
 }
 
 bool ContactListener::canPlayerJump(Player* player1, Player* player2, b2Fixture& fixA, b2Fixture& fixB)

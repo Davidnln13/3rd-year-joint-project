@@ -3,9 +3,9 @@
 Player::Player(sf::Vector2f position, sf::Vector2f size = sf::Vector2f(15, 15)) :
 	m_canAttack(true),
 	m_canJump(false),
-	m_swordClashing(false),
+	m_swordReachedPos(false),
 	m_moveSpeed(7.0f),
-	m_attackRate(0.60f),
+	m_attackRate(0.50f),
 	m_position(position),
 	m_playerRect(size),
 	m_forearmRect(sf::Vector2f(15, 5)),
@@ -123,21 +123,39 @@ void Player::update()
 {
 	checkCanAttack(); //checks if we can attack or not
 
-	if (m_swordClashing)
-	{
-		if(m_isFacingLeft)
-			m_forearmBody->ApplyForceToCenter(b2Vec2(150, 0),true);
-		else
-			m_forearmBody->ApplyForceToCenter(b2Vec2(-150, 0), true);
-	}
-
+	//if we have attacked then set our linear velocity to move in the direction we are facing
 	if(m_canAttack == false)
 	{
-		if (m_isFacingLeft)
-			m_forearmBody->ApplyForceToCenter(b2Vec2(4.5f, 0), true);
+		//if our sword hasnt reached our 
+		if (m_swordReachedPos == false)
+		{
+			//get the current position fo our arm
+			auto armPos = sf::Vector2f(m_forearmBody->GetPosition().x * PPM, m_forearmBody->GetPosition().y * PPM);
+
+			//if our arm has not reached its destination then set its velocity
+			if (distance(armPos, m_armPosDest, 7.5f) == false)
+			{
+				if (m_isFacingLeft)
+					m_forearmBody->SetLinearVelocity(b2Vec2(-48, 0)); 
+				else
+					m_forearmBody->SetLinearVelocity(b2Vec2(48, 0));
+			}
+			else
+				m_swordReachedPos = true;
+		}
+		//move this into a method
 		else
-			m_forearmBody->ApplyForceToCenter(b2Vec2(-4.5f, 0), true);
+		{
+			applyArmPushBack(); //push back our arm
+		}
+
 	}
+	//move this into a method
+	else
+	{
+		applyArmPushBack(); //push back our arm
+	}
+
 }
 
 void Player::render(sf::RenderWindow & window)
@@ -162,28 +180,46 @@ void Player::render(sf::RenderWindow & window)
 
 void Player::moveRight()
 {
-	invertPlayerJoint(false);
-	m_playerBody->SetLinearVelocity(b2Vec2(m_moveSpeed, m_playerBody->GetLinearVelocity().y));
+	if (m_canAttack)
+	{
+		invertPlayerJoint(false);
+		m_playerBody->SetLinearVelocity(b2Vec2(m_moveSpeed, m_playerBody->GetLinearVelocity().y));
+	}
+	else
+	{
+		m_forearmBody->SetLinearVelocity(b2Vec2(0, m_forearmBody->GetLinearVelocity().y));
+		m_playerBody->SetLinearVelocity(b2Vec2(0, m_playerBody->GetLinearVelocity().y));
+	}
 }
 
 void Player::moveLeft()
 {
-	invertPlayerJoint(true);
-	m_playerBody->SetLinearVelocity(b2Vec2(m_moveSpeed, m_playerBody->GetLinearVelocity().y));
+	if (m_canAttack)
+	{
+		invertPlayerJoint(true);
+		m_playerBody->SetLinearVelocity(b2Vec2(m_moveSpeed, m_playerBody->GetLinearVelocity().y));
+	}
+	else
+	{
+		m_forearmBody->SetLinearVelocity(b2Vec2(0, m_forearmBody->GetLinearVelocity().y));
+		m_playerBody->SetLinearVelocity(b2Vec2(0, m_playerBody->GetLinearVelocity().y));
+	}
 }
 
 void Player::attack()
 {
 	if (m_canAttack)
 	{
-		if (m_isFacingLeft)
-			m_forearmBody->ApplyForceToCenter(b2Vec2(-250, 0), true);
-		else 
-			m_forearmBody->ApplyForceToCenter(b2Vec2(250,0), true);
+		m_swordReachedPos = false; //set our sword reaching its position boolean to false
 
 		m_canAttack = false; //make our bool false so we cannot attack again
 
-		m_attackClock.restart();
+		m_attackClock.restart(); //reset our attack clock
+
+		if(m_isFacingLeft)
+			m_armPosDest = sf::Vector2f((m_forearmBody->GetPosition().x * PPM) + m_playerToArmJoint->GetLowerLimit() * PPM, m_forearmBody->GetPosition().y * PPM);
+		else
+			m_armPosDest = sf::Vector2f((m_forearmBody->GetPosition().x * PPM) + m_playerToArmJoint->GetUpperLimit() * PPM, m_forearmBody->GetPosition().y * PPM);
 	}
 }
 
@@ -263,9 +299,16 @@ void Player::invertPlayerJoint(bool facingLeft)
 	}
 }
 
-void Player::swordClashed(bool clashing)
+void Player::swordClashed()
 {
-	m_swordClashing = clashing;
+	m_swordReachedPos = true; //set our sword as reaching its position (incase we are attacking we dont want our sword to keep moving as it has hit a sword)
+	m_forearmBody->SetLinearVelocity(b2Vec2(0, m_forearmBody->GetLinearVelocity().y));
+
+	//bounce our player away
+	if(m_isFacingLeft)
+		m_playerBody->ApplyForceToCenter(b2Vec2(2500, 0), true);
+	else
+		m_playerBody->ApplyForceToCenter(b2Vec2(-2500, 0), true);
 }
 
 void Player::checkCanAttack()
@@ -275,6 +318,26 @@ void Player::checkCanAttack()
 	{
 		m_canAttack = true;
 	}
+}
+
+void Player::applyArmPushBack()
+{
+	if (m_isFacingLeft)
+		m_forearmBody->ApplyForceToCenter(b2Vec2(4.5f, 0), true);
+	else
+		m_forearmBody->ApplyForceToCenter(b2Vec2(-4.5f, 0), true);
+}
+
+bool Player::distance(sf::Vector2f point1, sf::Vector2f point2, float distanceCuttOff)
+{
+	auto tempX = std::powf(point2.x - point1.x, 2);
+	auto diff = std::sqrtf(tempX);
+
+	//if the difference between the two points is less than or equal to our parameter then return true
+	if (diff <= distanceCuttOff)
+		return true;
+
+	return false;
 }
 
 b2Body * Player::getJumpBody()

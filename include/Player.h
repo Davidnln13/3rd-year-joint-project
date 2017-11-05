@@ -24,8 +24,11 @@ public:
 	void setCanJump(bool canJump);
 	void handleJoystick(JoystickController& controller);
 	void invertPlayerJoint(bool facingLeft); //inverts the joints for our player, so we can swap where the weapon and arm is jointed to
-	void swordClashed(bool clashing); //method is invoked when two swords clash with one another
+	void swordClashed(); //method is invoked when two swords clash with one another
 	void checkCanAttack();
+	void applyArmPushBack(); //aplies a force on oru arm so we push it back into place
+
+	bool distance(sf::Vector2f point1, sf::Vector2f point2, float distanceCuttOff);
 
 	//Getters
 	b2Body* getJumpBody();
@@ -36,7 +39,7 @@ private:
 	bool m_isFacingLeft;
 	bool m_canAttack;
 	bool m_canJump;
-	bool m_swordClashing;
+	bool m_swordReachedPos;
 	float m_moveSpeed;
 
 	//Attack variables
@@ -44,6 +47,7 @@ private:
 	sf::Clock m_attackClock;
 
 	sf::Vector2f m_position;
+	sf::Vector2f m_armPosDest; //the destination of our arm position
 
 	//Our rectangles to draw our player and forearm
 	sf::RectangleShape m_playerRect;
