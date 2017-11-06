@@ -78,6 +78,7 @@ void Game::update()
 {
 	if (m_screenManager.getCurrentScreenName() == "playScreen")
 	{
+		
 		//Update our controllers
 		m_controller1.update();
 		m_controller2.update();

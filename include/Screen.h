@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <SFML\Graphics.hpp>
+#include "Audio.h"
 
 
 /// <summary>
@@ -27,6 +28,7 @@ public:
 	//these member variable should be available from the derived class
 	bool m_active;
 	std::string m_name;
+
 };
 
 #include "JoystickController.h"

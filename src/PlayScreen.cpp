@@ -1,7 +1,8 @@
 #include "PlayScreen.h"
 
-PlayScreen::PlayScreen(std::string name) :
+PlayScreen::PlayScreen(std::string name, Audio& audio) :
 	Screen(),
+	m_audioPlayScreen(audio),
 	m_player1(sf::Vector2f(1280 - ( 1280 / 8.f), 720.f - ( 720.f / 4)), sf::Vector2f(25, 75 ), "left"),
 	m_player2(sf::Vector2f(1280 / 8.f, 720.f - (720.f / 4)), sf::Vector2f(25, 75), "right"),
 	m_floor(sf::Vector2f(1280, 35), sf::Vector2f(1280 / 2.f, 720 - (35 / 2)))
@@ -16,6 +17,7 @@ void PlayScreen::update()
 	//update our players
 	m_player1.update();
 	m_player2.update();
+	m_audioPlayScreen.update();
 }
 
 void PlayScreen::render(sf::RenderWindow& window)
@@ -35,6 +37,7 @@ void PlayScreen::start()
 
 void PlayScreen::end()
 {
+	m_audioPlayScreen.m_music[0].stop();
 	m_active = false;
 }
 
@@ -42,6 +45,10 @@ void PlayScreen::handleInput(JoystickController& controller1, JoystickController
 {
 	m_player1.handleJoystick(controller1);
 	m_player2.handleJoystick(controller2);
+	if ((controller1.isButtonPressed("X") && m_player1.getCanAttack() == true)||(controller2.isButtonPressed("X") && m_player2.getCanAttack() == true))
+	{
+		m_audioPlayScreen.m_soundArray[0].play();
+	}
 }
 
 std::string PlayScreen::getName()

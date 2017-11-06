@@ -3,6 +3,7 @@
 Player::Player(sf::Vector2f position, sf::Vector2f size = sf::Vector2f(15, 15), std::string direction = "left") :
 	m_canAttack(true),
 	m_canJump(false),
+	m_canAttackTemp(true),
 	m_swordReachedPos(false),
 	m_moveSpeed(7.0f),
 	m_attackRate(0.50f),
@@ -234,6 +235,7 @@ void Player::attack()
 {
 	if (m_canAttack)
 	{
+		m_canAttackTemp = m_canAttack;
 		m_swordReachedPos = false; //set our sword reaching its position boolean to false
 
 		m_canAttack = false; //make our bool false so we cannot attack again
@@ -399,4 +401,10 @@ b2Body * Player::getSwordBody()
 void Player::setRespawn(bool respawn)
 {
 	m_respawn = respawn;
+}
+bool Player::getCanAttack()
+{
+	bool temp = m_canAttackTemp;
+	m_canAttackTemp = false;
+	return temp;
 }

@@ -9,7 +9,7 @@
 class MainMenu : public Screen
 {
 public:
-	MainMenu(std::string name);
+	MainMenu(std::string name, Audio& audio);
 	
 	void update() override;
 	void render(sf::RenderWindow& window) override;

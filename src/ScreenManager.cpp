@@ -1,8 +1,8 @@
 #include "ScreenManager.h"
 
 ScreenManager::ScreenManager() :
-	m_playScreen("playScreen"),
-	m_mainScreen("mainMenu"),
+	m_playScreen("playScreen",m_audio),
+	m_mainScreen("mainMenu",m_audio),
 	m_currentScreen(&m_playScreen) //temporary for now
 {
 	//asigning our screens to our map 

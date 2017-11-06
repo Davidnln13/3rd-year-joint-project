@@ -12,7 +12,7 @@
 class PlayScreen : public Screen
 {
 public:
-	PlayScreen(std::string name);
+	PlayScreen(std::string name, Audio& audio);
 
 	void update() override;
 	void render(sf::RenderWindow& window) override;
@@ -25,6 +25,7 @@ public:
 private:
 	Player m_player1;
 	Player m_player2;
+	Audio& m_audioPlayScreen;
 	//since we will have levels, then boundary objects will be in the level and possibly the player too
 	Boundary m_floor;
 	ContactListener m_contactListener;

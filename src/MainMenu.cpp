@@ -1,6 +1,6 @@
 #include "MainMenu.h"
 
-MainMenu::MainMenu(std::string name) :
+MainMenu::MainMenu(std::string name, Audio& audio) :
 	Screen()
 {
 	m_name = name;

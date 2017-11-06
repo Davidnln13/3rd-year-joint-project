@@ -36,6 +36,7 @@ public:
 	b2Body* getArmBody();
 	b2Body* getPlayerBody();
 	b2Body* getSwordBody();
+	bool getCanAttack();
 
 	//Setters
 	void setRespawn(bool respawn);
@@ -43,6 +44,7 @@ public:
 private:
 	bool m_isFacingLeft;
 	bool m_canAttack;
+	bool m_canAttackTemp;
 	bool m_canJump;
 	bool m_swordReachedPos;
 	bool m_respawn;
