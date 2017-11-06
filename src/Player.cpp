@@ -25,6 +25,7 @@ Player::Player(sf::Vector2f position, sf::Vector2f size = sf::Vector2f(15, 15), 
 	bodyDef.type = b2_dynamicBody;
 	bodyDef.position.Set(m_position.x / PPM, m_position.y / PPM); //spawn the player in the center of the screen
 	bodyDef.fixedRotation = true;
+	bodyDef.bullet = true; // we make our body a bullet so collision detection occurs more often for or player(s)
 	m_playerBody = world.CreateBody(&bodyDef); //add the body to the world
 	m_playerBody->SetUserData(this);
 
@@ -140,6 +141,10 @@ Player::~Player()
 
 void Player::update()
 {
+	//if our respawn variable is true then respawn our player
+	if (m_respawn)
+		respawn();
+
 	checkCanAttack(); //checks if we can attack or not
 
 	//if we have attacked then set our linear velocity to move in the direction we are facing
@@ -350,10 +355,13 @@ void Player::respawn()
 	//clears forces in the world, this will allow our player to not recieve any forces when respawned
 	world.ClearForces();
 
-	//the following line(s) cause an assertion error, we need a way to reset the player when they die (possibly destroying and recreate the body?)
-	//m_playerBody->SetTransform(b2Vec2(m_startPosition.x, m_startPosition.y), m_playerBody->GetAngle());
-	//m_forearmBody->SetTransform(b2Vec2(m_startPosition.x, m_startPosition.y), m_forearmBody->GetAngle());
-	//m_jumpBody->SetTransform(b2Vec2(m_startPosition.x, m_startPosition.y), m_jumpBody->GetAngle());
+	//Set all of our bodies to our start position
+	m_playerBody->SetTransform(m_startPosition, m_playerBody->GetAngle());
+	m_forearmBody->SetTransform(m_startPosition, m_forearmBody->GetAngle());
+	m_jumpBody->SetTransform(m_startPosition, m_jumpBody->GetAngle());
+	m_sword.setPosition(m_startPosition);
+
+	m_respawn = false;
 }
 
 bool Player::distance(sf::Vector2f point1, sf::Vector2f point2, float distanceCuttOff)
@@ -386,4 +394,9 @@ b2Body * Player::getPlayerBody()
 b2Body * Player::getSwordBody()
 {
 	return m_sword.getBody();
+}
+
+void Player::setRespawn(bool respawn)
+{
+	m_respawn = respawn;
 }

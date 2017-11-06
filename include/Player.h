@@ -29,7 +29,6 @@ public:
 	void applyArmPushBack(); //aplies a force on oru arm so we push it back into place
 
 	void respawn();
-
 	bool distance(sf::Vector2f point1, sf::Vector2f point2, float distanceCuttOff);
 
 	//Getters
@@ -37,11 +36,16 @@ public:
 	b2Body* getArmBody();
 	b2Body* getPlayerBody();
 	b2Body* getSwordBody();
+
+	//Setters
+	void setRespawn(bool respawn);
+
 private:
 	bool m_isFacingLeft;
 	bool m_canAttack;
 	bool m_canJump;
 	bool m_swordReachedPos;
+	bool m_respawn;
 	float m_moveSpeed;
 
 	//Attack variables

@@ -57,3 +57,8 @@ b2Body* Weapon::getBody()
 {
 	return m_body;
 }
+
+void Weapon::setPosition(b2Vec2 pos)
+{
+	m_body->SetTransform(pos, m_body->GetAngle());
+}

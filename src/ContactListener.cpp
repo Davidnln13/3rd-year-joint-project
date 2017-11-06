@@ -22,9 +22,9 @@ void ContactListener::BeginContact(b2Contact * contact)
 
 	//checking if a sword has collided with a player, if so, reset the player
 	if (hasSwordHitPlayer(m_player1, m_player2, *fixA, *fixB)) //if a sword has hit the first player then respawn them
-		m_player1->respawn();
+		m_player1->setRespawn(true);
 	if (hasSwordHitPlayer(m_player2, m_player1, *fixA, *fixB)) //if a sword has hit the second player then respawn them
-		m_player2->respawn();
+		m_player2->setRespawn(true);
 }
 
 void ContactListener::EndContact(b2Contact * contact)

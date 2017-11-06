@@ -23,6 +23,8 @@ public:
 	//getters
 	b2Body* getBody();
 
+	//Setters
+	void setPosition(b2Vec2 pos);
 private:
 	b2Body* m_body;
 	sf::RectangleShape m_rect;
