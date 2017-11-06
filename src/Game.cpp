@@ -1,9 +1,12 @@
 #include "Game.h"
 
+//Globals need
 static sf::Int32 MS_PER_UPDATE = 10; //updates per millisecond
 float PPM = 30.0f; //Pixels Per Metre, scalar for use with box2D
 static b2Vec2 GRAVITY = b2Vec2(0.0f, 9.8f);
 b2World world = b2World(GRAVITY); //our world variable, we can add forces to this such as gravity so it affects all b2 bodies
+ResourceManager resourceManager;
+
 
 /// <summary>
 /// Author: Daryl Keogh & David Nolan

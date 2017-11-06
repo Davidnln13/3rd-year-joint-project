@@ -19,6 +19,12 @@
     <Filter Include="Header Files\Screen Header Files">
       <UniqueIdentifier>{6b7648d1-ec0e-4f6c-a187-09536fbc85f3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Widget Header Files">
+      <UniqueIdentifier>{87cd3d25-1124-4701-b531-f9fef1006071}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Widget Source Files">
+      <UniqueIdentifier>{4b976fcc-cea9-4969-9ef6-28de7d94cfea}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Game.cpp">
@@ -48,9 +54,6 @@
     <ClCompile Include="src\ResourceManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Button.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Weapon.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -59,6 +62,12 @@
     </ClCompile>
     <ClCompile Include="src\Audio.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Button.cpp">
+      <Filter>Source Files\Widget Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Label.cpp">
+      <Filter>Source Files\Widget Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -89,9 +98,6 @@
     <ClInclude Include="include\ResourceManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Button.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\Weapon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -100,6 +106,12 @@
     </ClInclude>
     <ClInclude Include="include\Audio.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Button.h">
+      <Filter>Header Files\Widget Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Label.h">
+      <Filter>Header Files\Widget Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

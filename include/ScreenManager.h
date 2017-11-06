@@ -25,6 +25,7 @@ private:
 	PlayScreen m_playScreen;
 	MainMenu m_mainScreen;
 	Audio m_audio;
-	Screen* m_currentScreen;
+	Screen& m_currentScreen;
+
 	std::map<std::string, Screen*> screens; //a dictionary containing a string and a pointer to a screen
 };

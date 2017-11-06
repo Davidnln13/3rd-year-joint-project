@@ -8,6 +8,15 @@
 
 ResourceManager::ResourceManager()
 {
+	//load all of our resources
+	try 
+	{
+		acquireResource("buttonLayout", m_buttonLayout);
+	}
+	catch (thor::ResourceLoadingException& e)
+	{
+		std::cout << e.what() << std::endl; //output error
+	}
 }
 
 ResourceManager::~ResourceManager()

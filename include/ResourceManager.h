@@ -2,6 +2,7 @@
 #include "Thor\Resources.hpp" //including resource library
 #include "SFML\Graphics.hpp"
 #include <iostream>
+#include <mutex>
 
 /// <summary>
 /// Authors: Daryl Keogh
@@ -11,7 +12,7 @@
 class ResourceManager
 {
 public:
-	ResourceManager();
+	 ResourceManager();
 	~ResourceManager();
 
 	void acquireResource(std::string resourceId, thor::ResourceLoader<sf::Texture> textureLoader);
@@ -21,4 +22,7 @@ public:
 private:
 	//holds all of our textures
 	thor::ResourceHolder<sf::Texture, std::string> m_textureHolder;
+
+	//Our GUI Resources
+	thor::ResourceLoader<sf::Texture> m_buttonLayout = thor::Resources::fromFile<sf::Texture>("./resources/GUI/Button Layout.png");
 };

@@ -21,4 +21,5 @@ public:
 	std::string getName() override;
 
 private:
+	Button m_playGameBtn; //our play game button
 };

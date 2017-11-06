@@ -2,6 +2,8 @@
 #include <iostream>
 #include <SFML\Graphics.hpp>
 #include "Audio.h"
+#include "ResourceManager.h"
+#include "Button.h"
 
 
 /// <summary>
