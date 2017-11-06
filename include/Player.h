@@ -24,11 +24,11 @@ public:
 	void setCanJump(bool canJump);
 	void handleJoystick(JoystickController& controller);
 	void invertPlayerJoint(bool facingLeft); //inverts the joints for our player, so we can swap where the weapon and arm is jointed to
+	void changeSwordStance(std::string direction); //changes teh position our sword is will be in the y position
 	void swordClashed(); //method is invoked when two swords clash with one another
-	void checkCanAttack();
-	void applyArmPushBack(); //aplies a force on oru arm so we push it back into place
-
-	void respawn();
+	void checkCanAttack(); //checks if we can attack again
+	void applyArmPushBack(); //aplies a force on our arm so we push it back into place
+	void respawn(); //respawns the player at the position of m_startPosition, this needs to change so the position can be dynamic
 	bool distance(sf::Vector2f point1, sf::Vector2f point2, float distanceCuttOff);
 
 	//Getters
@@ -47,6 +47,9 @@ private:
 	bool m_swordReachedPos;
 	bool m_respawn;
 	float m_moveSpeed;
+
+	int m_weaponPos;
+	float m_weaponPosChange;
 
 	//Attack variables
 	float m_attackRate;

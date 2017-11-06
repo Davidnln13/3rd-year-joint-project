@@ -2,8 +2,8 @@
 
 PlayScreen::PlayScreen(std::string name) :
 	Screen(),
-	m_player1(sf::Vector2f(1280 - ( 1280 / 8.f), 720.f - ( 720.f / 4)), sf::Vector2f(25, 75 ), "left"),
-	m_player2(sf::Vector2f(1280 / 8.f, 720.f - (720.f / 4)), sf::Vector2f(25, 75), "right"),
+	m_player1(sf::Vector2f(1280 - ( 1280 / 8.f), 720.f - ( 720.f /8)), sf::Vector2f(25, 75 ), "left"),
+	m_player2(sf::Vector2f(1280 / 8.f, 720.f - (720.f / 8)), sf::Vector2f(25, 75), "right"),
 	m_floor(sf::Vector2f(1280, 35), sf::Vector2f(1280 / 2.f, 720 - (35 / 2)))
 {
 	m_name = name;

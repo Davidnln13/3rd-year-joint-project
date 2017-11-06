@@ -5,6 +5,7 @@ Player::Player(sf::Vector2f position, sf::Vector2f size = sf::Vector2f(15, 15), 
 	m_canJump(false),
 	m_swordReachedPos(false),
 	m_moveSpeed(7.0f),
+	m_weaponPos(1), //the centre of our player
 	m_attackRate(0.50f),
 	m_position(position),
 	m_startPosition(position.x / PPM, position.y / PPM),
@@ -15,6 +16,8 @@ Player::Player(sf::Vector2f position, sf::Vector2f size = sf::Vector2f(15, 15), 
 	RAD_TO_DEG(180.f / thor::Pi),
 	DEG_TO_RAD(thor::Pi / 180.f)
 {
+	m_weaponPosChange = (size.y / 3.75f) / PPM; //how much our weapon changes in position when we change the height it is at
+
 	if (direction == "left")
 		m_isFacingLeft = true;
 	else if (direction == "right")
@@ -93,13 +96,13 @@ Player::Player(sf::Vector2f position, sf::Vector2f size = sf::Vector2f(15, 15), 
 	{
 		m_playerToArmJointDef.lowerTranslation = -2.5;
 		m_playerToArmJointDef.upperTranslation = 0;
-		m_playerToArmJointDef.localAnchorB.Set(5 / PPM, (-5) / PPM);
+		m_playerToArmJointDef.localAnchorB.Set(5 / PPM, 0);
 	}
 	else
 	{
 		m_playerToArmJointDef.lowerTranslation = 0;
 		m_playerToArmJointDef.upperTranslation = 2.5f;
-		m_playerToArmJointDef.localAnchorB.Set((-5) / PPM, (-5) / PPM);
+		m_playerToArmJointDef.localAnchorB.Set((-5) / PPM, 0);
 	}
 	m_playerToArmJointDef.localAnchorA.Set(0, (2.5f) / PPM);
 
@@ -167,14 +170,11 @@ void Player::update()
 			else
 				m_swordReachedPos = true;
 		}
-		//move this into a method
 		else
 		{
 			applyArmPushBack(); //push back our arm
 		}
-
 	}
-	//move this into a method
 	else
 	{
 		applyArmPushBack(); //push back our arm
@@ -270,6 +270,13 @@ void Player::handleJoystick(JoystickController & controller)
 		moved = true;
 		moveRight();
 	}
+
+	if (controller.isButtonPressed("LeftThumbStickUp"))
+		changeSwordStance("Up");
+
+	if (controller.isButtonPressed("LeftThumbStickDown"))
+		changeSwordStance("Down");
+
 	if (controller.isButtonPressed("X"))
 		attack();
 
@@ -319,6 +326,40 @@ void Player::invertPlayerJoint(bool facingLeft)
 		else
 			m_isFacingLeft = false;
 	}
+}
+
+void Player::changeSwordStance(std::string direction)
+{
+	if (direction == "Up")
+	{
+		//if we can move up and we are not already at the top stance of our player
+		if (m_weaponPos < 2)
+		{
+			m_weaponPos++; //increase our pos
+
+			//Seting parameters to our player to arm joint
+			auto playerToArm = m_playerToArmJointDef;
+			playerToArm.localAnchorB.Set(m_playerToArmJointDef.localAnchorB.x, m_playerToArmJointDef.localAnchorB.y + m_weaponPosChange);
+			world.DestroyJoint(m_playerToArmJoint);
+			m_playerToArmJointDef = playerToArm;
+			m_playerToArmJoint = (b2PrismaticJoint*)world.CreateJoint(&m_playerToArmJointDef);
+		}
+	}
+	else if (direction == "Down")
+	{
+		if (m_weaponPos > 0)
+		{
+			m_weaponPos--; //increase our pos
+
+			//Seting parameters to our player to arm joint
+			auto playerToArm = m_playerToArmJointDef;
+			playerToArm.localAnchorB.Set(m_playerToArmJointDef.localAnchorB.x, m_playerToArmJointDef.localAnchorB.y - m_weaponPosChange);
+			world.DestroyJoint(m_playerToArmJoint);
+			m_playerToArmJointDef = playerToArm;
+			m_playerToArmJoint = (b2PrismaticJoint*)world.CreateJoint(&m_playerToArmJointDef);
+		}
+	}
+
 }
 
 void Player::swordClashed()
