@@ -281,6 +281,8 @@ void Player::handleJoystick(JoystickController & controller)
 
 	if (controller.isButtonPressed("X"))
 		attack();
+	if (controller.isButtonPressed("Y"))
+		respawn();
 
 	if (controller.isButtonPressed("A") && m_canJump)
 	{
