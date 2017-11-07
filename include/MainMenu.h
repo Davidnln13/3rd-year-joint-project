@@ -21,6 +21,10 @@ public:
 	std::string getName() override;
 
 private:
-	Button m_playGameBtn; //our play game button
+	//Our buttons for our screen
+	Button m_playGameBtn;
+	Button m_optionsBtn;
+	Button m_helpBtn;
+	Button m_exitBtn;
 	std::map<std::string, Button*> m_buttons; //our map of buttons
 };

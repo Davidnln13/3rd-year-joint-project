@@ -1,14 +1,14 @@
 #include "Label.h"
 
 Label::Label(std::string textString, sf::Vector2f& position):
-	m_position(position.x + 55, position.y)
+	m_position(position.x + 27.5, position.y)
 {
 	m_text.setFont(resourceManager.getFontHolder()["oxinFont"]);
 	m_text.setCharacterSize(30);
 	m_text.setString(textString);
-	m_text.setOrigin(m_text.getLocalBounds().width / 2.f, m_text.getLocalBounds().height);
+	m_text.setOrigin(m_text.getLocalBounds().left + m_text.getLocalBounds().width / 2.0f, m_text.getLocalBounds().top + m_text.getGlobalBounds().height / 2.0f);
 	m_text.setFillColor(sf::Color::Black);
-	m_text.setPosition(position);
+	m_text.setPosition(m_position);
 }
 
 void Label::draw(sf::RenderWindow & window)

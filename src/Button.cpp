@@ -3,10 +3,10 @@
 Button::Button(sf::Vector2f position, std::string name):
 	m_position(position),
 	m_name(name),
-	m_label("play game", m_position)
+	m_label(name, m_position)
 {
 	m_sprite.setTexture(resourceManager.getTextureHolder()["buttonLayout"]);
-	m_sprite.setOrigin(m_sprite.getLocalBounds().width / 2.0f, m_sprite.getLocalBounds().height / 2.0f); //settign the origin of our button to the center of our texture
+	m_sprite.setOrigin(m_sprite.getLocalBounds().left + m_sprite.getLocalBounds().width / 2.0f, m_sprite.getLocalBounds().top + m_sprite.getLocalBounds().height / 2.0f); //setting the origin of our button to the center of our texture
 	m_sprite.setPosition(m_position);
 
 }

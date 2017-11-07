@@ -2,12 +2,18 @@
 
 MainMenu::MainMenu(std::string name, Audio& audio) :
 	Screen(),
-	m_playGameBtn(sf::Vector2f(640, 144), "play game")
+	m_playGameBtn(sf::Vector2f(640, 144), "play game"),
+	m_optionsBtn(sf::Vector2f(640, 288), "options"),
+	m_helpBtn(sf::Vector2f(640, 432), "help"),
+	m_exitBtn(sf::Vector2f(640, 576), "exit")
 {
 	m_name = name;
 
 	//adding our buttons to our buttons map
 	m_buttons[m_playGameBtn.getName()] = &m_playGameBtn; 
+	m_buttons[m_optionsBtn.getName()] = &m_optionsBtn;
+	m_buttons[m_helpBtn.getName()] = &m_helpBtn;
+	m_buttons[m_exitBtn.getName()] = &m_exitBtn;
 }
 
 void MainMenu::update()
@@ -18,7 +24,11 @@ void MainMenu::update()
 void MainMenu::render(sf::RenderWindow& window)
 {
 	window.clear(sf::Color::White);
-	m_playGameBtn.render(window); //draw our button
+
+	//loop through our buttons map and render each one
+	for (auto key : m_buttons)
+		key.second->render(window);
+
 }
 
 void MainMenu::start()
