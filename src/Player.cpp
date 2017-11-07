@@ -137,10 +137,7 @@ Player::Player(sf::Vector2f position, sf::Vector2f size = sf::Vector2f(15, 15), 
 
 Player::~Player()
 {
-	//deleting our box2d variables from the world
-	world.DestroyBody(m_playerBody);
-	world.DestroyJoint(m_armToSwordJoint);
-	world.DestroyJoint(m_playerToArmJoint);
+	
 }
 
 void Player::update()
@@ -161,7 +158,7 @@ void Player::update()
 			auto armPos = sf::Vector2f(m_forearmBody->GetPosition().x * PPM, m_forearmBody->GetPosition().y * PPM);
 
 			//if our arm has not reached its destination then set its velocity
-			if (distance(armPos, m_armPosDest, 7.5f) == false)
+			if (distance(armPos, m_armPosDest, 10.0f) == false)
 			{
 				if (m_isFacingLeft)
 					m_forearmBody->SetLinearVelocity(b2Vec2(-48, 0)); 

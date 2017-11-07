@@ -12,7 +12,7 @@ ResourceManager::ResourceManager()
 	try 
 	{
 		//load GUI
-		acquireResource("buttonLayout", m_buttonLayout);
+		acquireResource("Button Spritesheet", m_buttonLayout);
 
 		//Load Fonts
 		acquireResource("oxinFont", m_oxinFont);

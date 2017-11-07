@@ -1,14 +1,15 @@
 #include "ScreenManager.h"
 
 ScreenManager::ScreenManager() :
-	m_playScreen("playScreen", m_audio),
-	m_mainScreen("mainMenu", m_audio)
+	m_playScreen("play game", m_audio),
+	m_mainScreen("main menu", m_audio),
+	m_closeWindow(false)
 {
 	//asigning our screens to our map 
 	screens[m_playScreen.getName()] = &m_playScreen;
 	screens[m_mainScreen.getName()] = &m_mainScreen;
 
-	goToScreen("mainMenu"); //go to the main menu
+	goToScreen("main menu"); //go to the main menu
 }
 
 void ScreenManager::update()
@@ -19,6 +20,10 @@ void ScreenManager::update()
 
 void ScreenManager::render(sf::RenderWindow& window)
 {
+	//If our boolean is true, exit the game
+	if(m_closeWindow)
+		window.close();
+
 	//render the current screen
 	m_currentScreen->render(window);
 }
@@ -47,7 +52,10 @@ void ScreenManager::handleJoystick(JoystickController& controller1, JoystickCont
 	//if the returned string is different to our current screens name then change the screen
 	if (screen != m_currentScreen->getName())
 	{
-		goToScreen(screen);
+		if (screen == "exit")
+			m_closeWindow = true;
+		else
+			goToScreen(screen);
 	}
 }
 

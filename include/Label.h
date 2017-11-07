@@ -9,6 +9,8 @@ class Label
 public:
 	Label(std::string textString, sf::Vector2f& position);
 
+	void select();
+	void deSelect();
 	void draw(sf::RenderWindow& window);
 
 private:

@@ -3,9 +3,6 @@
 #include "MainMenu.h";
 #include "PlayScreen.h"
 
-class PlayScreen;
-class MainMenu;
-
 class ScreenManager
 {
 public:
@@ -28,6 +25,6 @@ private:
 	MainMenu m_mainScreen;
 	Audio m_audio;
 	Screen* m_currentScreen;
-
+	bool m_closeWindow; //boolean which will be used to close the game/window
 	std::map<std::string, Screen*> screens; //a dictionary containing a string and a pointer to a screen
 };

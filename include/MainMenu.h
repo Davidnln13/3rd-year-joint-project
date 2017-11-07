@@ -17,6 +17,8 @@ public:
 	void end() override;
 	std::string handleInput(JoystickController& controller1, JoystickController& controller2) override;
 
+	void selectButton(int newIndex);
+
 	//getters
 	std::string getName() override;
 
@@ -27,4 +29,6 @@ private:
 	Button m_helpBtn;
 	Button m_exitBtn;
 	std::map<std::string, Button*> m_buttons; //our map of buttons
+	std::vector<Button*> m_btnList; //we will use this to select/deselect buttons in our menu
+	int m_btnIndex; //the index of the button we are currently focused on
 };

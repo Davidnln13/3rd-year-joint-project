@@ -30,7 +30,7 @@ private:
 	thor::ResourceHolder<sf::Font, std::string> m_fontHolder;
 
 	//Our GUI Resources
-	thor::ResourceLoader<sf::Texture> m_buttonLayout = thor::Resources::fromFile<sf::Texture>("./resources/GUI/Button Layout.png");
+	thor::ResourceLoader<sf::Texture> m_buttonLayout = thor::Resources::fromFile<sf::Texture>("./resources/GUI/Button Spritesheet.png");
 
 	//Our font(s)
 	thor::ResourceLoader<sf::Font> m_oxinFont = thor::Resources::fromFile<sf::Font>("./resources/Fonts/OXIN.ttf");

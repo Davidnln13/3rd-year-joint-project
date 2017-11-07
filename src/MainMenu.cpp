@@ -5,7 +5,8 @@ MainMenu::MainMenu(std::string name, Audio& audio) :
 	m_playGameBtn(sf::Vector2f(640, 144), "play game"),
 	m_optionsBtn(sf::Vector2f(640, 288), "options"),
 	m_helpBtn(sf::Vector2f(640, 432), "help"),
-	m_exitBtn(sf::Vector2f(640, 576), "exit")
+	m_exitBtn(sf::Vector2f(640, 576), "exit"),
+	m_btnIndex(0)
 {
 	m_name = name;
 
@@ -14,11 +15,18 @@ MainMenu::MainMenu(std::string name, Audio& audio) :
 	m_buttons[m_optionsBtn.getName()] = &m_optionsBtn;
 	m_buttons[m_helpBtn.getName()] = &m_helpBtn;
 	m_buttons[m_exitBtn.getName()] = &m_exitBtn;
+
+	m_btnList.push_back(&m_playGameBtn);
+	m_btnList.push_back(&m_optionsBtn);
+	m_btnList.push_back(&m_helpBtn);
+	m_btnList.push_back(&m_exitBtn);
 }
 
 void MainMenu::update()
 {
-
+	//loop through our buttons map and update each one
+	for (auto key : m_buttons)
+		key.second->update();
 }
 
 void MainMenu::render(sf::RenderWindow& window)
@@ -34,6 +42,9 @@ void MainMenu::render(sf::RenderWindow& window)
 void MainMenu::start()
 {
 	m_active = true;
+
+	//Selects the first button in our list as the currently selected button
+	selectButton(0);
 }
 
 void MainMenu::end()
@@ -43,14 +54,57 @@ void MainMenu::end()
 
 std::string MainMenu::handleInput(JoystickController& controller1, JoystickController& controller2)
 {
+	bool navigated = false;
+	//assing the new index the same value as our current index
+	auto newIndex = m_btnIndex;
+
 	auto currentScreen = m_name; //the current screen we are on is m_name ie. "mainMenu"
-	//if we press start return a string with the value "playScreen"
-	if (controller1.isButtonPressed("Start"))
+
+	if (controller1.isButtonPressed("A"))
+		currentScreen = m_btnList.at(m_btnIndex)->getName(); //assign the current screen the name of our button
+
+	if (controller1.isButtonPressed("LeftThumbStickUp"))
 	{
-		currentScreen = "playScreen";
+		navigated = true;
+		newIndex--;
+	}
+	if (controller1.isButtonPressed("LeftThumbStickDown"))
+	{
+		navigated = true;
+		newIndex++;
 	}
 
+	//if we have navigated through the menu then changed buttons
+	if (navigated)
+	{
+		//checking if our newIndex has gone out of bounds
+		if (newIndex > 3)
+			newIndex = 0;
+		else if (newIndex < 0)
+			newIndex = 3;
+
+		selectButton(newIndex); //focus our button at index: newIndex
+	}
+
+
 	return currentScreen;
+}
+
+void MainMenu::selectButton(int newIndex)
+{
+	//if our new index is out of range then output an error message
+	if (newIndex < 0 || newIndex > 3)
+	{
+		std::cout << newIndex + " is not within range of the vector: m_btnList" << std::endl;
+	}
+	else
+	{
+		m_btnList.at(m_btnIndex)->deSelect(); //deselect the current button
+
+		m_btnIndex = newIndex; //reassign the button index to the new index
+
+		m_btnList.at(m_btnIndex)->select(); //select the button at the new index
+	}
 }
 
 std::string MainMenu::getName()
