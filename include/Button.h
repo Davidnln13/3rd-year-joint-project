@@ -17,4 +17,5 @@ private:
 	sf::Vector2f m_position; //a reference to our position that we want to draw at
 	sf::Sprite m_sprite; //our button sprite
 	std::string m_name; //the name of our button
+	Label m_label;
 };

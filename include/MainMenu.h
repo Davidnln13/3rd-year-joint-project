@@ -15,11 +15,12 @@ public:
 	void render(sf::RenderWindow& window) override;
 	void start() override;
 	void end() override;
-	void handleInput(JoystickController& controller1, JoystickController& controller2) override;
+	std::string handleInput(JoystickController& controller1, JoystickController& controller2) override;
 
 	//getters
 	std::string getName() override;
 
 private:
 	Button m_playGameBtn; //our play game button
+	std::map<std::string, Button*> m_buttons; //our map of buttons
 };

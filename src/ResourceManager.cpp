@@ -11,7 +11,11 @@ ResourceManager::ResourceManager()
 	//load all of our resources
 	try 
 	{
+		//load GUI
 		acquireResource("buttonLayout", m_buttonLayout);
+
+		//Load Fonts
+		acquireResource("oxinFont", m_oxinFont);
 	}
 	catch (thor::ResourceLoadingException& e)
 	{
@@ -31,7 +35,18 @@ void ResourceManager::acquireResource(std::string resourceId, thor::ResourceLoad
 	m_textureHolder[resourceId].setSmooth(true);
 }
 
+//This method acquires our fonts
+void ResourceManager::acquireResource(std::string resourceId, thor::ResourceLoader<sf::Font> fontLoader)
+{
+	m_fontHolder.acquire(resourceId, fontLoader);
+}
+
 thor::ResourceHolder<sf::Texture, std::string>& ResourceManager::getTextureHolder()
 {
 	return m_textureHolder;
+}
+
+thor::ResourceHolder<sf::Font, std::string>& ResourceManager::getFontHolder()
+{
+	return m_fontHolder;
 }

@@ -41,14 +41,18 @@ void PlayScreen::end()
 	m_active = false;
 }
 
-void PlayScreen::handleInput(JoystickController& controller1, JoystickController& controller2)
+std::string PlayScreen::handleInput(JoystickController& controller1, JoystickController& controller2)
 {
+	auto currentScreen = m_name;
+
 	m_player1.handleJoystick(controller1);
 	m_player2.handleJoystick(controller2);
 	if ((controller1.isButtonPressed("X") && m_player1.getCanAttack() == true)||(controller2.isButtonPressed("X") && m_player2.getCanAttack() == true))
 	{
 		m_audioPlayScreen.m_soundArray[0].play();
 	}
+
+	return currentScreen;
 }
 
 std::string PlayScreen::getName()

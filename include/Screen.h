@@ -4,7 +4,7 @@
 #include "Audio.h"
 #include "ResourceManager.h"
 #include "Button.h"
-
+#include "JoystickController.h"
 
 /// <summary>
 /// Author: Daryl keogh
@@ -12,15 +12,13 @@
 /// Description: The screen is our base class, other screen classes will be derived from here
 /// </summary>
 
-class JoystickController;
-
 class Screen
 {
 public:
 	Screen() : m_active(false) {};
 	virtual void update() = 0;
 	virtual void render(sf::RenderWindow& window) = 0;
-	virtual void handleInput(JoystickController& controller1, JoystickController& controller2) = 0;
+	virtual std::string handleInput(JoystickController& controller1, JoystickController& controller2) = 0;
 	virtual void start() = 0;
 	virtual void end() = 0;
 
@@ -30,7 +28,4 @@ public:
 	//these member variable should be available from the derived class
 	bool m_active;
 	std::string m_name;
-
 };
-
-#include "JoystickController.h"

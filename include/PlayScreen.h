@@ -18,7 +18,7 @@ public:
 	void render(sf::RenderWindow& window) override;
 	void start() override;
 	void end() override;
-	void handleInput(JoystickController& controller1, JoystickController& controller2) override;
+	std::string handleInput(JoystickController& controller1, JoystickController& controller2) override;
 
 	//getters
 	std::string getName() override;

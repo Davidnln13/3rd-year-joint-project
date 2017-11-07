@@ -2,11 +2,16 @@
 #include <SFML\Graphics.hpp>
 #include "ResourceManager.h"
 
+extern ResourceManager resourceManager;
+
 class Label
 {
 public:
-	Label();
+	Label(std::string textString, sf::Vector2f& position);
 
-	void render(sf::RenderWindow& window);
+	void draw(sf::RenderWindow& window);
 
+private:
+	sf::Text m_text;
+	sf::Vector2f m_position;
 };

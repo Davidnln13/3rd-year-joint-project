@@ -1,25 +1,26 @@
 #include "ScreenManager.h"
 
 ScreenManager::ScreenManager() :
-	m_playScreen("playScreen",m_audio),
-	m_mainScreen("mainMenu",m_audio),
-	m_currentScreen(m_mainScreen) //temporary for now
+	m_playScreen("playScreen", m_audio),
+	m_mainScreen("mainMenu", m_audio)
 {
 	//asigning our screens to our map 
 	screens[m_playScreen.getName()] = &m_playScreen;
 	screens[m_mainScreen.getName()] = &m_mainScreen;
+
+	goToScreen("mainMenu"); //go to the main menu
 }
 
 void ScreenManager::update()
 {
 	//update the current screen
-	m_currentScreen.update();
+	m_currentScreen->update();
 }
 
 void ScreenManager::render(sf::RenderWindow& window)
 {
 	//render the current screen
-	m_currentScreen.render(window);
+	m_currentScreen->render(window);
 }
 
 void ScreenManager::goToScreen(std::string screenName)
@@ -28,20 +29,29 @@ void ScreenManager::goToScreen(std::string screenName)
 
 	if (temp != nullptr) 
 	{
-		m_currentScreen.end(); //stop the current screen
+		//if our current screen ptr points to something then stop the screen
+		if (m_currentScreen != nullptr)
+		{
+			m_currentScreen->end(); //stop the current screen
+		}
 
-		m_currentScreen = *temp; //assign the new screen
+		m_currentScreen = temp; //assign the new screen
 
-		m_currentScreen.start(); //start the new screen
+		m_currentScreen->start(); //start the new screen
 	}
 }
 
 void ScreenManager::handleJoystick(JoystickController& controller1, JoystickController& controller2)
 {
-	m_currentScreen.handleInput(controller1, controller2);
+	auto screen = m_currentScreen->handleInput(controller1, controller2);
+	//if the returned string is different to our current screens name then change the screen
+	if (screen != m_currentScreen->getName())
+	{
+		goToScreen(screen);
+	}
 }
 
 std::string ScreenManager::getCurrentScreenName()
 {
-	return m_currentScreen.m_name;
+	return m_currentScreen->m_name;
 }
