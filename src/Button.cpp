@@ -62,7 +62,7 @@ void Button::setUpAnimation()
 	}
 
 	m_animationHolder.addAnimation("selected", m_selectAnimation, sf::seconds(0.15f));
-	m_animationHolder.addAnimation("deselected", m_deselectAnimation, sf::seconds(0.15f));
+	m_animationHolder.addAnimation("deselected", m_deselectAnimation, sf::seconds(0.075f));
 }
 
 std::string& Button::getName()

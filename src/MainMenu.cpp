@@ -63,12 +63,12 @@ std::string MainMenu::handleInput(JoystickController& controller1, JoystickContr
 	if (controller1.isButtonPressed("A"))
 		currentScreen = m_btnList.at(m_btnIndex)->getName(); //assign the current screen the name of our button
 
-	if (controller1.isButtonPressed("LeftThumbStickUp"))
+	if (controller1.isButtonPressed("LeftThumbStickUp") || controller1.isButtonPressed("DpadUp"))
 	{
 		navigated = true;
 		newIndex--;
 	}
-	if (controller1.isButtonPressed("LeftThumbStickDown"))
+	if (controller1.isButtonPressed("LeftThumbStickDown") || controller1.isButtonPressed("DpadDown"))
 	{
 		navigated = true;
 		newIndex++;
