@@ -31,6 +31,9 @@ private:
 
 	//Our GUI Resources
 	thor::ResourceLoader<sf::Texture> m_buttonLayout = thor::Resources::fromFile<sf::Texture>("./resources/GUI/Button Spritesheet.png");
+	thor::ResourceLoader<sf::Texture> m_swordIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/sword icon.png");
+	thor::ResourceLoader<sf::Texture> m_optionsIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/settings icon.png");
+	thor::ResourceLoader<sf::Texture> m_exitIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/exit icon.png");
 
 	//Our font(s)
 	thor::ResourceLoader<sf::Font> m_oxinFont = thor::Resources::fromFile<sf::Font>("./resources/Fonts/OXIN.ttf");

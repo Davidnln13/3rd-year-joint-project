@@ -13,6 +13,9 @@ ResourceManager::ResourceManager()
 	{
 		//load GUI
 		acquireResource("Button Spritesheet", m_buttonLayout);
+		acquireResource("Sword Icon", m_swordIcon);
+		acquireResource("Options Icon", m_optionsIcon);
+		acquireResource("Exit Icon", m_exitIcon);
 
 		//Load Fonts
 		acquireResource("oxinFont", m_oxinFont);

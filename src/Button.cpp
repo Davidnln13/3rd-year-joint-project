@@ -1,6 +1,6 @@
 #include "Button.h"
 
-Button::Button(sf::Vector2f position, std::string name):
+Button::Button(sf::Vector2f position, std::string name, std::string iconName = "Sword Icon"):
 	m_position(position),
 	m_name(name),
 	m_label(name, m_position),
@@ -9,6 +9,18 @@ Button::Button(sf::Vector2f position, std::string name):
 	m_sprite.setTexture(resourceManager.getTextureHolder()["Button Spritesheet"]);
 	m_sprite.setOrigin(m_sprite.getLocalBounds().left + 200, m_sprite.getLocalBounds().top + m_sprite.getLocalBounds().height / 2.0f); //setting the origin of our button to the center of our texture
 	m_sprite.setPosition(m_position);
+
+	try 
+	{
+		m_icon.setTexture(resourceManager.getTextureHolder()[iconName]);
+	}
+	catch (std::exception e)
+	{
+		std::cout << e.what() << std::endl;
+	}
+
+	m_icon.setOrigin(m_icon.getLocalBounds().left + m_icon.getLocalBounds().width / 2.0f, m_icon.getLocalBounds().top + m_icon.getLocalBounds().height / 2.0f); //setting the origin of our button to the center of our texture
+	m_icon.setPosition(m_sprite.getGlobalBounds().left + 27.5f, m_position.y);
 
 	//Setup our select/deselect animations
 	setUpAnimation();
@@ -23,6 +35,7 @@ void Button::update()
 void Button::render(sf::RenderWindow & window)
 {
 	window.draw(m_sprite);
+	window.draw(m_icon);
 	m_label.draw(window);
 }
 

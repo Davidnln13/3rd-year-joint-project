@@ -2,10 +2,10 @@
 
 MainMenu::MainMenu(std::string name, Audio& audio) :
 	Screen(name),
-	m_playGameBtn(sf::Vector2f(640, 144), "play game"),
-	m_optionsBtn(sf::Vector2f(640, 288), "options"),
-	m_helpBtn(sf::Vector2f(640, 432), "help"),
-	m_exitBtn(sf::Vector2f(640, 576), "exit"),
+	m_playGameBtn(sf::Vector2f(640, 144), "play game", "Sword Icon"),
+	m_optionsBtn(sf::Vector2f(640, 288), "options", "Options Icon"),
+	m_helpBtn(sf::Vector2f(640, 432), "help", ""),
+	m_exitBtn(sf::Vector2f(640, 576), "exit", "Exit Icon"),
 	m_btnIndex(0)
 {
 	//adding our buttons to our buttons map

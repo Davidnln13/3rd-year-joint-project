@@ -2,10 +2,10 @@
 
 PauseScreen::PauseScreen(std::string name, Audio & audio) :
 	Screen(name),
-	m_continueBtn(sf::Vector2f(640, 144), "continue"),
-	m_optionsBtn(sf::Vector2f(640, 288), "options"),
-	m_helpBtn(sf::Vector2f(640, 432), "help"),
-	m_mainMenuBtn(sf::Vector2f(640, 576), "main menu"),
+	m_continueBtn(sf::Vector2f(640, 144), "continue", ""),
+	m_optionsBtn(sf::Vector2f(640, 288), "options", ""),
+	m_helpBtn(sf::Vector2f(640, 432), "help", ""),
+	m_mainMenuBtn(sf::Vector2f(640, 576), "main menu", ""),
 	m_btnIndex(0)
 {
 	//adding our buttons to our buttons map

@@ -7,7 +7,7 @@ extern ResourceManager resourceManager;
 class Button
 {
 public:
-	Button(sf::Vector2f position, std::string name);
+	Button(sf::Vector2f position, std::string name, std::string iconName);
 	void update();
 	void render(sf::RenderWindow& window);
 	void select();
@@ -21,6 +21,7 @@ public:
 private:
 	sf::Vector2f m_position; //a reference to our position that we want to draw at
 	sf::Sprite m_sprite; //our button sprite
+	sf::Sprite m_icon; //our icon sprite
 	std::string m_name; //the name of our button
 	Label m_label;
 
