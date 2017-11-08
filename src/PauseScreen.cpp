@@ -29,7 +29,7 @@ void PauseScreen::update()
 
 void PauseScreen::render(sf::RenderWindow & window)
 {
-	window.clear(sf::Color::Red);
+	window.clear(sf::Color::White);
 	//loop through our buttons map and render each one
 	for (auto key : m_buttons)
 		key.second->render(window);
