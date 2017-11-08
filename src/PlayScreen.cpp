@@ -1,13 +1,12 @@
 #include "PlayScreen.h"
 
 PlayScreen::PlayScreen(std::string name, Audio& audio) :
-	Screen(),
+	Screen(name),
 	m_audioPlayScreen(audio),
 	m_player1(sf::Vector2f(1280 - ( 1280 / 8.f), 720.f - ( 720.f / 4)), sf::Vector2f(25, 75 ), "left"),
 	m_player2(sf::Vector2f(1280 / 8.f, 720.f - (720.f / 4)), sf::Vector2f(25, 75), "right"),
 	m_floor(sf::Vector2f(1280, 35), sf::Vector2f(1280 / 2.f, 720 - (35 / 2)))
 {
-	m_name = name;
 	world.SetContactListener(&m_contactListener);
 	m_contactListener.setPlayers(m_player1, m_player2);
 }
@@ -51,6 +50,9 @@ std::string PlayScreen::handleInput(JoystickController& controller1, JoystickCon
 	{
 		m_audioPlayScreen.m_soundArray[0].play();
 	}
+
+	if (controller1.isButtonPressed("Start"))
+		currentScreen = "pause"; //go to pause screen
 
 	return currentScreen;
 }

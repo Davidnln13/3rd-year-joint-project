@@ -2,6 +2,7 @@
 #include <map>
 #include "MainMenu.h";
 #include "PlayScreen.h"
+#include "PauseScreen.h"
 
 class ScreenManager
 {
@@ -21,6 +22,7 @@ public:
 
 private:
 	//Declare our different screens here
+	PauseScreen m_pauseScreen;
 	PlayScreen m_playScreen;
 	MainMenu m_mainScreen;
 	Audio m_audio;

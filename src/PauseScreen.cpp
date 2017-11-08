@@ -1,65 +1,65 @@
-#include "MainMenu.h"
+#include "PauseScreen.h"
 
-MainMenu::MainMenu(std::string name, Audio& audio) :
+PauseScreen::PauseScreen(std::string name, Audio & audio) :
 	Screen(name),
-	m_playGameBtn(sf::Vector2f(640, 144), "play game"),
+	m_continueBtn(sf::Vector2f(640, 144), "continue"),
 	m_optionsBtn(sf::Vector2f(640, 288), "options"),
 	m_helpBtn(sf::Vector2f(640, 432), "help"),
-	m_exitBtn(sf::Vector2f(640, 576), "exit"),
+	m_mainMenuBtn(sf::Vector2f(640, 576), "main menu"),
 	m_btnIndex(0)
 {
 	//adding our buttons to our buttons map
-	m_buttons[m_playGameBtn.getName()] = &m_playGameBtn; 
+	m_buttons[m_continueBtn.getName()] = &m_continueBtn;
 	m_buttons[m_optionsBtn.getName()] = &m_optionsBtn;
 	m_buttons[m_helpBtn.getName()] = &m_helpBtn;
-	m_buttons[m_exitBtn.getName()] = &m_exitBtn;
+	m_buttons[m_mainMenuBtn.getName()] = &m_mainMenuBtn;
 
-	m_btnList.push_back(&m_playGameBtn);
+	m_btnList.push_back(&m_continueBtn);
 	m_btnList.push_back(&m_optionsBtn);
 	m_btnList.push_back(&m_helpBtn);
-	m_btnList.push_back(&m_exitBtn);
+	m_btnList.push_back(&m_mainMenuBtn);
 }
 
-void MainMenu::update()
+void PauseScreen::update()
 {
-	//loop through our buttons map and update each one
+	//loop through our buttons map and render each one
 	for (auto key : m_buttons)
 		key.second->update();
 }
 
-void MainMenu::render(sf::RenderWindow& window)
+void PauseScreen::render(sf::RenderWindow & window)
 {
-	window.clear(sf::Color::White);
-
+	window.clear(sf::Color::Red);
 	//loop through our buttons map and render each one
 	for (auto key : m_buttons)
 		key.second->render(window);
-
 }
 
-void MainMenu::start()
+void PauseScreen::start()
 {
 	m_active = true;
-
-	//Selects the first button in our list as the currently selected button
 	selectButton(0);
 }
 
-void MainMenu::end()
+void PauseScreen::end()
 {
 	m_active = false;
 }
 
-std::string MainMenu::handleInput(JoystickController& controller1, JoystickController& controller2)
+std::string PauseScreen::handleInput(JoystickController & controller1, JoystickController & controller2)
 {
-	bool navigated = false;
+	auto currentScreen = m_name;
 	//assing the new index the same value as our current index
 	auto newIndex = m_btnIndex;
-
-	auto currentScreen = m_name; //the current screen we are on is m_name ie. "mainMenu"
+	bool navigated = false;
 
 	if (controller1.isButtonPressed("A"))
-		currentScreen = m_btnList.at(m_btnIndex)->getName(); //assign the current screen the name of our button
+	{
+		if (m_btnList.at(m_btnIndex)->getName() == "continue")
+			currentScreen = "play game";
+		else
+			currentScreen = m_btnList.at(m_btnIndex)->getName(); //assign the current screen the name of our button
+	}
 
 	if (controller1.isButtonPressed("LeftThumbStickUp") || controller1.isButtonPressed("DpadUp"))
 	{
@@ -83,12 +83,10 @@ std::string MainMenu::handleInput(JoystickController& controller1, JoystickContr
 
 		selectButton(newIndex); //focus our button at index: newIndex
 	}
-
-
 	return currentScreen;
 }
 
-void MainMenu::selectButton(int newIndex)
+void PauseScreen::selectButton(int newIndex)
 {
 	//if our new index is out of range then output an error message
 	if (newIndex < 0 || newIndex > 3)
@@ -105,7 +103,7 @@ void MainMenu::selectButton(int newIndex)
 	}
 }
 
-std::string MainMenu::getName()
+std::string PauseScreen::getName()
 {
 	return m_name;
 }

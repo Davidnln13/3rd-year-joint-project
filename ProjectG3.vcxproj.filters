@@ -69,6 +69,9 @@
     <ClCompile Include="src\Label.cpp">
       <Filter>Source Files\Widget Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\PauseScreen.cpp">
+      <Filter>Source Files\Screen Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Game.h">
@@ -112,6 +115,9 @@
     </ClInclude>
     <ClInclude Include="include\Label.h">
       <Filter>Header Files\Widget Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\PauseScreen.h">
+      <Filter>Header Files\Screen Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

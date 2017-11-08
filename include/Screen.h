@@ -15,7 +15,7 @@
 class Screen
 {
 public:
-	Screen() : m_active(false) {};
+	Screen(std::string name) : m_active(false), m_name(name) {};
 	virtual void update() = 0;
 	virtual void render(sf::RenderWindow& window) = 0;
 	virtual std::string handleInput(JoystickController& controller1, JoystickController& controller2) = 0;

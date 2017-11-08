@@ -1,11 +1,13 @@
 #include "ScreenManager.h"
 
 ScreenManager::ScreenManager() :
+	m_pauseScreen("pause", m_audio),
 	m_playScreen("play game", m_audio),
 	m_mainScreen("main menu", m_audio),
 	m_closeWindow(false)
 {
 	//asigning our screens to our map 
+	screens[m_pauseScreen.getName()] = &m_pauseScreen;
 	screens[m_playScreen.getName()] = &m_playScreen;
 	screens[m_mainScreen.getName()] = &m_mainScreen;
 
