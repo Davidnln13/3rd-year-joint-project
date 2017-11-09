@@ -28,6 +28,7 @@ public:
 	void swordClashed(); //method is invoked when two swords clash with one another
 	void checkCanAttack(); //checks if we can attack again
 	void applyArmPushBack(); //aplies a force on our arm so we push it back into place
+	void rotateWhileRunning(bool rotate); //rotates our arm and sword while running
 	void respawn(); //respawns the player at the position of m_startPosition, this needs to change so the position can be dynamic
 	bool distance(sf::Vector2f point1, sf::Vector2f point2, float distanceCuttOff);
 
@@ -46,9 +47,11 @@ private:
 	bool m_canAttack;
 	bool m_canAttackTemp;
 	bool m_canJump;
-	bool m_swordReachedPos;
-	bool m_respawn;
-	float m_moveSpeed;
+	bool m_swordReachedPos; //bool to show if our sword has reached its max position from th eplayer when they attack
+	bool m_respawn; //bool to determine if we respawn our player or not
+	bool m_canSwitchSwordPos; //a bool to determine if we can switch the position of our sword
+	float m_moveSpeed; //the speed at which our player move shorizontally
+	float m_gravityScale; //the scale of gravity on our bodies
 
 	int m_weaponPos;
 	float m_weaponPosChange;

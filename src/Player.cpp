@@ -5,7 +5,9 @@ Player::Player(sf::Vector2f position, sf::Vector2f size = sf::Vector2f(15, 15), 
 	m_canJump(false),
 	m_canAttackTemp(true),
 	m_swordReachedPos(false),
+	m_canSwitchSwordPos(false),
 	m_moveSpeed(7.0f),
+	m_gravityScale(1.75f),
 	m_weaponPos(1), //the centre of our player
 	m_attackRate(0.50f),
 	m_position(position),
@@ -32,6 +34,7 @@ Player::Player(sf::Vector2f position, sf::Vector2f size = sf::Vector2f(15, 15), 
 	bodyDef.bullet = true; // we make our body a bullet so collision detection occurs more often for or player(s)
 	m_playerBody = world.CreateBody(&bodyDef); //add the body to the world
 	m_playerBody->SetUserData(this);
+	m_playerBody->SetGravityScale(m_gravityScale);
 
 	b2BodyDef forearmDef;
 	forearmDef.type = b2_dynamicBody;
@@ -39,14 +42,17 @@ Player::Player(sf::Vector2f position, sf::Vector2f size = sf::Vector2f(15, 15), 
 	forearmDef.fixedRotation = true;
 	m_forearmBody = world.CreateBody(&forearmDef); //add the body to the world
 	m_forearmBody->SetUserData(this);
+	m_forearmBody->SetGravityScale(m_gravityScale);
 
 	//creating our jump body
 	b2BodyDef jumpDef;
 	jumpDef.type = b2_dynamicBody;
 	jumpDef.position.Set(m_position.x / PPM, (m_position.y + m_playerRect.getSize().y / 2.f) / PPM); //place our jumping body at the bottom of the player
 	jumpDef.userData = this;
+	jumpDef.bullet = true; //we want our jump body to be a bullet so collision detection occurs more often, this will allow for smoother jumping
 	m_jumpBody = world.CreateBody(&jumpDef);
 	m_jumpBody->SetUserData(this);
+	m_jumpBody->SetGravityScale(m_gravityScale);
 
 	b2PolygonShape playerShape;
 	playerShape.SetAsBox((m_playerRect.getSize().x / 2.f) / PPM, (m_playerRect.getSize().y / 2.f) / PPM);
@@ -114,11 +120,20 @@ Player::Player(sf::Vector2f position, sf::Vector2f size = sf::Vector2f(15, 15), 
 	m_armToSwordJointDef.bodyA = m_forearmBody;
 	m_armToSwordJointDef.bodyB = m_sword.getBody();
 	m_armToSwordJointDef.collideConnected = false; //so our sword and player dont collide
+	m_armToSwordJointDef.enableLimit = true; //enable a rotational limit on our sword
 	m_armToSwordJointDef.localAnchorA.Set(0, 0); //the center of our player
-	if(m_isFacingLeft)
+	if (m_isFacingLeft)
+	{
 		m_armToSwordJointDef.localAnchorB.Set(28.5f / PPM, 0);
+		m_armToSwordJointDef.lowerAngle = 0 * DEG_TO_RAD;
+		m_armToSwordJointDef.upperAngle = 45 * DEG_TO_RAD;
+	}
 	else
+	{
 		m_armToSwordJointDef.localAnchorB.Set(-28.5f / PPM, 0);
+		m_armToSwordJointDef.lowerAngle = -45 * DEG_TO_RAD;
+		m_armToSwordJointDef.upperAngle = 0 * DEG_TO_RAD;
+	}	
 	m_armToSwordJoint = (b2RevoluteJoint*)world.CreateJoint(&m_armToSwordJointDef);
 
 	//creating our jump sensor joint
@@ -248,7 +263,7 @@ void Player::attack()
 
 void Player::jump()
 {
-	m_playerBody->ApplyForceToCenter(b2Vec2(0, -2500),true);
+	m_playerBody->ApplyForceToCenter(b2Vec2(0, -3000),true);
 }
 
 void Player::setCanJump(bool canJump)
@@ -261,19 +276,23 @@ void Player::handleJoystick(JoystickController & controller)
 	bool moved = false;
 	if (controller.isButtonHeld("LeftThumbStickLeft"))
 	{
+		m_canSwitchSwordPos = false;
 		moved = true;
 		moveLeft();
+		rotateWhileRunning(true);
 	}
 	if (controller.isButtonHeld("LeftThumbStickRight"))
 	{
+		m_canSwitchSwordPos = false;
 		moved = true;
 		moveRight();
+		rotateWhileRunning(true);
 	}
 
-	if (controller.isButtonPressed("LeftThumbStickUp") || controller.isButtonPressed("DpadUp"))
+	if (controller.isButtonPressed("LeftThumbStickUp") && m_canSwitchSwordPos || controller.isButtonPressed("DpadUp") && m_canSwitchSwordPos)
 		changeSwordStance("Up");
 
-	if (controller.isButtonPressed("LeftThumbStickDown")|| controller.isButtonPressed("DpadDown"))
+	if (controller.isButtonPressed("LeftThumbStickDown") && m_canSwitchSwordPos || controller.isButtonPressed("DpadDown") && m_canSwitchSwordPos)
 		changeSwordStance("Down");
 
 	if (controller.isButtonPressed("X"))
@@ -289,6 +308,8 @@ void Player::handleJoystick(JoystickController & controller)
 
 	if (moved == false)
 	{
+		rotateWhileRunning(false);
+		m_canSwitchSwordPos = true;
 		m_forearmBody->SetLinearVelocity(b2Vec2(0, m_forearmBody->GetLinearVelocity().y));
 		m_playerBody->SetLinearVelocity(b2Vec2(0, m_playerBody->GetLinearVelocity().y));
 	}
@@ -297,15 +318,22 @@ void Player::invertPlayerJoint(bool facingLeft)
 {
 	if (m_isFacingLeft == false && facingLeft || m_isFacingLeft && facingLeft == false)
 	{
+		//get our arm to sword joint
+		auto armToSword = m_armToSwordJointDef;
+
 		//Seting parameters to our player to arm joint
 		auto playerToArm = m_playerToArmJointDef;
 		if (facingLeft)
 		{
+			armToSword.lowerAngle = 0 * DEG_TO_RAD;
+			armToSword.upperAngle = 45 * DEG_TO_RAD;
 			playerToArm.lowerTranslation = -2.5f;
 			playerToArm.upperTranslation = 0;
 		}
 		else
 		{
+			armToSword.lowerAngle = -45 * DEG_TO_RAD;
+			armToSword.upperAngle = 0 * DEG_TO_RAD;
 			playerToArm.lowerTranslation = 0;
 			playerToArm.upperTranslation = 2.5f;
 		}
@@ -315,7 +343,6 @@ void Player::invertPlayerJoint(bool facingLeft)
 		m_playerToArmJoint = (b2PrismaticJoint*)world.CreateJoint(&m_playerToArmJointDef);
 
 		//Setting parameters for our arm to sword joint
-		auto armToSword = m_armToSwordJointDef;
 		armToSword.localAnchorB.Set(m_armToSwordJointDef.localAnchorB.x * -1, m_armToSwordJointDef.localAnchorB.y);
 		world.DestroyJoint(m_armToSwordJoint);
 		m_armToSwordJointDef = armToSword;
@@ -390,6 +417,20 @@ void Player::applyArmPushBack()
 		m_forearmBody->ApplyForceToCenter(b2Vec2(4.5f, 0), true);
 	else
 		m_forearmBody->ApplyForceToCenter(b2Vec2(-4.5f, 0), true);
+}
+
+void Player::rotateWhileRunning(bool rotate)
+{
+	if (rotate)
+	{
+		m_forearmBody->SetFixedRotation(false);
+		m_sword.getBody()->SetFixedRotation(false);
+	}
+	else
+	{
+		m_forearmBody->SetFixedRotation(true);
+		m_sword.getBody()->SetFixedRotation(true);
+	}
 }
 
 void Player::respawn()
