@@ -49,7 +49,6 @@ private:
 	bool m_canJump;
 	bool m_swordReachedPos; //bool to show if our sword has reached its max position from th eplayer when they attack
 	bool m_respawn; //bool to determine if we respawn our player or not
-	bool m_canSwitchSwordPos; //a bool to determine if we can switch the position of our sword
 	float m_moveSpeed; //the speed at which our player move shorizontally
 	float m_gravityScale; //the scale of gravity on our bodies
 
@@ -84,6 +83,10 @@ private:
 	b2PrismaticJointDef m_playerToArmJointDef;
 	b2PrismaticJointDef m_jumpSensorJointDef;
 	b2RevoluteJointDef m_armToSwordJointDef;
+
+	//Our body defs, we will hold a reference to our bodie defeinitions so we can easily modify the bodies on the fly
+	b2BodyDef m_playerbodyDef;
+	b2BodyDef m_forearmBodyDef;
 
 	//Const variables
 	float const RAD_TO_DEG;

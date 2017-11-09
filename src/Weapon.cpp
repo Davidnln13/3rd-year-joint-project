@@ -7,7 +7,7 @@ Weapon::Weapon(sf::Vector2f position) :
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;
 	bodyDef.position.Set(position.x / PPM, position.y / PPM);
-	bodyDef.fixedRotation = true;
+	bodyDef.fixedRotation = false;
 	bodyDef.bullet = true; //we set the weapon as a bullet so collision detection for the weapon updates more frequently so we get smoother collisions
 	m_body = world.CreateBody(&bodyDef); //add the body to the world
 

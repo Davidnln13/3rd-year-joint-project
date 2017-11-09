@@ -5,7 +5,6 @@ Player::Player(sf::Vector2f position, sf::Vector2f size = sf::Vector2f(15, 15), 
 	m_canJump(false),
 	m_canAttackTemp(true),
 	m_swordReachedPos(false),
-	m_canSwitchSwordPos(false),
 	m_moveSpeed(7.0f),
 	m_gravityScale(1.75f),
 	m_weaponPos(1), //the centre of our player
@@ -27,20 +26,18 @@ Player::Player(sf::Vector2f position, sf::Vector2f size = sf::Vector2f(15, 15), 
 		m_isFacingLeft = false;
 
 	//creating our Box2d body and fixture for the player
-	b2BodyDef bodyDef;
-	bodyDef.type = b2_dynamicBody;
-	bodyDef.position.Set(m_position.x / PPM, m_position.y / PPM); //spawn the player in the center of the screen
-	bodyDef.fixedRotation = true;
-	bodyDef.bullet = true; // we make our body a bullet so collision detection occurs more often for or player(s)
-	m_playerBody = world.CreateBody(&bodyDef); //add the body to the world
+	m_playerbodyDef.type = b2_dynamicBody;
+	m_playerbodyDef.position.Set(m_position.x / PPM, m_position.y / PPM); //spawn the player in the center of the screen
+	m_playerbodyDef.fixedRotation = true;
+	m_playerbodyDef.bullet = true; // we make our body a bullet so collision detection occurs more often for or player(s)
+	m_playerBody = world.CreateBody(&m_playerbodyDef); //add the body to the world
 	m_playerBody->SetUserData(this);
 	m_playerBody->SetGravityScale(m_gravityScale);
 
-	b2BodyDef forearmDef;
-	forearmDef.type = b2_dynamicBody;
-	forearmDef.position.Set(m_position.x / PPM, m_position.y / PPM);
-	forearmDef.fixedRotation = true;
-	m_forearmBody = world.CreateBody(&forearmDef); //add the body to the world
+	m_forearmBodyDef.type = b2_dynamicBody;
+	m_forearmBodyDef.position.Set(m_position.x / PPM, m_position.y / PPM);
+	m_forearmBodyDef.fixedRotation = true;
+	m_forearmBody = world.CreateBody(&m_forearmBodyDef); //add the body to the world
 	m_forearmBody->SetUserData(this);
 	m_forearmBody->SetGravityScale(m_gravityScale);
 
@@ -274,25 +271,23 @@ void Player::setCanJump(bool canJump)
 void Player::handleJoystick(JoystickController & controller)
 {
 	bool moved = false;
-	if (controller.isButtonHeld("LeftThumbStickLeft"))
+	if (controller.isButtonHeld("LeftThumbStickLeft") && m_canAttack)
 	{
-		m_canSwitchSwordPos = false;
 		moved = true;
 		moveLeft();
 		rotateWhileRunning(true);
 	}
-	if (controller.isButtonHeld("LeftThumbStickRight"))
+	if (controller.isButtonHeld("LeftThumbStickRight") && m_canAttack)
 	{
-		m_canSwitchSwordPos = false;
 		moved = true;
 		moveRight();
 		rotateWhileRunning(true);
 	}
 
-	if (controller.isButtonPressed("LeftThumbStickUp") && m_canSwitchSwordPos || controller.isButtonPressed("DpadUp") && m_canSwitchSwordPos)
+	if (controller.isButtonPressed("LeftThumbStickUp") && moved == false && m_canAttack || controller.isButtonPressed("DpadUp") && moved == false && m_canAttack)
 		changeSwordStance("Up");
 
-	if (controller.isButtonPressed("LeftThumbStickDown") && m_canSwitchSwordPos || controller.isButtonPressed("DpadDown") && m_canSwitchSwordPos)
+	if (controller.isButtonPressed("LeftThumbStickDown") && moved == false && m_canAttack || controller.isButtonPressed("DpadDown") && moved == false && m_canAttack)
 		changeSwordStance("Down");
 
 	if (controller.isButtonPressed("X"))
@@ -309,7 +304,6 @@ void Player::handleJoystick(JoystickController & controller)
 	if (moved == false)
 	{
 		rotateWhileRunning(false);
-		m_canSwitchSwordPos = true;
 		m_forearmBody->SetLinearVelocity(b2Vec2(0, m_forearmBody->GetLinearVelocity().y));
 		m_playerBody->SetLinearVelocity(b2Vec2(0, m_playerBody->GetLinearVelocity().y));
 	}
@@ -423,13 +417,17 @@ void Player::rotateWhileRunning(bool rotate)
 {
 	if (rotate)
 	{
-		m_forearmBody->SetFixedRotation(false);
-		m_sword.getBody()->SetFixedRotation(false);
+		if (m_isFacingLeft)
+			m_sword.getBody()->ApplyAngularImpulse(.06, true);
+		else
+			m_sword.getBody()->ApplyAngularImpulse(-.06, true);
 	}
 	else
 	{
-		m_forearmBody->SetFixedRotation(true);
-		m_sword.getBody()->SetFixedRotation(true);
+		if (m_isFacingLeft)
+			m_sword.getBody()->ApplyAngularImpulse(-.06, true);
+		else
+			m_sword.getBody()->ApplyAngularImpulse(.06, true);
 	}
 }
 
