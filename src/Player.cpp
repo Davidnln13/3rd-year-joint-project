@@ -6,7 +6,7 @@ Player::Player(sf::Vector2f position, sf::Vector2f size = sf::Vector2f(15, 15), 
 	m_canAttackTemp(true),
 	m_swordReachedPos(false),
 	m_moveSpeed(7.0f),
-	m_gravityScale(1.75f),
+	m_gravityScale(2.75f),
 	m_weaponPos(1), //the centre of our player
 	m_attackRate(0.50f),
 	m_position(position),
@@ -123,12 +123,12 @@ Player::Player(sf::Vector2f position, sf::Vector2f size = sf::Vector2f(15, 15), 
 	{
 		m_armToSwordJointDef.localAnchorB.Set(28.5f / PPM, 0);
 		m_armToSwordJointDef.lowerAngle = 0 * DEG_TO_RAD;
-		m_armToSwordJointDef.upperAngle = 45 * DEG_TO_RAD;
+		m_armToSwordJointDef.upperAngle = 15 * DEG_TO_RAD;
 	}
 	else
 	{
 		m_armToSwordJointDef.localAnchorB.Set(-28.5f / PPM, 0);
-		m_armToSwordJointDef.lowerAngle = -45 * DEG_TO_RAD;
+		m_armToSwordJointDef.lowerAngle = -15 * DEG_TO_RAD;
 		m_armToSwordJointDef.upperAngle = 0 * DEG_TO_RAD;
 	}	
 	m_armToSwordJoint = (b2RevoluteJoint*)world.CreateJoint(&m_armToSwordJointDef);
@@ -260,7 +260,7 @@ void Player::attack()
 
 void Player::jump()
 {
-	m_playerBody->ApplyForceToCenter(b2Vec2(0, -3000),true);
+	m_playerBody->ApplyForceToCenter(b2Vec2(0, -4000),true);
 }
 
 void Player::setCanJump(bool canJump)
@@ -320,13 +320,13 @@ void Player::invertPlayerJoint(bool facingLeft)
 		if (facingLeft)
 		{
 			armToSword.lowerAngle = 0 * DEG_TO_RAD;
-			armToSword.upperAngle = 45 * DEG_TO_RAD;
+			armToSword.upperAngle = 13.5 * DEG_TO_RAD;
 			playerToArm.lowerTranslation = -2.5f;
 			playerToArm.upperTranslation = 0;
 		}
 		else
 		{
-			armToSword.lowerAngle = -45 * DEG_TO_RAD;
+			armToSword.lowerAngle = -13.5 * DEG_TO_RAD;
 			armToSword.upperAngle = 0 * DEG_TO_RAD;
 			playerToArm.lowerTranslation = 0;
 			playerToArm.upperTranslation = 2.5f;
@@ -418,16 +418,16 @@ void Player::rotateWhileRunning(bool rotate)
 	if (rotate)
 	{
 		if (m_isFacingLeft)
-			m_sword.getBody()->ApplyAngularImpulse(.06, true);
+			m_sword.getBody()->ApplyAngularImpulse(.01, true);
 		else
-			m_sword.getBody()->ApplyAngularImpulse(-.06, true);
+			m_sword.getBody()->ApplyAngularImpulse(-.01, true);
 	}
 	else
 	{
 		if (m_isFacingLeft)
-			m_sword.getBody()->ApplyAngularImpulse(-.06, true);
+			m_sword.getBody()->ApplyAngularImpulse(-.01, true);
 		else
-			m_sword.getBody()->ApplyAngularImpulse(.06, true);
+			m_sword.getBody()->ApplyAngularImpulse(.01, true);
 	}
 }
 
@@ -436,13 +436,20 @@ void Player::respawn()
 	//clears forces in the world, this will allow our player to not recieve any forces when respawned
 	world.ClearForces();
 
-	//Set all of our bodies to our start position
-	m_playerBody->SetTransform(m_startPosition, m_playerBody->GetAngle());
-	m_forearmBody->SetTransform(m_startPosition, m_forearmBody->GetAngle());
-	m_jumpBody->SetTransform(m_startPosition, m_jumpBody->GetAngle());
-	m_sword.setPosition(m_startPosition);
+	//Set all of our bodies to our start position and reset their velocities
+	respawnBody(m_startPosition, m_playerBody);
+	respawnBody(m_startPosition, m_forearmBody);
+	respawnBody(m_startPosition, m_jumpBody);
+	respawnBody(m_startPosition, m_sword.getBody());
 
 	m_respawn = false;
+}
+
+void Player::respawnBody(b2Vec2 position, b2Body* body)
+{
+	body->SetTransform(position, body->GetAngle());
+	body->SetLinearVelocity(b2Vec2(0, 0));
+	body->SetAngularVelocity(0);
 }
 
 bool Player::distance(sf::Vector2f point1, sf::Vector2f point2, float distanceCuttOff)

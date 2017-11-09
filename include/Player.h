@@ -30,6 +30,7 @@ public:
 	void applyArmPushBack(); //aplies a force on our arm so we push it back into place
 	void rotateWhileRunning(bool rotate); //rotates our arm and sword while running
 	void respawn(); //respawns the player at the position of m_startPosition, this needs to change so the position can be dynamic
+	void respawnBody(b2Vec2 position, b2Body* body); //resets our players bodies position and velocity so they do not start with extra forces applied to them
 	bool distance(sf::Vector2f point1, sf::Vector2f point2, float distanceCuttOff);
 
 	//Getters
