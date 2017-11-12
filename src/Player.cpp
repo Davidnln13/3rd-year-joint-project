@@ -5,6 +5,9 @@ Player::Player(sf::Vector2f position, sf::Vector2f size = sf::Vector2f(15, 15), 
 	m_canJump(false),
 	m_canAttackTemp(true),
 	m_swordReachedPos(false),
+	m_respawn(false),
+	m_isAiming(false),
+	m_holdingSword(true),
 	m_moveSpeed(7.0f),
 	m_gravityScale(2.75f),
 	m_weaponPos(1), //the centre of our player
@@ -154,6 +157,19 @@ Player::~Player()
 
 void Player::update()
 {
+	m_sword.update();
+
+	if(m_pickupSword)
+	{ 
+		pickUpWeapon();
+		m_pickupSword = false;
+	}
+
+	if(m_swordClashed)
+	{
+		swordClashed();
+	}
+
 	//if our respawn variable is true then respawn our player
 	if (m_respawn)
 		respawn();
@@ -214,35 +230,19 @@ void Player::render(sf::RenderWindow & window)
 
 void Player::moveRight()
 {
-	if (m_canAttack)
-	{
-		invertPlayerJoint(false);
-		m_playerBody->SetLinearVelocity(b2Vec2(m_moveSpeed, m_playerBody->GetLinearVelocity().y));
-	}
-	else
-	{
-		m_forearmBody->SetLinearVelocity(b2Vec2(0, m_forearmBody->GetLinearVelocity().y));
-		m_playerBody->SetLinearVelocity(b2Vec2(0, m_playerBody->GetLinearVelocity().y));
-	}
+	invertPlayerJoint(false);
+	m_playerBody->SetLinearVelocity(b2Vec2(m_moveSpeed, m_playerBody->GetLinearVelocity().y));
 }
 
 void Player::moveLeft()
 {
-	if (m_canAttack)
-	{
-		invertPlayerJoint(true);
-		m_playerBody->SetLinearVelocity(b2Vec2(-m_moveSpeed, m_playerBody->GetLinearVelocity().y));
-	}
-	else
-	{
-		m_forearmBody->SetLinearVelocity(b2Vec2(0, m_forearmBody->GetLinearVelocity().y));
-		m_playerBody->SetLinearVelocity(b2Vec2(0, m_playerBody->GetLinearVelocity().y));
-	}
+	invertPlayerJoint(true);
+	m_playerBody->SetLinearVelocity(b2Vec2(-m_moveSpeed, m_playerBody->GetLinearVelocity().y));
 }
 
 void Player::attack()
 {
-	if (m_canAttack)
+	if (m_canAttack && m_holdingSword) //if we can attack and we have a sword
 	{
 		m_canAttackTemp = m_canAttack;
 		m_swordReachedPos = false; //set our sword reaching its position boolean to false
@@ -258,6 +258,22 @@ void Player::attack()
 	}
 }
 
+void Player::throwSword()
+{
+	m_holdingSword = false;
+
+	world.DestroyJoint(m_armToSwordJoint); //destroy the arm to sword joint
+
+	m_armToSwordJoint = nullptr;
+
+	if(m_isFacingLeft)
+		m_sword.throwWeapon("Left");
+	else
+		m_sword.throwWeapon("Right");
+
+	m_isAiming = false;
+}
+
 void Player::jump()
 {
 	m_playerBody->ApplyForceToCenter(b2Vec2(0, -4000),true);
@@ -265,12 +281,21 @@ void Player::jump()
 
 void Player::setCanJump(bool canJump)
 {
+	std::cout << "SET CAN JUMP" << std::endl;
 	m_canJump = canJump;
 }
 
 void Player::handleJoystick(JoystickController & controller)
 {
 	bool moved = false;
+	m_isAiming = false;
+	if (controller.isButtonHeld("LT"))
+		m_isAiming = true;
+
+	if (controller.isButtonPressed("X") && m_isAiming)
+		throwSword();
+
+
 	if (controller.isButtonHeld("LeftThumbStickLeft") && m_canAttack)
 	{
 		moved = true;
@@ -371,7 +396,7 @@ void Player::changeSwordStance(std::string direction)
 	{
 		if (m_weaponPos > 0)
 		{
-			m_weaponPos--; //increase our pos
+			m_weaponPos--; //decrease our pos
 
 			//Seting parameters to our player to arm joint
 			auto playerToArm = m_playerToArmJointDef;
@@ -386,19 +411,16 @@ void Player::changeSwordStance(std::string direction)
 
 void Player::swordClashed()
 {
-	m_swordReachedPos = true; //set our sword as reaching its position (incase we are attacking we dont want our sword to keep moving as it has hit a sword)
-	m_forearmBody->SetLinearVelocity(b2Vec2(0, m_forearmBody->GetLinearVelocity().y));
-
 	//bounce our player away
-	if(m_isFacingLeft)
-		m_playerBody->ApplyForceToCenter(b2Vec2(2500, 0), true);
+	if (m_isFacingLeft)
+		m_playerBody->ApplyForceToCenter(b2Vec2(150, 0), true);
 	else
-		m_playerBody->ApplyForceToCenter(b2Vec2(-2500, 0), true);
+		m_playerBody->ApplyForceToCenter(b2Vec2(-150, 0), true);
 }
 
 void Player::checkCanAttack()
 {
-	//if the time elapsed since teh clock was started/restarted is greater than or equal to our attack rate then set out bool
+	//if the time elapsed since teh clock was started/restarted is greater than or equal to our attack rate then set our bool
 	if (m_attackClock.getElapsedTime().asSeconds() >= m_attackRate)
 	{
 		m_canAttack = true;
@@ -415,27 +437,27 @@ void Player::applyArmPushBack()
 
 void Player::rotateWhileRunning(bool rotate)
 {
-	if (rotate)
+	if (m_holdingSword)
 	{
-		if (m_isFacingLeft)
-			m_sword.getBody()->ApplyAngularImpulse(.01, true);
+		if (rotate)
+		{
+			if (m_isFacingLeft)
+				m_sword.getBody()->ApplyAngularImpulse(.01, true);
+			else
+				m_sword.getBody()->ApplyAngularImpulse(-.01, true);
+		}
 		else
-			m_sword.getBody()->ApplyAngularImpulse(-.01, true);
-	}
-	else
-	{
-		if (m_isFacingLeft)
-			m_sword.getBody()->ApplyAngularImpulse(-.01, true);
-		else
-			m_sword.getBody()->ApplyAngularImpulse(.01, true);
+		{
+			if (m_isFacingLeft)
+				m_sword.getBody()->ApplyAngularImpulse(-.01, true);
+			else
+				m_sword.getBody()->ApplyAngularImpulse(.01, true);
+		}
 	}
 }
 
 void Player::respawn()
 {
-	//clears forces in the world, this will allow our player to not recieve any forces when respawned
-	world.ClearForces();
-
 	//Set all of our bodies to our start position and reset their velocities
 	respawnBody(m_startPosition, m_playerBody);
 	respawnBody(m_startPosition, m_forearmBody);
@@ -464,6 +486,34 @@ bool Player::distance(sf::Vector2f point1, sf::Vector2f point2, float distanceCu
 	return false;
 }
 
+void Player::pickUpWeapon()
+{
+	m_sword.pickUp(); //invoke the pickup method in the sword to reset the sword values
+
+	//get our arm to sword joint
+	auto armToSword = m_armToSwordJointDef;
+
+	//Seting parameters to our player to arm joint
+	auto playerToArm = m_playerToArmJointDef;
+	if (m_isFacingLeft)
+	{
+		armToSword.lowerAngle = 0 * DEG_TO_RAD;
+		armToSword.upperAngle = 13.5 * DEG_TO_RAD;
+	}
+	else
+	{
+		armToSword.lowerAngle = -13.5 * DEG_TO_RAD;
+		armToSword.upperAngle = 0 * DEG_TO_RAD;
+		armToSword.localAnchorB.Set(m_armToSwordJointDef.localAnchorB.x * -1, m_armToSwordJointDef.localAnchorB.y);
+	}
+
+	//Setting parameters for our arm to sword joint
+	m_armToSwordJointDef = armToSword;
+	m_armToSwordJoint = (b2RevoluteJoint*)world.CreateJoint(&m_armToSwordJointDef);
+
+	m_holdingSword = true;
+}
+
 b2Body * Player::getJumpBody()
 {
 	return m_jumpBody;
@@ -488,9 +538,32 @@ void Player::setRespawn(bool respawn)
 {
 	m_respawn = respawn;
 }
+void Player::setClashed(bool clashed)
+{
+	m_swordClashed = clashed;
+	if (m_swordClashed)
+	{
+		m_swordReachedPos = true; //set our sword as reaching its position (incase we are attacking we dont want our sword to keep moving as it has hit a sword)
+		m_forearmBody->SetLinearVelocity(b2Vec2(0, m_forearmBody->GetLinearVelocity().y));
+		m_sword.getBody()->SetLinearVelocity(b2Vec2(0, m_sword.getBody()->GetLinearVelocity().y));
+	}
+}
+void Player::setSwordThrown()
+{
+	m_sword.setSwordThrown();
+}
+void Player::setPickupWeapon()
+{
+	m_pickupSword = true;
+}
 bool Player::getCanAttack()
 {
 	bool temp = m_canAttackTemp;
 	m_canAttackTemp = false;
 	return temp;
+}
+
+bool Player::holdingSword()
+{
+	return m_holdingSword;
 }

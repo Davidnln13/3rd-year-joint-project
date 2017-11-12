@@ -20,6 +20,7 @@ public:
 	void moveRight();
 	void moveLeft();
 	void attack();
+	void throwSword();
 	void jump();
 	void setCanJump(bool canJump);
 	void handleJoystick(JoystickController& controller);
@@ -32,6 +33,7 @@ public:
 	void respawn(); //respawns the player at the position of m_startPosition, this needs to change so the position can be dynamic
 	void respawnBody(b2Vec2 position, b2Body* body); //resets our players bodies position and velocity so they do not start with extra forces applied to them
 	bool distance(sf::Vector2f point1, sf::Vector2f point2, float distanceCuttOff);
+	void pickUpWeapon();
 
 	//Getters
 	b2Body* getJumpBody();
@@ -39,9 +41,13 @@ public:
 	b2Body* getPlayerBody();
 	b2Body* getSwordBody();
 	bool getCanAttack();
+	bool holdingSword();
 
 	//Setters
 	void setRespawn(bool respawn);
+	void setClashed(bool clashed);
+	void setSwordThrown();
+	void setPickupWeapon();
 
 private:
 	bool m_isFacingLeft;
@@ -50,6 +56,10 @@ private:
 	bool m_canJump;
 	bool m_swordReachedPos; //bool to show if our sword has reached its max position from th eplayer when they attack
 	bool m_respawn; //bool to determine if we respawn our player or not
+	bool m_isAiming; //bool to show if the player is holding LT to aim their sword to throw it
+	bool m_holdingSword; //bool to show if the player is holding a sword or not
+	bool m_swordClashed; // bool to set sword clash
+	bool m_pickupSword; 
 	float m_moveSpeed; //the speed at which our player move shorizontally
 	float m_gravityScale; //the scale of gravity on our bodies
 
