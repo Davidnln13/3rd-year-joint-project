@@ -18,8 +18,14 @@ class ContactListener : public b2ContactListener
 public:
 	void BeginContact(b2Contact* contact) override;
 	void EndContact(b2Contact* contact) override;
+
+	//Checker methods, these can return a boolean depending on the condition in the method
 	bool canPlayerJump(Player* player1, Player* player2, b2Fixture& fixA, b2Fixture& fixB);
 	bool hasSwordHitPlayer(Player* player1, Player* player2, b2Fixture& fixA, b2Fixture& fixB);
+	bool checkForSwordPickUp(Player* player, b2Fixture& fixA, b2Fixture& fixB);
+	void haveTwoSwordsCollided(Player* player1, Player* player2, b2Fixture& fixA, b2Fixture& fixB);
+
+	//Setters
 	void setPlayers(Player& player1, Player& player2);
 private:
 	//we hold a pointer to our players so we can invoke methods if their sensor have collided/not collided

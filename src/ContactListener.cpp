@@ -12,44 +12,20 @@ void ContactListener::BeginContact(b2Contact * contact)
 	if (canPlayerJump(m_player2, m_player1, *fixA, *fixB))
 		m_player2->setCanJump(true);
 
-	//checking if two swords have collided
-	if (fixA->GetBody() == m_player1->getSwordBody() && fixB->GetBody() == m_player2->getSwordBody()
-		|| fixB->GetBody() == m_player1->getSwordBody() && fixA->GetBody() == m_player2->getSwordBody())
-	{
-		if (m_player1->holdingSword() == false) //so if we are not holding a sword
-			m_player1->setSwordThrown();
-		else
-			m_player1->setClashed(true);
-
-		if (m_player2->holdingSword() == false) //so if we are not holding a sword
-			m_player2->setSwordThrown();
-		else
-			m_player2->setClashed(true);
-	}
+	//Checking if two swords have collided
+	haveTwoSwordsCollided(m_player1, m_player2, *fixA, *fixB);
+	haveTwoSwordsCollided(m_player2, m_player1, *fixA, *fixB);
 
 	//checking if a sword has collided with a player, if so, reset the player
 	if (hasSwordHitPlayer(m_player1, m_player2, *fixA, *fixB)) //if a sword has hit the first player then respawn them
-	{
-		if (m_player2->holdingSword() == false) //so if we are not holding a sword
-			m_player2->setSwordThrown();
 		m_player1->setRespawn(true);
-	}
 	if (hasSwordHitPlayer(m_player2, m_player1, *fixA, *fixB)) //if a sword has hit the second player then respawn them
-	{
-		if (m_player1->holdingSword() == false) //so if we are not holding a sword
-			m_player1->setSwordThrown();
 		m_player2->setRespawn(true);
-	}
 
-
-
-	//checking if a player has collided with a sword that has been thrown and the sword is theirs then pick it up
-	if (fixA->GetBody() == m_player1->getSwordBody() && fixB->GetBody() == m_player1->getPlayerBody() && m_player1->holdingSword() == false
-		|| fixB->GetBody() == m_player1->getSwordBody() && fixA->GetBody() == m_player1->getPlayerBody() && m_player1->holdingSword() == false)
+	//Checking if either player has picked up a weapon
+	if (checkForSwordPickUp(m_player1, *fixA, *fixB))
 		m_player1->setPickupWeapon();
-
-	if (fixA->GetBody() == m_player2->getSwordBody() && fixB->GetBody() == m_player2->getPlayerBody() && m_player2->holdingSword() == false
-		|| fixB->GetBody() == m_player2->getSwordBody() && fixA->GetBody() == m_player2->getPlayerBody() && m_player2->holdingSword() == false)
+	if (checkForSwordPickUp(m_player2, *fixA, *fixB))
 		m_player2->setPickupWeapon();
 }
 
@@ -66,7 +42,9 @@ void ContactListener::EndContact(b2Contact * contact)
 
 	//checking if two swords have stopped colliding
 	if (fixA->GetBody() == m_player1->getSwordBody() && fixB->GetBody() == m_player2->getSwordBody()
-		|| fixB->GetBody() == m_player1->getSwordBody() && fixA->GetBody() == m_player2->getSwordBody())
+		|| fixB->GetBody() == m_player1->getSwordBody() && fixA->GetBody() == m_player2->getSwordBody()
+		|| fixA->GetBody() == m_player2->getSwordBody() && fixB->GetBody() == m_player1->getSwordBody()
+		|| fixB->GetBody() == m_player2->getSwordBody() && fixA->GetBody() == m_player1->getSwordBody())
 	{
 		m_player1->setClashed(false);
 		m_player2->setClashed(false);
@@ -94,6 +72,30 @@ bool ContactListener::hasSwordHitPlayer(Player * player1, Player * player2, b2Fi
 	}
 
 	return false;
+}
+
+bool ContactListener::checkForSwordPickUp(Player * player, b2Fixture & fixA, b2Fixture & fixB)
+{
+	if (fixA.GetBody() == player->getSwordBody() && fixB.GetBody() == player->getPlayerBody() && player->holdingSword() == false
+		|| fixB.GetBody() == player->getSwordBody() && fixA.GetBody() == player->getPlayerBody() && player->holdingSword() == false)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+void ContactListener::haveTwoSwordsCollided(Player * player1, Player* player2, b2Fixture & fixA, b2Fixture & fixB)
+{
+	//If the Fixture is a sword and it has collided witht he other players sword
+	if (fixA.GetBody() == player1->getSwordBody() && fixB.GetBody() == m_player2->getSwordBody()
+		|| fixB.GetBody() == player1->getSwordBody() && fixA.GetBody() == m_player2->getSwordBody())
+	{ 
+		if (player1->holdingSword() == false) //so if we are not holding a sword
+			player1->setSwordThrown();
+		else
+			player1->setClashed(true);
+	}
 }
 
 void ContactListener::setPlayers(Player & player1, Player & player2)
