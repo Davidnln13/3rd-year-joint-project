@@ -251,6 +251,9 @@ void Player::attack()
 
 		m_attackClock.restart(); //reset our attack clock
 
+		//Setting our rotation of the sword to 0, this avoids our sword from slashing down if we attack while moving
+		m_sword.getBody()->SetTransform(b2Vec2(m_sword.getBody()->GetPosition().x, m_forearmBody->GetPosition().y), 0);
+
 		if(m_isFacingLeft)
 			m_armPosDest = sf::Vector2f((m_forearmBody->GetPosition().x * PPM) + m_playerToArmJoint->GetLowerLimit() * PPM, m_forearmBody->GetPosition().y * PPM);
 		else
@@ -279,12 +282,6 @@ void Player::jump()
 	m_playerBody->ApplyForceToCenter(b2Vec2(0, -4000),true);
 }
 
-void Player::setCanJump(bool canJump)
-{
-	std::cout << "SET CAN JUMP" << std::endl;
-	m_canJump = canJump;
-}
-
 void Player::handleJoystick(JoystickController & controller)
 {
 	bool moved = false;
@@ -292,9 +289,9 @@ void Player::handleJoystick(JoystickController & controller)
 	if (controller.isButtonHeld("LT"))
 		m_isAiming = true;
 
-	if (controller.isButtonPressed("X") && m_isAiming)
+	//If we are holding LT to aim and we have a sword then throw our sword
+	if (controller.isButtonPressed("X") && m_isAiming && m_holdingSword)
 		throwSword();
-
 
 	if (controller.isButtonHeld("LeftThumbStickLeft") && m_canAttack)
 	{
@@ -361,10 +358,9 @@ void Player::invertPlayerJoint(bool facingLeft)
 		m_playerToArmJointDef = playerToArm;
 		m_playerToArmJoint = (b2PrismaticJoint*)world.CreateJoint(&m_playerToArmJointDef);
 
-
-
 		//Setting parameters for our arm to sword joint
 		armToSword.localAnchorB.Set(m_armToSwordJointDef.localAnchorB.x * -1, m_armToSwordJointDef.localAnchorB.y);
+		//Only destroy and recreate our arm to sword joint if we are actualy holding a sword
 		if (m_holdingSword)
 		{
 			world.DestroyJoint(m_armToSwordJoint);
@@ -537,6 +533,11 @@ b2Body * Player::getPlayerBody()
 b2Body * Player::getSwordBody()
 {
 	return m_sword.getBody();
+}
+
+void Player::setCanJump(bool canJump)
+{
+	m_canJump = canJump;
 }
 
 void Player::setRespawn(bool respawn)

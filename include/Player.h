@@ -22,7 +22,6 @@ public:
 	void attack();
 	void throwSword();
 	void jump();
-	void setCanJump(bool canJump);
 	void handleJoystick(JoystickController& controller);
 	void invertPlayerJoint(bool facingLeft); //inverts the joints for our player, so we can swap where the weapon and arm is jointed to
 	void changeSwordStance(std::string direction); //changes teh position our sword is will be in the y position
@@ -44,6 +43,7 @@ public:
 	bool holdingSword();
 
 	//Setters
+	void setCanJump(bool canJump);
 	void setRespawn(bool respawn);
 	void setClashed(bool clashed);
 	void setSwordThrown();

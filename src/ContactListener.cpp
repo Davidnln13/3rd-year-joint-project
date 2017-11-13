@@ -29,15 +29,28 @@ void ContactListener::BeginContact(b2Contact * contact)
 
 	//checking if a sword has collided with a player, if so, reset the player
 	if (hasSwordHitPlayer(m_player1, m_player2, *fixA, *fixB)) //if a sword has hit the first player then respawn them
+	{
+		if (m_player2->holdingSword() == false) //so if we are not holding a sword
+			m_player2->setSwordThrown();
 		m_player1->setRespawn(true);
+	}
 	if (hasSwordHitPlayer(m_player2, m_player1, *fixA, *fixB)) //if a sword has hit the second player then respawn them
+	{
+		if (m_player1->holdingSword() == false) //so if we are not holding a sword
+			m_player1->setSwordThrown();
 		m_player2->setRespawn(true);
+	}
 
 
 
 	//checking if a player has collided with a sword that has been thrown and the sword is theirs then pick it up
-	if (fixA->GetBody() == m_player1->getSwordBody() && fixB->GetBody() == m_player1->getPlayerBody() && m_player1->holdingSword() == false)
+	if (fixA->GetBody() == m_player1->getSwordBody() && fixB->GetBody() == m_player1->getPlayerBody() && m_player1->holdingSword() == false
+		|| fixB->GetBody() == m_player1->getSwordBody() && fixA->GetBody() == m_player1->getPlayerBody() && m_player1->holdingSword() == false)
 		m_player1->setPickupWeapon();
+
+	if (fixA->GetBody() == m_player2->getSwordBody() && fixB->GetBody() == m_player2->getPlayerBody() && m_player2->holdingSword() == false
+		|| fixB->GetBody() == m_player2->getSwordBody() && fixA->GetBody() == m_player2->getPlayerBody() && m_player2->holdingSword() == false)
+		m_player2->setPickupWeapon();
 }
 
 void ContactListener::EndContact(b2Contact * contact)

@@ -37,6 +37,7 @@ void Weapon::update()
 {
 	if (m_destroyPivot && m_pivotJoint != nullptr)
 	{
+		m_body->GetFixtureList()->SetSensor(false);
 		world.DestroyJoint(m_pivotJoint);
 		m_pivotJoint = nullptr;
 		m_destroyPivot = false;
@@ -131,7 +132,6 @@ void Weapon::setSwordThrown()
 	m_body->SetLinearVelocity(b2Vec2(0, m_body->GetLinearVelocity().y));
 	m_body->SetAngularVelocity(0);
 	m_body->SetFixedRotation(false);
-	m_body->GetFixtureList()->SetSensor(false);
 	if (m_throwDirection == "Left")
 	{
 		m_body->ApplyLinearImpulseToCenter(b2Vec2(.55, 0), true);
