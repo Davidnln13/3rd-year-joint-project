@@ -361,11 +361,16 @@ void Player::invertPlayerJoint(bool facingLeft)
 		m_playerToArmJointDef = playerToArm;
 		m_playerToArmJoint = (b2PrismaticJoint*)world.CreateJoint(&m_playerToArmJointDef);
 
+
+
 		//Setting parameters for our arm to sword joint
 		armToSword.localAnchorB.Set(m_armToSwordJointDef.localAnchorB.x * -1, m_armToSwordJointDef.localAnchorB.y);
-		world.DestroyJoint(m_armToSwordJoint);
-		m_armToSwordJointDef = armToSword;
-		m_armToSwordJoint = (b2RevoluteJoint*)world.CreateJoint(&m_armToSwordJointDef);
+		if (m_holdingSword)
+		{
+			world.DestroyJoint(m_armToSwordJoint);
+			m_armToSwordJointDef = armToSword;
+			m_armToSwordJoint = (b2RevoluteJoint*)world.CreateJoint(&m_armToSwordJointDef);
+		}
 
 		//set is facing boolean here
 		if (facingLeft)
