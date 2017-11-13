@@ -33,6 +33,8 @@ public:
 	void respawnBody(b2Vec2 position, b2Body* body); //resets our players bodies position and velocity so they do not start with extra forces applied to them
 	bool distance(sf::Vector2f point1, sf::Vector2f point2, float distanceCuttOff);
 	void pickUpWeapon();
+	void setArmToSwordJoint(float lowerAngle, float upperAngle, b2Vec2 anchorPos);
+	void setPlayerToArmJoint(float lowerLimit, float upperLimit, b2Vec2 anchorPos);
 
 	//Getters
 	b2Body* getJumpBody();
@@ -62,6 +64,8 @@ private:
 	bool m_pickupSword; 
 	float m_moveSpeed; //the speed at which our player move shorizontally
 	float m_gravityScale; //the scale of gravity on our bodies
+
+	std::string m_startingDirection; //temporary for now
 
 	int m_weaponPos;
 	float m_weaponPosChange;

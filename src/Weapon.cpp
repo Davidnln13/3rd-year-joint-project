@@ -64,6 +64,27 @@ void Weapon::attack(b2Vec2 force)
 
 }
 
+void Weapon::respawn()
+{
+	//if our pivot joint does not equal nullptr
+	if (m_pivotJoint != nullptr)
+	{
+		//then destroy the joint and set our pointer to nullptr
+		world.DestroyJoint(m_pivotJoint);
+		m_pivotJoint = nullptr;
+	}
+
+	//reset the body/weapon
+	m_body->SetTransform(m_body->GetPosition(), 0);
+	m_body->GetFixtureList()->SetSensor(true);
+	m_body->SetLinearVelocity(b2Vec2(0, 0));
+	m_body->SetAngularVelocity(0);
+	m_body->ApplyTorque(0, true);
+
+	m_swordThrown = false;
+	m_destroyPivot = false;
+}
+
 void Weapon::throwWeapon(std::string direction)
 {
 	m_throwDirection = direction;
@@ -112,7 +133,8 @@ void Weapon::pickUp()
 {
 	m_body->SetTransform(m_body->GetPosition(), 0);
 	m_body->GetFixtureList()->SetSensor(true);
-	m_body->SetGravityScale(0);
+	m_body->SetGravityScale(1);
+	m_body->ApplyTorque(0, true);
 }
 
 b2Body* Weapon::getBody()
@@ -131,7 +153,7 @@ void Weapon::setSwordThrown()
 
 	m_body->SetLinearVelocity(b2Vec2(0, m_body->GetLinearVelocity().y));
 	m_body->SetAngularVelocity(0);
-	m_body->SetFixedRotation(false);
+
 	if (m_throwDirection == "Left")
 	{
 		m_body->ApplyLinearImpulseToCenter(b2Vec2(.55, 0), true);

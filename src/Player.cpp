@@ -23,6 +23,8 @@ Player::Player(sf::Vector2f position, sf::Vector2f size = sf::Vector2f(15, 15), 
 {
 	m_weaponPosChange = (size.y / 3.75f) / PPM; //how much our weapon changes in position when we change the height it is at
 
+	m_startingDirection = direction; //need to change this eventually so we can respawn in either direction
+
 	if (direction == "left")
 		m_isFacingLeft = true;
 	else if (direction == "right")
@@ -101,7 +103,7 @@ Player::Player(sf::Vector2f position, sf::Vector2f size = sf::Vector2f(15, 15), 
 	m_playerToArmJointDef.enableLimit = true;
 	if (m_isFacingLeft)
 	{
-		m_playerToArmJointDef.lowerTranslation = -2.5;
+		m_playerToArmJointDef.lowerTranslation = -2.5f;
 		m_playerToArmJointDef.upperTranslation = 0;
 		m_playerToArmJointDef.localAnchorB.Set(5 / PPM, 0);
 	}
@@ -109,7 +111,7 @@ Player::Player(sf::Vector2f position, sf::Vector2f size = sf::Vector2f(15, 15), 
 	{
 		m_playerToArmJointDef.lowerTranslation = 0;
 		m_playerToArmJointDef.upperTranslation = 2.5f;
-		m_playerToArmJointDef.localAnchorB.Set((-5) / PPM, 0);
+		m_playerToArmJointDef.localAnchorB.Set(-5 / PPM, 0);
 	}
 	m_playerToArmJointDef.localAnchorA.Set(0, (2.5f) / PPM);
 
@@ -332,47 +334,22 @@ void Player::handleJoystick(JoystickController & controller)
 }
 void Player::invertPlayerJoint(bool facingLeft)
 {
+	//if we are facing right and we want to face left OR if we are facing left and we want to face right
 	if (m_isFacingLeft == false && facingLeft || m_isFacingLeft && facingLeft == false)
 	{
-		//get our arm to sword joint
-		auto armToSword = m_armToSwordJointDef;
-
-		//Seting parameters to our player to arm joint
-		auto playerToArm = m_playerToArmJointDef;
+		//set is facing boolean here and also invoke our joint setter methods
 		if (facingLeft)
 		{
-			armToSword.lowerAngle = 0 * DEG_TO_RAD;
-			armToSword.upperAngle = 13.5 * DEG_TO_RAD;
-			playerToArm.lowerTranslation = -2.5f;
-			playerToArm.upperTranslation = 0;
-		}
-		else
-		{
-			armToSword.lowerAngle = -13.5 * DEG_TO_RAD;
-			armToSword.upperAngle = 0 * DEG_TO_RAD;
-			playerToArm.lowerTranslation = 0;
-			playerToArm.upperTranslation = 2.5f;
-		}
-		playerToArm.localAnchorB.Set(m_playerToArmJointDef.localAnchorB.x * -1, m_playerToArmJointDef.localAnchorB.y);
-		world.DestroyJoint(m_playerToArmJoint);
-		m_playerToArmJointDef = playerToArm;
-		m_playerToArmJoint = (b2PrismaticJoint*)world.CreateJoint(&m_playerToArmJointDef);
-
-		//Setting parameters for our arm to sword joint
-		armToSword.localAnchorB.Set(m_armToSwordJointDef.localAnchorB.x * -1, m_armToSwordJointDef.localAnchorB.y);
-		//Only destroy and recreate our arm to sword joint if we are actualy holding a sword
-		if (m_holdingSword)
-		{
-			world.DestroyJoint(m_armToSwordJoint);
-			m_armToSwordJointDef = armToSword;
-			m_armToSwordJoint = (b2RevoluteJoint*)world.CreateJoint(&m_armToSwordJointDef);
-		}
-
-		//set is facing boolean here
-		if (facingLeft)
+			setPlayerToArmJoint(-2.5f, 0, b2Vec2(5 / PPM, m_playerToArmJoint->GetLocalAnchorB().y));
+			setArmToSwordJoint(0, 13.5f, b2Vec2(28.5f / PPM, m_armToSwordJoint->GetLocalAnchorB().y));
 			m_isFacingLeft = true;
+		}
 		else
+		{
+			setPlayerToArmJoint(0, 2.5f, b2Vec2(-5 / PPM, m_playerToArmJoint->GetLocalAnchorB().y));
+			setArmToSwordJoint(-13.5f, 0, b2Vec2(-28.5f / PPM, m_armToSwordJoint->GetLocalAnchorB().y));
 			m_isFacingLeft = false;
+		}
 	}
 }
 
@@ -421,7 +398,7 @@ void Player::swordClashed()
 
 void Player::checkCanAttack()
 {
-	//if the time elapsed since teh clock was started/restarted is greater than or equal to our attack rate then set our bool
+	//if the time elapsed since the clock was started/restarted is greater than or equal to our attack rate then set our bool
 	if (m_attackClock.getElapsedTime().asSeconds() >= m_attackRate)
 	{
 		m_canAttack = true;
@@ -465,6 +442,32 @@ void Player::respawn()
 	respawnBody(m_startPosition, m_jumpBody);
 	respawnBody(m_startPosition, m_sword.getBody());
 
+	//Reset our booleans
+	m_canAttack = true;
+	m_canJump = false;
+	m_canAttackTemp = true;
+	m_swordReachedPos = false;
+	m_respawn = false;
+	m_isAiming = false;
+	m_holdingSword = true;
+
+	//Reset our sword
+	m_sword.respawn();
+
+	//Setting our isFacing boolean annd also our sword joint
+	if (m_startingDirection == "left")
+	{
+		setPlayerToArmJoint(-2.5f, 0, b2Vec2(5 / PPM, 0));
+		setArmToSwordJoint(0, 13.5f, b2Vec2(28.5f / PPM, 0));
+		m_isFacingLeft = true;
+	}
+	else
+	{
+		setPlayerToArmJoint(0, 02.5f, b2Vec2(-5 / PPM, 0));
+		setArmToSwordJoint(-13.5, 0, b2Vec2(-28.5f / PPM, 0));
+		m_isFacingLeft = false;
+	}
+
 	m_respawn = false;
 }
 
@@ -491,28 +494,58 @@ void Player::pickUpWeapon()
 {
 	m_sword.pickUp(); //invoke the pickup method in the sword to reset the sword values
 
-	//get our arm to sword joint
-	auto armToSword = m_armToSwordJointDef;
+	m_holdingSword = true;
 
+	if (m_isFacingLeft)
+		setArmToSwordJoint(0, 13.5f, b2Vec2(28.5f / PPM, 0));
+	else
+		setArmToSwordJoint(-13.5, 0, b2Vec2(-28.5f / PPM, 0));
+}
+
+void Player::setArmToSwordJoint(float lowerAngle, float upperAngle, b2Vec2 anchorPos)
+{
+	//If we are holding a sword
+	if (m_holdingSword)
+	{
+		//get our arm to sword joint
+		auto armToSword = m_armToSwordJointDef;
+
+		//Set the upper and lower limits of our joint
+		armToSword.lowerAngle = lowerAngle * DEG_TO_RAD;
+		armToSword.upperAngle = upperAngle * DEG_TO_RAD;
+
+		//Set the local ancjorB point for our joint
+		armToSword.localAnchorB.Set(anchorPos.x, anchorPos.y);
+
+		//If our arm to swor djoint is not anullptr then delete the current joint from the world and recreate it below
+		if (nullptr != m_armToSwordJoint)
+		{
+			//Only destroy and recreate our arm to sword joint if we are actualy holding a sword
+			world.DestroyJoint(m_armToSwordJoint);
+		}
+		//assign our armToSwordDefinition our new definition
+		m_armToSwordJointDef = armToSword;
+		//Create the joint in the world so it is active
+		m_armToSwordJoint = (b2RevoluteJoint*)world.CreateJoint(&m_armToSwordJointDef);
+	}
+}
+
+void Player::setPlayerToArmJoint(float lowerLimit, float upperLimit, b2Vec2 anchorPos)
+{
 	//Seting parameters to our player to arm joint
 	auto playerToArm = m_playerToArmJointDef;
-	if (m_isFacingLeft)
-	{
-		armToSword.lowerAngle = 0 * DEG_TO_RAD;
-		armToSword.upperAngle = 13.5 * DEG_TO_RAD;
-	}
-	else
-	{
-		armToSword.lowerAngle = -13.5 * DEG_TO_RAD;
-		armToSword.upperAngle = 0 * DEG_TO_RAD;
-		armToSword.localAnchorB.Set(m_armToSwordJointDef.localAnchorB.x * -1, m_armToSwordJointDef.localAnchorB.y);
-	}
 
-	//Setting parameters for our arm to sword joint
-	m_armToSwordJointDef = armToSword;
-	m_armToSwordJoint = (b2RevoluteJoint*)world.CreateJoint(&m_armToSwordJointDef);
+	//Set the properties of our player to arm joint
+	playerToArm.lowerTranslation = lowerLimit;
+	playerToArm.upperTranslation = upperLimit;
+	playerToArm.localAnchorB.Set(anchorPos.x, anchorPos.y);
 
-	m_holdingSword = true;
+	//If our joint is not nullptr then destroy the joint and recreate it below
+	if(nullptr != m_playerToArmJoint)
+		world.DestroyJoint(m_playerToArmJoint);
+
+	m_playerToArmJointDef = playerToArm;
+	m_playerToArmJoint = (b2PrismaticJoint*)world.CreateJoint(&m_playerToArmJointDef);
 }
 
 b2Body * Player::getJumpBody()

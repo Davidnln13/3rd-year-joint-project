@@ -18,6 +18,7 @@ public:
 	void update();
 	void render(sf::RenderWindow& window);
 	void attack(b2Vec2 force);
+	void respawn();
 	void throwWeapon(std::string direction);
 	void applyForce(b2Vec2 force);
 	void pickUp(); //picks up the weapon
