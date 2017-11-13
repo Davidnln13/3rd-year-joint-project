@@ -68,6 +68,9 @@ bool ContactListener::hasSwordHitPlayer(Player * player1, Player * player2, b2Fi
 	if (fixA.GetBody() == player1->getPlayerBody() && fixB.GetBody() == player2->getSwordBody() && player2->getSwordBody()->GetFixtureList()->IsSensor()
 		|| fixB.GetBody() == player1->getPlayerBody() && fixA.GetBody() == player2->getSwordBody() && player2->getSwordBody()->GetFixtureList()->IsSensor())
 	{
+		if (player2->holdingSword() == false) //so if the second player threw the sword then stop the other player's sword
+			player2->setSwordThrown();
+
 		return true;
 	}
 
