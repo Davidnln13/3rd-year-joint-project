@@ -1,7 +1,6 @@
-#include "Boundary.h"
+#include "Obstacle.h"
 
-Boundary::Boundary(sf::Vector2f size, sf::Vector2f position):
-	m_rect(size)
+Obstacle::Obstacle(sf::Vector2f position, sf::Vector2f size)
 {
 	//creating our Box2d body and fixture for the player
 	b2BodyDef bodyDef;
@@ -20,17 +19,4 @@ Boundary::Boundary(sf::Vector2f size, sf::Vector2f position):
 	boxFixDef.shape = &boxShape;
 	m_body->CreateFixture(&boxFixDef);
 
-	m_rect.setOrigin(size.x / 2.f, size.y / 2.f); //setting the origin to the center of the floor
-	m_rect.setFillColor(sf::Color::Black);
-}
-
-void Boundary::update()
-{
-}
-
-void Boundary::render(sf::RenderWindow & window)
-{
-	m_rect.setPosition(m_body->GetPosition().x * PPM, m_body->GetPosition().y * PPM);
-	m_rect.setRotation(m_body->GetAngle());
-	window.draw(m_rect);
 }

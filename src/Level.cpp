@@ -1,15 +1,21 @@
 #include "Level.h"
 
-Level::Level(Audio& audio) :
-	m_player1(sf::Vector2f(1280 - (1280 / 8.f), 720.f - (720.f / 4)), sf::Vector2f(25, 75), "left"),
-	m_player2(sf::Vector2f(1280 / 8.f, 720.f - (720.f / 4)), sf::Vector2f(25, 75), "right"),
-	m_floor(sf::Vector2f(1280, 35), sf::Vector2f(1280 / 2.f, 720 - (35 / 2))),
-	m_audioPlayScreen(audio)
+Level::Level(Audio& audio, sf::Texture& levelBackground) :
+	m_player1(sf::Vector2f(1120.0f, 540.0f), sf::Vector2f(25, 75), "left"),
+	m_player2(sf::Vector2f(160.0f, 540.0f), sf::Vector2f(25, 75), "right"),
+	m_floor(sf::Vector2f(640.0f, 695.0f), sf::Vector2f(1280, 50)),
+	m_audioRef(audio)
 {
 	//Set up the contact listener for box2d
 	world.SetContactListener(&m_contactListener);
 	//Set pointers to our player objects in our contact listener
 	m_contactListener.setPlayers(m_player1, m_player2);
+
+	//Set the textur eof our sprite and place it at 0,0
+	m_bg.setTexture(levelBackground);
+	m_bg.setPosition(0, 0);
+
+	setUpFloor();
 }
 
 void Level::update()
@@ -21,10 +27,14 @@ void Level::update()
 
 void Level::render(sf::RenderWindow & window)
 {
+	window.draw(m_bg); //draw the background
+
+	//Rendering our floor
+	for each (sf::Sprite tile in m_floorSprites)
+		window.draw(tile);
+
 	m_player1.render(window); //draw the first player	
 	m_player2.render(window); //draw the second player
-
-	m_floor.render(window); //draw the floor
 }
 
 void Level::handleInput(JoystickController & controller1, JoystickController & controller2)
@@ -32,9 +42,21 @@ void Level::handleInput(JoystickController & controller1, JoystickController & c
 	m_player1.handleJoystick(controller1);
 	m_player2.handleJoystick(controller2);
 
-
+	//If any player attacks 
 	if ((controller1.isButtonPressed("X") && m_player1.getCanAttack() == true) || (controller2.isButtonPressed("X") && m_player2.getCanAttack() == true))
 	{
-		m_audioPlayScreen.m_soundArray[0].play();
+		m_audioRef.m_soundArray[0].play();
+	}
+}
+
+void Level::setUpFloor()
+{
+	for (int i = 0; i < 26; i++)
+	{
+		sf::Sprite floorTile;
+		floorTile.setTexture(resourceManager.getTextureHolder()["stoneTile"]);
+		floorTile.setOrigin(floorTile.getLocalBounds().left + floorTile.getLocalBounds().width / 2.0f, floorTile.getLocalBounds().top + floorTile.getLocalBounds().height / 2.0f);
+		floorTile.setPosition(25 + (50 * i), 695);
+		m_floorSprites.push_back(floorTile);
 	}
 }

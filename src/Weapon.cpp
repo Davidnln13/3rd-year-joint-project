@@ -24,7 +24,7 @@ Weapon::Weapon(sf::Vector2f position) :
 
 	m_rect.setOrigin(m_rect.getSize().x / 2, m_rect.getSize().y / 2); //setting the origin to the center of the box
 	m_rect.setFillColor(sf::Color::Transparent);
-	m_rect.setOutlineColor(sf::Color::Blue);
+	m_rect.setOutlineColor(sf::Color::Red);
 	m_rect.setOutlineThickness(1);
 }
 

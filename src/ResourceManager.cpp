@@ -17,6 +17,10 @@ ResourceManager::ResourceManager()
 		acquireResource("Options Icon", m_optionsIcon);
 		acquireResource("Exit Icon", m_exitIcon);
 
+		//Load level textures
+		acquireResource("castleBG", m_castleBg);
+		acquireResource("stoneTile", m_stoneTile);
+
 		//Load Fonts
 		acquireResource("oxinFont", m_oxinFont);
 	}

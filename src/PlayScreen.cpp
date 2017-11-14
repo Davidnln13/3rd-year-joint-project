@@ -2,7 +2,7 @@
 
 PlayScreen::PlayScreen(std::string name, Audio& audio) :
 	Screen(name),
-	m_level(audio)
+	m_level(audio, resourceManager.getTextureHolder()["castleBG"])
 {
 
 }

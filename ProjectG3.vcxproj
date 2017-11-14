@@ -129,7 +129,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Audio.cpp" />
-    <ClCompile Include="src\Boundary.cpp" />
+    <ClCompile Include="src\Obstacle.cpp" />
     <ClCompile Include="src\Button.cpp" />
     <ClCompile Include="src\ContactListener.cpp" />
     <ClCompile Include="src\Game.cpp" />
@@ -147,7 +147,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Audio.h" />
-    <ClInclude Include="include\Boundary.h" />
+    <ClInclude Include="include\Obstacle.h" />
     <ClInclude Include="include\Button.h" />
     <ClInclude Include="include\ContactListener.h" />
     <ClInclude Include="include\Game.h" />

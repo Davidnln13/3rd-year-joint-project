@@ -83,12 +83,12 @@ Player::Player(sf::Vector2f position, sf::Vector2f size = sf::Vector2f(15, 15), 
 
 	m_playerRect.setOrigin(m_playerRect.getSize().x / 2.f, m_playerRect.getSize().y / 2.f); //setting the origin to the center of the box
 	m_playerRect.setFillColor(sf::Color::Transparent);
-	m_playerRect.setOutlineColor(sf::Color::Red);
+	m_playerRect.setOutlineColor(sf::Color::White);
 	m_playerRect.setOutlineThickness(1);
 
 	m_forearmRect.setOrigin(m_forearmRect.getSize().x / 2.f, m_forearmRect.getSize().y / 2.f); //setting the origin to the center of the box
 	m_forearmRect.setFillColor(sf::Color::Transparent);
-	m_forearmRect.setOutlineColor(sf::Color::Red);
+	m_forearmRect.setOutlineColor(sf::Color::White);
 	m_forearmRect.setOutlineThickness(1);
 
 	m_jumpRect.setOrigin(m_jumpRect.getSize().x / 2.f, m_jumpRect.getSize().y / 2.f); //setting the origin to the center of the box
