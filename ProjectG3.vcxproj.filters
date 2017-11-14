@@ -72,6 +72,9 @@
     <ClCompile Include="src\PauseScreen.cpp">
       <Filter>Source Files\Screen Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Level.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Game.h">
@@ -118,6 +121,9 @@
     </ClInclude>
     <ClInclude Include="include\PauseScreen.h">
       <Filter>Header Files\Screen Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Level.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
