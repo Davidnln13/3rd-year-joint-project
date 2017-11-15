@@ -3,10 +3,13 @@
 #include <SFML\Graphics.hpp>
 #include <Thor\Math.hpp>
 #include <iostream>
+#include "ResourceManager.h"
+#include "Thor\Animations.hpp"
 
 //forward references, does not work with static variables, these variables are located in Game.cpp
 extern b2World world; //defining the box2d world object, saves us from passing it over to every object that needs it
 extern float PPM;
+extern ResourceManager resourceManager;
 
 class Weapon
 {

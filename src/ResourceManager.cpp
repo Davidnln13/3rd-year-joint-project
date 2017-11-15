@@ -21,6 +21,9 @@ ResourceManager::ResourceManager()
 		acquireResource("castleBG", m_castleBg);
 		acquireResource("stoneTile", m_stoneTile);
 
+		//Load player textures
+		acquireResource("idlePlayer", m_idlePlayer);
+
 		//Load Fonts
 		acquireResource("oxinFont", m_oxinFont);
 	}

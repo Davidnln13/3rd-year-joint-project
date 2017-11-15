@@ -1,6 +1,6 @@
 #include "Player.h"
 
-Player::Player(sf::Vector2f position, sf::Vector2f size = sf::Vector2f(15, 15), std::string direction = "left") :
+Player::Player(sf::Vector2f position, std::string direction = "left") :
 	m_canAttack(true),
 	m_canJump(false),
 	m_canAttackTemp(true),
@@ -16,14 +16,16 @@ Player::Player(sf::Vector2f position, sf::Vector2f size = sf::Vector2f(15, 15), 
 	m_attackRate(0.50f),
 	m_position(position),
 	m_startPosition(position.x / PPM, position.y / PPM),
-	m_playerRect(size),
+	m_playerRect(sf::Vector2f(18, 87)),
 	m_forearmRect(sf::Vector2f(15, 5)),
-	m_jumpRect(sf::Vector2f(size.x, 3)),
+	m_jumpRect(sf::Vector2f(18, 3)),
 	m_sword(position),
+	m_animator(m_animationHolder),
+	m_idleTime(0),
 	RAD_TO_DEG(180.f / thor::Pi),
 	DEG_TO_RAD(thor::Pi / 180.f)
 {
-	m_weaponPosChange = (size.y / 3.75f) / PPM; //how much our weapon changes in position when we change the height it is at
+	m_weaponPosChange = (50 / 3.0f) / PPM; //how much our weapon changes in position when we change the height it is at
 
 	m_startingDirection = direction; //need to change this eventually so we can respawn in either direction
 
@@ -85,12 +87,11 @@ Player::Player(sf::Vector2f position, sf::Vector2f size = sf::Vector2f(15, 15), 
 
 	m_playerRect.setOrigin(m_playerRect.getSize().x / 2.f, m_playerRect.getSize().y / 2.f); //setting the origin to the center of the box
 	m_playerRect.setFillColor(sf::Color::Transparent);
-	m_playerRect.setOutlineColor(sf::Color::White);
+	m_playerRect.setOutlineColor(sf::Color::Red);
 	m_playerRect.setOutlineThickness(1);
 
 	m_forearmRect.setOrigin(m_forearmRect.getSize().x / 2.f, m_forearmRect.getSize().y / 2.f); //setting the origin to the center of the box
-	m_forearmRect.setFillColor(sf::Color::Transparent);
-	m_forearmRect.setOutlineColor(sf::Color::White);
+	m_forearmRect.setFillColor(sf::Color::White);
 	m_forearmRect.setOutlineThickness(1);
 
 	m_jumpRect.setOrigin(m_jumpRect.getSize().x / 2.f, m_jumpRect.getSize().y / 2.f); //setting the origin to the center of the box
@@ -107,13 +108,13 @@ Player::Player(sf::Vector2f position, sf::Vector2f size = sf::Vector2f(15, 15), 
 	{
 		m_playerToArmJointDef.lowerTranslation = -2.5f;
 		m_playerToArmJointDef.upperTranslation = 0;
-		m_playerToArmJointDef.localAnchorB.Set(5 / PPM, 0);
+		m_playerToArmJointDef.localAnchorB.Set(15 / PPM, 18 / PPM);
 	}
 	else
 	{
 		m_playerToArmJointDef.lowerTranslation = 0;
 		m_playerToArmJointDef.upperTranslation = 2.5f;
-		m_playerToArmJointDef.localAnchorB.Set(-5 / PPM, 0);
+		m_playerToArmJointDef.localAnchorB.Set(-15 / PPM, 18 / PPM);
 	}
 	m_playerToArmJointDef.localAnchorA.Set(0, (2.5f) / PPM);
 
@@ -152,6 +153,17 @@ Player::Player(sf::Vector2f position, sf::Vector2f size = sf::Vector2f(15, 15), 
 	m_jumpSensorJoint = (b2PrismaticJoint*)world.CreateJoint(&m_jumpSensorJointDef);
 
 	m_attackClock.restart(); //start our clock when the player is created
+
+	//Setting up our sprite
+	m_sprite.setTexture(resourceManager.getTextureHolder()["idlePlayer"]);
+	m_sprite.setTextureRect(sf::IntRect(0, 0, 42, 87));
+	m_sprite.setOrigin(m_sprite.getLocalBounds().left + 46 / 2, m_sprite.getLocalBounds().top + m_sprite.getLocalBounds().height / 2);
+
+	if (m_isFacingLeft)
+		m_sprite.setScale(-1, 1);
+
+	//Setup all of our animations
+	setUpAnimations();
 }
 
 Player::~Player()
@@ -161,6 +173,10 @@ Player::~Player()
 
 void Player::update()
 {
+	//Update our animation
+	m_animator.update(m_animationClock.restart());
+	m_animator.animate(m_sprite);
+
 	m_sword.update();
 
 	if (m_switchedSwordPos)
@@ -229,21 +245,25 @@ void Player::update()
 
 void Player::render(sf::RenderWindow & window)
 {
-	//drawing our player
-	m_playerRect.setPosition(m_playerBody->GetPosition().x * PPM, m_playerBody->GetPosition().y * PPM);
-	m_playerRect.setRotation(m_playerBody->GetAngle() * RAD_TO_DEG); //have to convert from radians to degrees here
+	//draw our sprite
+	m_sprite.setPosition(m_playerBody->GetPosition().x * PPM, m_playerBody->GetPosition().y * PPM);
+	window.draw(m_sprite);
 
-	//drawing our arm
+	////drawing our player
+	//m_playerRect.setPosition(m_playerBody->GetPosition().x * PPM, m_playerBody->GetPosition().y * PPM);
+	//m_playerRect.setRotation(m_playerBody->GetAngle() * RAD_TO_DEG); //have to convert from radians to degrees here
+
+	////drawing our arm
 	m_forearmRect.setPosition(m_forearmBody->GetPosition().x * PPM, m_forearmBody->GetPosition().y * PPM);
 	m_forearmRect.setRotation(m_forearmBody->GetAngle() * RAD_TO_DEG); //have to convert from radians to degrees here
 
-	//drawing our jump sensor
-	m_jumpRect.setPosition(m_jumpBody->GetPosition().x * PPM, m_jumpBody->GetPosition().y * PPM);
-	m_jumpRect.setRotation(m_jumpBody->GetAngle() * RAD_TO_DEG); //have to convert from radians to degrees here
+	////drawing our jump sensor
+	//m_jumpRect.setPosition(m_jumpBody->GetPosition().x * PPM, m_jumpBody->GetPosition().y * PPM);
+	//m_jumpRect.setRotation(m_jumpBody->GetAngle() * RAD_TO_DEG); //have to convert from radians to degrees here
 
-	window.draw(m_playerRect);
+	//window.draw(m_playerRect);
 	window.draw(m_forearmRect);
-	window.draw(m_jumpRect);
+	//window.draw(m_jumpRect);
 	m_sword.render(window);
 }
 
@@ -306,6 +326,8 @@ void Player::handleJoystick(JoystickController & controller)
 {
 	bool moved = false;
 
+	m_idleTime += m_animationClock.getElapsedTime().asSeconds();
+
 	//Set our Boolean to false
 	m_isAiming = false;
 
@@ -348,6 +370,11 @@ void Player::handleJoystick(JoystickController & controller)
 
 	if (moved == false)
 	{
+		if (m_idleTime >= 0.5f)
+		{
+			m_idleTime = 0;
+			m_animator.play() << "idle";
+		}
 		rotateWhileRunning(false);
 		m_forearmBody->SetLinearVelocity(b2Vec2(0, m_forearmBody->GetLinearVelocity().y));
 		m_playerBody->SetLinearVelocity(b2Vec2(0, m_playerBody->GetLinearVelocity().y));
@@ -361,18 +388,20 @@ void Player::invertPlayerJoint(bool facingLeft)
 		//set is facing boolean here and also invoke our joint setter methods
 		if (facingLeft)
 		{
-			setPlayerToArmJoint(-2.5f, 0, b2Vec2(5 / PPM, m_playerToArmJoint->GetLocalAnchorB().y));
+			setPlayerToArmJoint(-2.5f, 0, b2Vec2(15 / PPM, m_playerToArmJoint->GetLocalAnchorB().y));
 			if (m_holdingSword) //if we are holding a sword then change its joint
 				setArmToSwordJoint(0, 15, b2Vec2(28.5f / PPM, m_armToSwordJoint->GetLocalAnchorB().y));
 			m_isFacingLeft = true;
 		}
 		else
 		{
-			setPlayerToArmJoint(0, 2.5f, b2Vec2(-5 / PPM, m_playerToArmJoint->GetLocalAnchorB().y));
+			setPlayerToArmJoint(0, 2.5f, b2Vec2(-15 / PPM, m_playerToArmJoint->GetLocalAnchorB().y));
 			if(m_holdingSword)//if we are holding a sword then change its joint
 				setArmToSwordJoint(-15, 0, b2Vec2(-28.5f / PPM, m_armToSwordJoint->GetLocalAnchorB().y));
 			m_isFacingLeft = false;
 		}
+
+		m_sprite.setScale(m_sprite.getScale().x * -1, 1);
 	}
 }
 
@@ -476,13 +505,15 @@ void Player::respawn()
 	//Setting our isFacing boolean annd also our sword joint
 	if (m_startingDirection == "left")
 	{
-		setPlayerToArmJoint(-2.5f, 0, b2Vec2(5 / PPM, 0));
+		m_sprite.setScale(-1, 1);
+		setPlayerToArmJoint(-2.5f, 0, b2Vec2(15 / PPM, 18 / PPM));
 		setArmToSwordJoint(0, 15, b2Vec2(28.5f / PPM, 0));
 		m_isFacingLeft = true;
 	}
 	else
 	{
-		setPlayerToArmJoint(0, 02.5f, b2Vec2(-5 / PPM, 0));
+		m_sprite.setScale(1, 1);
+		setPlayerToArmJoint(0, 02.5f, b2Vec2(-15 / PPM, 18 / PPM));
 		setArmToSwordJoint(-15, 0, b2Vec2(-28.5f / PPM, 0));
 		m_isFacingLeft = false;
 	}
@@ -575,8 +606,9 @@ void Player::setSwordStance(float posChange)
 	world.DestroyJoint(m_playerToArmJoint);
 	m_playerToArmJointDef = playerToArm;
 	m_playerToArmJoint = (b2PrismaticJoint*)world.CreateJoint(&m_playerToArmJointDef);
-	//Set the position of the sword
-	m_sword.getBody()->SetTransform(b2Vec2(m_sword.getBody()->GetPosition().x, m_sword.getBody()->GetPosition().y - (posChange / 2)), m_sword.getBody()->GetAngle());
+	if(m_holdingSword)
+		//Set the position of the sword
+		m_sword.getBody()->SetTransform(b2Vec2(m_sword.getBody()->GetPosition().x, m_sword.getBody()->GetPosition().y - (posChange / 2)), m_sword.getBody()->GetAngle());
 }
 
 void Player::rotateSword(float angle, float speed)
@@ -604,6 +636,22 @@ void Player::parried()
 	m_sword.parried();
 
 	m_parried = false;
+}
+
+void Player::setUpAnimations()
+{
+	m_animationClock.restart(); //starting our animation clock
+
+	auto idleFrameSize = sf::Vector2i(42, 87);
+
+	//loop for 5 frames
+	for(int i = 0; i < 5; i++)
+	{
+		auto frame = sf::IntRect(0 + (idleFrameSize.x * i), 0, idleFrameSize.x, idleFrameSize.y);
+		m_idleAnimation.addFrame(.01f, frame);
+	}
+
+	m_animationHolder.addAnimation("idle", m_idleAnimation, sf::seconds(0.5f));
 }
 
 b2Body * Player::getJumpBody()

@@ -1,8 +1,8 @@
 #include "Level.h"
 
 Level::Level(Audio& audio, sf::Texture& levelBackground) :
-	m_player1(sf::Vector2f(1120.0f, 540.0f), sf::Vector2f(25, 75), "left"),
-	m_player2(sf::Vector2f(160.0f, 540.0f), sf::Vector2f(25, 75), "right"),
+	m_player1(sf::Vector2f(1120.0f, 540.0f), "left"),
+	m_player2(sf::Vector2f(160.0f, 540.0f), "right"),
 	m_floor(sf::Vector2f(640.0f, 695.0f), sf::Vector2f(1280, 50)),
 	m_audioRef(audio)
 {

@@ -12,7 +12,7 @@ class JoystickController; //forward reference for our joystick class
 class Player
 {
 public:
-	Player(sf::Vector2f position, sf::Vector2f size, std::string direction);
+	Player(sf::Vector2f position, std::string direction);
 	~Player(); //Any classes that have a box2d body should have that body deleted in here
 
 	void update();
@@ -38,6 +38,7 @@ public:
 	void setSwordStance(float posChange); //change sthe y position of our arm local to the player, this will be used to switch the heights we hold our sword at
 	void rotateSword(float angle, float speed); //sets the limits of the rotation of our sword and then set the speed of the rotation
 	void parried();
+	void setUpAnimations(); //setups our animations for the player
 
 	//Getters
 	b2Body* getJumpBody();
@@ -110,6 +111,16 @@ private:
 	//Our body defs, we will hold a reference to our bodie defeinitions so we can easily modify the bodies on the fly
 	b2BodyDef m_playerbodyDef;
 	b2BodyDef m_forearmBodyDef;
+
+	//Sprite variables
+	sf::Sprite m_sprite;
+
+	//Animation variables
+	sf::Clock m_animationClock; //our animation clock, we will use this to update our animations
+	thor::FrameAnimation m_idleAnimation;
+	thor::AnimationMap<sf::Sprite, std::string> m_animationHolder;//our select and deselect animations
+	thor::Animator<sf::Sprite, std::string> m_animator;
+	float m_idleTime; //holds teh amount of time gone since we last played our idle animation
 
 	//Const variables
 	float const RAD_TO_DEG;
