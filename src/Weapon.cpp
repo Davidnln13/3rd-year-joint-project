@@ -91,6 +91,8 @@ void Weapon::throwWeapon(std::string direction)
 	m_swordThrown = true;
 
 	m_body->SetGravityScale(0); //set gravity scale to 0 on our sword
+	m_body->SetLinearVelocity(b2Vec2(0,0)); //reset the velocity of our sword
+	m_body->SetAngularVelocity(0); //reset the angular velocity
 
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;

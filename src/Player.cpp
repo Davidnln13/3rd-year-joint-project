@@ -415,19 +415,17 @@ void Player::rotateWhileRunning(bool rotate)
 {
 	if (m_holdingSword)
 	{
-		if (rotate)
+		if (m_isAiming)
 		{
-			if (m_isFacingLeft)
-				m_sword.getBody()->ApplyAngularImpulse(.01, true);
-			else
-				m_sword.getBody()->ApplyAngularImpulse(-.01, true);
+			rotateSword(55, 20);
+		}
+		else if (rotate)
+		{
+			rotateSword(15, 10);
 		}
 		else
 		{
-			if (m_isFacingLeft)
-				m_sword.getBody()->ApplyAngularImpulse(-.01, true);
-			else
-				m_sword.getBody()->ApplyAngularImpulse(.01, true);
+			rotateSword(15, -10);
 		}
 	}
 }
@@ -556,6 +554,20 @@ void Player::setSwordStance(float posChange)
 	world.DestroyJoint(m_playerToArmJoint);
 	m_playerToArmJointDef = playerToArm;
 	m_playerToArmJoint = (b2PrismaticJoint*)world.CreateJoint(&m_playerToArmJointDef);
+}
+
+void Player::rotateSword(float angle, float speed)
+{
+	if (m_isFacingLeft)
+	{
+		m_armToSwordJoint->SetLimits(0, angle * DEG_TO_RAD);
+		m_sword.getBody()->SetAngularVelocity(speed);
+	}
+	else
+	{
+		m_armToSwordJoint->SetLimits(-angle * DEG_TO_RAD, 0);
+		m_sword.getBody()->SetAngularVelocity(-speed);
+	}
 }
 
 b2Body * Player::getJumpBody()

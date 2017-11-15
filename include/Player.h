@@ -36,6 +36,7 @@ public:
 	void setArmToSwordJoint(float lowerAngle, float upperAngle, b2Vec2 anchorPos);
 	void setPlayerToArmJoint(float lowerLimit, float upperLimit, b2Vec2 anchorPos);
 	void setSwordStance(float posChange); //change sthe y position of our arm local to the player, this will be used to switch the heights we hold our sword at
+	void rotateSword(float angle, float speed); //sets the limits of the rotation of our sword and then set the speed of the rotation
 
 	//Getters
 	b2Body* getJumpBody();
