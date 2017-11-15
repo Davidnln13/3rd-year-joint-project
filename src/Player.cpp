@@ -575,6 +575,8 @@ void Player::setSwordStance(float posChange)
 	world.DestroyJoint(m_playerToArmJoint);
 	m_playerToArmJointDef = playerToArm;
 	m_playerToArmJoint = (b2PrismaticJoint*)world.CreateJoint(&m_playerToArmJointDef);
+	//Set the position of the sword
+	m_sword.getBody()->SetTransform(b2Vec2(m_sword.getBody()->GetPosition().x, m_sword.getBody()->GetPosition().y - (posChange / 2)), m_sword.getBody()->GetAngle());
 }
 
 void Player::rotateSword(float angle, float speed)
