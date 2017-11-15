@@ -8,6 +8,8 @@ Player::Player(sf::Vector2f position, sf::Vector2f size = sf::Vector2f(15, 15), 
 	m_respawn(false),
 	m_isAiming(false),
 	m_holdingSword(true),
+	m_parried(false),
+	m_switchedSwordPos(false),
 	m_moveSpeed(7.0f),
 	m_gravityScale(2.75f),
 	m_weaponPos(1), //the centre of our player
@@ -160,6 +162,21 @@ Player::~Player()
 void Player::update()
 {
 	m_sword.update();
+
+	if (m_switchedSwordPos)
+	{
+		//if the time elapsed since the clock was started/restarted is greater than or equal to our stance change rate
+		if (m_stanceChangeClock.getElapsedTime().asSeconds() >= 0.125f)
+		{
+			m_switchedSwordPos = false;
+		}
+	}
+
+	//if we were parried and we are holding a sword
+	if (m_parried && m_holdingSword)
+	{
+		parried();
+	}
 
 	if(m_pickupSword)
 	{ 
@@ -361,7 +378,7 @@ void Player::invertPlayerJoint(bool facingLeft)
 
 void Player::changeSwordStance(std::string direction)
 {
-	if (direction == "Up")
+	if (direction == "Up" && m_switchedSwordPos == false)
 	{
 		//if we can move up and we are not already at the top stance of our player
 		if (m_weaponPos < 2)
@@ -370,9 +387,11 @@ void Player::changeSwordStance(std::string direction)
 
 			//Invoke our method to change the y position of our arm and sword
 			setSwordStance(m_weaponPosChange);
+			m_switchedSwordPos = true;
+			m_stanceChangeClock.restart(); //restart our stance clock
 		}
 	}
-	else if (direction == "Down")
+	else if (direction == "Down" && m_switchedSwordPos == false)
 	{
 		if (m_weaponPos > 0)
 		{
@@ -380,6 +399,8 @@ void Player::changeSwordStance(std::string direction)
 
 			//Invoke our method to change the y position of our arm and sword
 			setSwordStance(-m_weaponPosChange);
+			m_switchedSwordPos = true;
+			m_stanceChangeClock.restart();//restart our stance clock
 		}
 	}
 
@@ -502,7 +523,7 @@ void Player::pickUpWeapon()
 
 void Player::setArmToSwordJoint(float lowerAngle, float upperAngle, b2Vec2 anchorPos)
 {
-	//If we are holding a sword
+	//If we are holding a sword 
 	if (m_holdingSword)
 	{
 		//get our arm to sword joint
@@ -570,6 +591,19 @@ void Player::rotateSword(float angle, float speed)
 	}
 }
 
+void Player::parried()
+{
+	//Destroy the arm to sword joint
+	world.DestroyJoint(m_armToSwordJoint);
+
+	m_holdingSword = false;
+	m_armToSwordJoint = nullptr;
+
+	m_sword.parried();
+
+	m_parried = false;
+}
+
 b2Body * Player::getJumpBody()
 {
 	return m_jumpBody;
@@ -609,6 +643,10 @@ void Player::setClashed(bool clashed)
 		m_sword.getBody()->SetLinearVelocity(b2Vec2(0, m_sword.getBody()->GetLinearVelocity().y));
 	}
 }
+void Player::setParried(bool parried)
+{
+	m_parried = parried;
+}
 void Player::setSwordThrown()
 {
 	m_sword.setSwordThrown();
@@ -627,4 +665,9 @@ bool Player::getCanAttack()
 bool Player::holdingSword()
 {
 	return m_holdingSword;
+}
+
+bool Player::switchedWeaponPos()
+{
+	return m_switchedSwordPos;
 }

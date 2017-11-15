@@ -139,6 +139,16 @@ void Weapon::pickUp()
 	m_body->ApplyTorque(0, true);
 }
 
+void Weapon::parried()
+{
+	m_body->SetAngularVelocity(0);
+	m_body->SetLinearVelocity(b2Vec2(0,0));
+	m_body->GetFixtureList()->SetSensor(false);
+	m_body->SetGravityScale(1);
+	m_body->ApplyLinearImpulseToCenter(b2Vec2(2, 0), true);
+	m_body->ApplyTorque(-5, true);
+}
+
 b2Body* Weapon::getBody()
 {
 	return m_body;

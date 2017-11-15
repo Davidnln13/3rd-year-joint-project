@@ -22,6 +22,7 @@ public:
 	void throwWeapon(std::string direction);
 	void applyForce(b2Vec2 force);
 	void pickUp(); //picks up the weapon
+	void parried();
 
 	//getters
 	b2Body* getBody();

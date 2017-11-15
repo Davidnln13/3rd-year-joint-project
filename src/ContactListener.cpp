@@ -90,12 +90,14 @@ bool ContactListener::checkForSwordPickUp(Player * player, b2Fixture & fixA, b2F
 
 void ContactListener::haveTwoSwordsCollided(Player * player1, Player* player2, b2Fixture & fixA, b2Fixture & fixB)
 {
-	//If the Fixture is a sword and it has collided witht he other players sword
+	//If the Fixture is a sword and it has collided with the other players sword
 	if (fixA.GetBody() == player1->getSwordBody() && fixB.GetBody() == m_player2->getSwordBody()
 		|| fixB.GetBody() == player1->getSwordBody() && fixA.GetBody() == m_player2->getSwordBody())
 	{ 
 		if (player1->holdingSword() == false) //so if we are not holding a sword
 			player1->setSwordThrown();
+		else if (player1->switchedWeaponPos())
+			player2->setParried(true);
 		else
 			player1->setClashed(true);
 	}
