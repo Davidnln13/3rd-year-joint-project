@@ -41,6 +41,7 @@ private:
 
 	//Our player sprites
 	thor::ResourceLoader<sf::Texture> m_idlePlayer = thor::Resources::fromFile<sf::Texture>("./resources/Textures/Idle SpriteSheet.png");
+	thor::ResourceLoader<sf::Texture> m_playerAttack = thor::Resources::fromFile<sf::Texture>("./resources/Textures/Attack Spritesheet.png");
 
 	//Our font(s)
 	thor::ResourceLoader<sf::Font> m_oxinFont = thor::Resources::fromFile<sf::Font>("./resources/Fonts/OXIN.ttf");

@@ -23,6 +23,7 @@ ResourceManager::ResourceManager()
 
 		//Load player textures
 		acquireResource("idlePlayer", m_idlePlayer);
+		acquireResource("playerAttack", m_playerAttack);
 
 		//Load Fonts
 		acquireResource("oxinFont", m_oxinFont);
