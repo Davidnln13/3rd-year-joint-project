@@ -24,6 +24,11 @@ public:
 private:
 	//Our level background sprite
 	sf::Sprite m_bg;
+	sf::Sprite m_player1lightSprite;
+	sf::Sprite m_player2lightSprite;
+	sf::Texture m_lightTexture;
+	sf::Sprite m_overlaySprite;
+	sf::RenderTexture m_overlayTexture;
 
 	//Obstacle variables
 	Obstacle m_floor;
