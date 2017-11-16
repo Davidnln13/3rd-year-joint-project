@@ -37,11 +37,8 @@ void Level::render(sf::RenderWindow & window)
 
 	//Draw our player and sword lights
 	m_overlayTexture.draw(m_player1.getLight());
-	m_overlayTexture.display();
 	m_overlayTexture.draw(m_player2.getLight());
-	m_overlayTexture.display();
 	m_overlayTexture.draw(m_player1.getSwordLight());
-	m_overlayTexture.display();
 	m_overlayTexture.draw(m_player2.getSwordLight());
 	m_overlayTexture.display();
 

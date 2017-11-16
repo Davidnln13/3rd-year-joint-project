@@ -39,7 +39,9 @@ public:
 	void rotateSword(float angle, float speed); //sets the limits of the rotation of our sword and then set the speed of the rotation
 	void parried();
 	void setUpAnimations(); //setups our animations for the player
-	void setSpriteTexture(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2i frameSize); //we will use this to set the texture of our sprite so we can change between animations
+	void addFramesToAnimation(float lengthOfOneFrame, int numOfFrames, thor::FrameAnimation& animation, sf::Vector2i& frameSize, std::string animationName, float lengthOfAnimation); //adds a specified amount of frames to an animation
+	//we will use this to set the texture of our sprite so we can change between animations, we use the offset because the plaeyr will not always be in the center of the image on each animation
+	void setSpriteTexture(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2i frameSize, float xOffset); 
 
 	//Getters
 	b2Body* getJumpBody();
@@ -121,10 +123,11 @@ private:
 
 	//Animation variables
 	sf::Clock m_animationClock; //our animation clock, we will use this to update our animations
-	thor::FrameAnimation m_idleAnimation, m_attackAnimation;
+	thor::FrameAnimation m_idleAnimation, m_attackAnimation, m_runAnimation;
 	thor::AnimationMap<sf::Sprite, std::string> m_animationHolder;//our select and deselect animations
 	thor::Animator<sf::Sprite, std::string> m_animator;
 	float m_idleTime; //holds teh amount of time gone since we last played our idle animation
+	float m_runTime; //holds teh amount of time gone since we last played our run animation
 
 	//Const variables
 	float const RAD_TO_DEG;

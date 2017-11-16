@@ -39,9 +39,10 @@ private:
 	thor::ResourceLoader<sf::Texture> m_castleBg = thor::Resources::fromFile<sf::Texture>("./resources/Textures/Castle BG.png");
 	thor::ResourceLoader<sf::Texture> m_stoneTile = thor::Resources::fromFile<sf::Texture>("./resources/Textures/Stone Tile.png");
 
-	//Our player sprites
-	thor::ResourceLoader<sf::Texture> m_idlePlayer = thor::Resources::fromFile<sf::Texture>("./resources/Textures/Idle SpriteSheet.png");
+	//Our player related sprite sheets and textures
+	thor::ResourceLoader<sf::Texture> m_idlePlayer = thor::Resources::fromFile<sf::Texture>("./resources/Textures/Idle Spritesheet.png");
 	thor::ResourceLoader<sf::Texture> m_playerAttack = thor::Resources::fromFile<sf::Texture>("./resources/Textures/Attack Spritesheet.png");
+	thor::ResourceLoader<sf::Texture> m_playerRun = thor::Resources::fromFile<sf::Texture>("./resources/Textures/Run Spritesheet.png");
 	thor::ResourceLoader<sf::Texture> m_swordLight = thor::Resources::fromFile<sf::Texture>("./resources/Textures/Sword Light.png");
 	thor::ResourceLoader<sf::Texture> m_playerLight = thor::Resources::fromFile<sf::Texture>("./resources/Textures/Player Light.png");
 

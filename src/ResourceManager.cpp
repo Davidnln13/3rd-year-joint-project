@@ -24,6 +24,7 @@ ResourceManager::ResourceManager()
 		//Load player textures
 		acquireResource("idlePlayer", m_idlePlayer);
 		acquireResource("playerAttack", m_playerAttack);
+		acquireResource("playerRun", m_playerRun);
 		acquireResource("playerLight", m_playerLight);
 		acquireResource("swordLight", m_swordLight);
 

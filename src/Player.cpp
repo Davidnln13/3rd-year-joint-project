@@ -21,7 +21,8 @@ Player::Player(sf::Vector2f position, std::string direction = "left") :
 	m_jumpRect(sf::Vector2f(18, 3)),
 	m_sword(position),
 	m_animator(m_animationHolder),
-	m_idleTime(0),
+	m_idleTime(.5f),
+	m_runTime(1),
 	RAD_TO_DEG(180.f / thor::Pi),
 	DEG_TO_RAD(thor::Pi / 180.f)
 {
@@ -155,8 +156,8 @@ Player::Player(sf::Vector2f position, std::string direction = "left") :
 	m_attackClock.restart(); //start our clock when the player is created
 
 	//Setting up our sprites
-	setSpriteTexture(m_sprite, resourceManager.getTextureHolder()["idlePlayer"], sf::Vector2i(42, 87));
-	setSpriteTexture(m_lightSprite, resourceManager.getTextureHolder()["playerLight"], sf::Vector2i(300, 300));
+	setSpriteTexture(m_sprite, resourceManager.getTextureHolder()["idlePlayer"], sf::Vector2i(42, 87), 24);
+	setSpriteTexture(m_lightSprite, resourceManager.getTextureHolder()["playerLight"], sf::Vector2i(300, 300), 150);
 
 	if (m_isFacingLeft)
 		m_sprite.setScale(-1, 1);
@@ -251,21 +252,21 @@ void Player::render(sf::RenderWindow & window)
 	m_sprite.setPosition(m_playerBody->GetPosition().x * PPM, m_playerBody->GetPosition().y * PPM);
 	window.draw(m_sprite);
 
-	////drawing our player
-	//m_playerRect.setPosition(m_playerBody->GetPosition().x * PPM, m_playerBody->GetPosition().y * PPM);
-	//m_playerRect.setRotation(m_playerBody->GetAngle() * RAD_TO_DEG); //have to convert from radians to degrees here
+	//drawing our player
+	m_playerRect.setPosition(m_playerBody->GetPosition().x * PPM, m_playerBody->GetPosition().y * PPM);
+	m_playerRect.setRotation(m_playerBody->GetAngle() * RAD_TO_DEG); //have to convert from radians to degrees here
 
-	////drawing our arm
+	//drawing our arm
 	m_forearmRect.setPosition(m_forearmBody->GetPosition().x * PPM, m_forearmBody->GetPosition().y * PPM);
 	m_forearmRect.setRotation(m_forearmBody->GetAngle() * RAD_TO_DEG); //have to convert from radians to degrees here
 
-	////drawing our jump sensor
-	//m_jumpRect.setPosition(m_jumpBody->GetPosition().x * PPM, m_jumpBody->GetPosition().y * PPM);
-	//m_jumpRect.setRotation(m_jumpBody->GetAngle() * RAD_TO_DEG); //have to convert from radians to degrees here
+	//drawing our jump sensor
+	m_jumpRect.setPosition(m_jumpBody->GetPosition().x * PPM, m_jumpBody->GetPosition().y * PPM);
+	m_jumpRect.setRotation(m_jumpBody->GetAngle() * RAD_TO_DEG); //have to convert from radians to degrees here
 
-	//window.draw(m_playerRect);
+	window.draw(m_playerRect);
 	window.draw(m_forearmRect);
-	//window.draw(m_jumpRect);
+	window.draw(m_jumpRect);
 	m_sword.render(window);
 }
 
@@ -285,7 +286,7 @@ void Player::attack()
 {
 	if (m_canAttack && m_holdingSword) //if we can attack and we have a sword
 	{
-		setSpriteTexture(m_sprite, resourceManager.getTextureHolder()["playerAttack"], sf::Vector2i(49, 88));
+		setSpriteTexture(m_sprite, resourceManager.getTextureHolder()["playerAttack"], sf::Vector2i(49, 88), 24);
 
 		m_animator.stop(); //stop any animations playing
 		m_animator.play() << "attack";
@@ -333,7 +334,9 @@ void Player::handleJoystick(JoystickController & controller)
 {
 	bool moved = false;
 
+	//Add the time gone since the last frame to our animation variables
 	m_idleTime += m_animationClock.getElapsedTime().asSeconds();
+	m_runTime += m_animationClock.getElapsedTime().asSeconds();
 
 	//Set our Boolean to false
 	m_isAiming = false;
@@ -350,12 +353,28 @@ void Player::handleJoystick(JoystickController & controller)
 
 	if (controller.isButtonHeld("LeftThumbStickLeft") && m_canAttack)
 	{
+		if (m_runTime >= .75f)
+		{
+			setSpriteTexture(m_sprite, resourceManager.getTextureHolder()["playerRun"], sf::Vector2i(63, 87), 36);
+			m_animator.stop();
+			m_animator.play() << "run";
+			m_runTime = 0;
+			m_idleTime = 0.5f;
+		}
 		moved = true;
 		moveLeft();
 		rotateWhileRunning(true);
 	}
 	if (controller.isButtonHeld("LeftThumbStickRight") && m_canAttack)
 	{
+		if (m_runTime >= .75f)
+		{
+			setSpriteTexture(m_sprite, resourceManager.getTextureHolder()["playerRun"], sf::Vector2i(63, 87), 36);
+			m_animator.stop();
+			m_animator.play() << "run";
+			m_runTime = 0;
+			m_idleTime = 0.5f;
+		}
 		moved = true;
 		moveRight();
 		rotateWhileRunning(true);
@@ -380,10 +399,11 @@ void Player::handleJoystick(JoystickController & controller)
 		if (m_idleTime >= 0.5f && m_canAttack && m_canJump)
 		{
 			m_idleTime = 0;
-			setSpriteTexture(m_sprite, resourceManager.getTextureHolder()["idlePlayer"], sf::Vector2i(42, 87));
+			setSpriteTexture(m_sprite, resourceManager.getTextureHolder()["idlePlayer"], sf::Vector2i(42, 87), 24);
 			m_animator.stop(); //stop any animation playing at the moment
 			m_animator.play() << "idle";
 		}
+		m_runTime = .75f;
 		rotateWhileRunning(false);
 		m_forearmBody->SetLinearVelocity(b2Vec2(0, m_forearmBody->GetLinearVelocity().y));
 		m_playerBody->SetLinearVelocity(b2Vec2(0, m_playerBody->GetLinearVelocity().y));
@@ -653,29 +673,32 @@ void Player::setUpAnimations()
 
 	auto idleFrameSize = sf::Vector2i(42, 87);
 	auto attackFrameSize = sf::Vector2i(49, 88);
+	auto runFrameSize = sf::Vector2i(63, 87);
 
-	//loop for 5 frames
-	for(int i = 0; i < 5; i++)
-	{
-		auto frame = sf::IntRect(0 + (idleFrameSize.x * i), 0, idleFrameSize.x, idleFrameSize.y);
-		m_idleAnimation.addFrame(.01f, frame);
-	}
-	//loop for 10 frames
-	for (int i = 0; i < 10; i++)
-	{
-		auto frame = sf::IntRect(0 + (attackFrameSize.x * i), 0, attackFrameSize.x, attackFrameSize.y);
-		m_attackAnimation.addFrame(.01f, frame);
-	}
-
-	m_animationHolder.addAnimation("attack", m_attackAnimation, sf::seconds(.35f));
-	m_animationHolder.addAnimation("idle", m_idleAnimation, sf::seconds(0.5f));
+	//Adding all of our animations to our animation holder
+	addFramesToAnimation(0.1f, 5, m_idleAnimation, idleFrameSize, "idle", .5f);
+	addFramesToAnimation(0.1f, 10, m_attackAnimation, attackFrameSize, "attack", .35f);
+	addFramesToAnimation(0.1f, 20, m_runAnimation, runFrameSize, "run", .75f);
 }
 
-void Player::setSpriteTexture(sf::Sprite& sprite, sf::Texture & texture, sf::Vector2i frameSize)
+void Player::addFramesToAnimation(float lengthOfOneFrame, int numOfFrames, thor::FrameAnimation & animation, sf::Vector2i & frameSize, std::string animationName, float lengthOfAnimation)
+{
+	//loop for the amount of frames passed to the method
+	for (int i = 0; i < numOfFrames; i++)
+	{
+		//add a frame to the animation each loop
+		auto frame = sf::IntRect(0 + (frameSize.x * i), 0, frameSize.x, frameSize.y);
+		animation.addFrame(lengthOfOneFrame, frame);
+	}
+	//add the animation to our animation holder with the specified length and name
+	m_animationHolder.addAnimation(animationName, animation, sf::seconds(lengthOfAnimation));
+}
+
+void Player::setSpriteTexture(sf::Sprite& sprite, sf::Texture & texture, sf::Vector2i frameSize, float xOffset)
 {
 	sprite.setTexture(texture);
 	sprite.setTextureRect(sf::IntRect(0,0, frameSize.x, frameSize.y));
-	sprite.setOrigin(sprite.getLocalBounds().left + frameSize.x /2, sprite.getLocalBounds().top + frameSize.y / 2);
+	sprite.setOrigin(sprite.getLocalBounds().left + xOffset, sprite.getLocalBounds().top + sprite.getLocalBounds().height / 2);
 }
 
 b2Body * Player::getJumpBody()
