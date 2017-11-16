@@ -39,7 +39,7 @@ public:
 	void rotateSword(float angle, float speed); //sets the limits of the rotation of our sword and then set the speed of the rotation
 	void parried();
 	void setUpAnimations(); //setups our animations for the player
-	void setSpriteTexture(sf::Texture& texture, sf::Vector2i frameSize); //we will use this to set the texture of our sprite so we can change between animations
+	void setSpriteTexture(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2i frameSize); //we will use this to set the texture of our sprite so we can change between animations
 
 	//Getters
 	b2Body* getJumpBody();
@@ -49,6 +49,8 @@ public:
 	bool getCanAttack();
 	bool holdingSword();
 	bool switchedWeaponPos();
+	sf::Sprite& getLight();
+	sf::Sprite& getSwordLight();
 
 	//Setters
 	void setCanJump(bool canJump);
@@ -115,6 +117,7 @@ private:
 
 	//Sprite variables
 	sf::Sprite m_sprite;
+	sf::Sprite m_lightSprite;
 
 	//Animation variables
 	sf::Clock m_animationClock; //our animation clock, we will use this to update our animations

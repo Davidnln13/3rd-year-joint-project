@@ -154,8 +154,9 @@ Player::Player(sf::Vector2f position, std::string direction = "left") :
 
 	m_attackClock.restart(); //start our clock when the player is created
 
-	//Setting up our sprite
-	setSpriteTexture(resourceManager.getTextureHolder()["idlePlayer"], sf::Vector2i(42, 87));
+	//Setting up our sprites
+	setSpriteTexture(m_sprite, resourceManager.getTextureHolder()["idlePlayer"], sf::Vector2i(42, 87));
+	setSpriteTexture(m_lightSprite, resourceManager.getTextureHolder()["playerLight"], sf::Vector2i(300, 300));
 
 	if (m_isFacingLeft)
 		m_sprite.setScale(-1, 1);
@@ -243,6 +244,9 @@ void Player::update()
 
 void Player::render(sf::RenderWindow & window)
 {
+	//Set the position of our light texture
+	m_lightSprite.setPosition(m_playerBody->GetPosition().x * PPM, m_playerBody->GetPosition().y * PPM);
+
 	//draw our sprite
 	m_sprite.setPosition(m_playerBody->GetPosition().x * PPM, m_playerBody->GetPosition().y * PPM);
 	window.draw(m_sprite);
@@ -281,7 +285,7 @@ void Player::attack()
 {
 	if (m_canAttack && m_holdingSword) //if we can attack and we have a sword
 	{
-		setSpriteTexture(resourceManager.getTextureHolder()["playerAttack"], sf::Vector2i(49, 88));
+		setSpriteTexture(m_sprite, resourceManager.getTextureHolder()["playerAttack"], sf::Vector2i(49, 88));
 
 		m_animator.stop(); //stop any animations playing
 		m_animator.play() << "attack";
@@ -376,7 +380,7 @@ void Player::handleJoystick(JoystickController & controller)
 		if (m_idleTime >= 0.5f && m_canAttack && m_canJump)
 		{
 			m_idleTime = 0;
-			setSpriteTexture(resourceManager.getTextureHolder()["idlePlayer"], sf::Vector2i(42, 87));
+			setSpriteTexture(m_sprite, resourceManager.getTextureHolder()["idlePlayer"], sf::Vector2i(42, 87));
 			m_animator.stop(); //stop any animation playing at the moment
 			m_animator.play() << "idle";
 		}
@@ -667,11 +671,11 @@ void Player::setUpAnimations()
 	m_animationHolder.addAnimation("idle", m_idleAnimation, sf::seconds(0.5f));
 }
 
-void Player::setSpriteTexture(sf::Texture & texture, sf::Vector2i frameSize)
+void Player::setSpriteTexture(sf::Sprite& sprite, sf::Texture & texture, sf::Vector2i frameSize)
 {
-	m_sprite.setTexture(texture);
-	m_sprite.setTextureRect(sf::IntRect(0,0, frameSize.x, frameSize.y));
-	m_sprite.setOrigin(m_sprite.getLocalBounds().left + frameSize.x /2, m_sprite.getLocalBounds().top + frameSize.y / 2);
+	sprite.setTexture(texture);
+	sprite.setTextureRect(sf::IntRect(0,0, frameSize.x, frameSize.y));
+	sprite.setOrigin(sprite.getLocalBounds().left + frameSize.x /2, sprite.getLocalBounds().top + frameSize.y / 2);
 }
 
 b2Body * Player::getJumpBody()
@@ -740,4 +744,14 @@ bool Player::holdingSword()
 bool Player::switchedWeaponPos()
 {
 	return m_switchedSwordPos;
+}
+
+sf::Sprite & Player::getLight()
+{
+	return m_lightSprite;
+}
+
+sf::Sprite & Player::getSwordLight()
+{
+	return m_sword.getLight();
 }

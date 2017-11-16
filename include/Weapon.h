@@ -29,6 +29,7 @@ public:
 
 	//getters
 	b2Body* getBody();
+	sf::Sprite& getLight();
 
 	//Setters
 	void setPosition(b2Vec2 pos, float angle);
@@ -42,4 +43,5 @@ private:
 	b2FixtureDef m_bodyFixt;
 	sf::RectangleShape m_rect;
 	b2RevoluteJoint* m_pivotJoint;
+	sf::Sprite m_lightSprite;
 };

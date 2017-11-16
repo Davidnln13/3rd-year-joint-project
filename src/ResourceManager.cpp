@@ -24,6 +24,8 @@ ResourceManager::ResourceManager()
 		//Load player textures
 		acquireResource("idlePlayer", m_idlePlayer);
 		acquireResource("playerAttack", m_playerAttack);
+		acquireResource("playerLight", m_playerLight);
+		acquireResource("swordLight", m_swordLight);
 
 		//Load Fonts
 		acquireResource("oxinFont", m_oxinFont);
@@ -43,7 +45,7 @@ ResourceManager::~ResourceManager()
 void ResourceManager::acquireResource(std::string resourceId, thor::ResourceLoader<sf::Texture> textureLoader)
 {
 	m_textureHolder.acquire(resourceId, textureLoader);
-	m_textureHolder[resourceId].setSmooth(true);
+	m_textureHolder[resourceId].setSmooth(false);
 }
 
 //This method acquires our fonts

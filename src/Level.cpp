@@ -17,16 +17,10 @@ Level::Level(Audio& audio, sf::Texture& levelBackground) :
 
 	setUpFloor();
 
-
+	//setting the parameters of our dark overlay, we will draw lights onto this render texture
 	m_overlayTexture.create(1280, 720);
 	m_overlaySprite.setTexture(m_overlayTexture.getTexture());
 	m_overlaySprite.setPosition(0,0);
-
-	m_lightTexture.loadFromFile("./resources/Textures/light.png");
-	m_player1lightSprite.setTexture(m_lightTexture);
-	m_player1lightSprite.setOrigin(m_player1lightSprite.getLocalBounds().left + m_player1lightSprite.getLocalBounds().width / 2, m_player1lightSprite.getLocalBounds().top + m_player1lightSprite.getLocalBounds().height / 2);
-	m_player2lightSprite.setTexture(m_lightTexture);
-	m_player2lightSprite.setOrigin(m_player2lightSprite.getLocalBounds().left + m_player2lightSprite.getLocalBounds().width / 2, m_player2lightSprite.getLocalBounds().top + m_player2lightSprite.getLocalBounds().height / 2);
 }
 
 void Level::update()
@@ -34,18 +28,21 @@ void Level::update()
 	//update our players
 	m_player1.update();
 	m_player2.update();
-
-	m_player1lightSprite.setPosition(m_player1.getPlayerBody()->GetPosition().x * 30, m_player1.getPlayerBody()->GetPosition().y * 30);
-	m_player2lightSprite.setPosition(m_player2.getPlayerBody()->GetPosition().x * 30, m_player2.getPlayerBody()->GetPosition().y * 30);
 }
 
 void Level::render(sf::RenderWindow & window)
 {
-	m_overlayTexture.clear(sf::Color(100, 100, 100, 200));
+	m_overlayTexture.clear(sf::Color(50, 50, 50, 255));
 	m_overlayTexture.display();
 
-	m_overlayTexture.draw(m_player1lightSprite);
-	m_overlayTexture.draw(m_player2lightSprite);
+	//Draw our player and sword lights
+	m_overlayTexture.draw(m_player1.getLight());
+	m_overlayTexture.display();
+	m_overlayTexture.draw(m_player2.getLight());
+	m_overlayTexture.display();
+	m_overlayTexture.draw(m_player1.getSwordLight());
+	m_overlayTexture.display();
+	m_overlayTexture.draw(m_player2.getSwordLight());
 	m_overlayTexture.display();
 
 	window.draw(m_bg); //draw the background

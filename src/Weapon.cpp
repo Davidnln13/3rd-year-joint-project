@@ -26,6 +26,9 @@ Weapon::Weapon(sf::Vector2f position) :
 	m_rect.setFillColor(sf::Color::Transparent);
 	m_rect.setOutlineColor(sf::Color::Red);
 	m_rect.setOutlineThickness(1);
+
+	m_lightSprite.setTexture(resourceManager.getTextureHolder()["swordLight"]);
+	m_lightSprite.setOrigin(m_lightSprite.getLocalBounds().left + m_lightSprite.getLocalBounds().width / 2, m_lightSprite.getLocalBounds().top + m_lightSprite.getLocalBounds().height / 2);
 }
 
 Weapon::~Weapon()
@@ -54,6 +57,10 @@ void Weapon::update()
 
 void Weapon::render(sf::RenderWindow & window)
 {
+	//Drawing our light for our sword
+	m_lightSprite.setPosition(m_body->GetPosition().x * PPM, m_body->GetPosition().y * PPM);
+	m_lightSprite.setRotation(m_body->GetAngle() * (180.f / thor::Pi));
+
 	m_rect.setPosition(m_body->GetPosition().x * PPM, m_body->GetPosition().y * PPM);
 	m_rect.setRotation(m_body->GetAngle() * (180.f / thor::Pi)); //have to convert from radians to degrees here
 	window.draw(m_rect);
@@ -152,6 +159,11 @@ void Weapon::parried()
 b2Body* Weapon::getBody()
 {
 	return m_body;
+}
+
+sf::Sprite & Weapon::getLight()
+{
+	return m_lightSprite;
 }
 
 void Weapon::setPosition(b2Vec2 pos, float angle)
