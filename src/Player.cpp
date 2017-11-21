@@ -26,6 +26,9 @@ Player::Player(sf::Vector2f position, std::string direction = "left") :
 	RAD_TO_DEG(180.f / thor::Pi),
 	DEG_TO_RAD(thor::Pi / 180.f)
 {
+	//Load our shader
+	m_recolourShader.loadFromFile(resourceManager.getShaderHolder()["recolourShader"], sf::Shader::Fragment);
+
 	m_weaponPosChange = (50 / 3.0f) / PPM; //how much our weapon changes in position when we change the height it is at
 
 	m_startingDirection = direction; //need to change this eventually so we can respawn in either direction
@@ -93,7 +96,7 @@ Player::Player(sf::Vector2f position, std::string direction = "left") :
 
 	m_forearmRect.setOrigin(m_forearmRect.getSize().x / 2.f, m_forearmRect.getSize().y / 2.f); //setting the origin to the center of the box
 	m_forearmRect.setFillColor(sf::Color::White);
-	m_forearmRect.setOutlineThickness(1);
+	m_forearmRect.setOutlineThickness(0);
 
 	m_jumpRect.setOrigin(m_jumpRect.getSize().x / 2.f, m_jumpRect.getSize().y / 2.f); //setting the origin to the center of the box
 	m_jumpRect.setFillColor(sf::Color::Transparent);
@@ -164,6 +167,17 @@ Player::Player(sf::Vector2f position, std::string direction = "left") :
 
 	//Setup all of our animations
 	setUpAnimations();
+
+	if (m_isFacingLeft)
+	{
+		setColour(sf::Color(244, 241, 66, 255));
+		m_forearmRect.setFillColor(sf::Color(244, 241, 66, 255));
+	}
+	else
+	{
+		setColour(sf::Color(65, 244, 232));
+		m_forearmRect.setFillColor(sf::Color(65, 244, 232));
+	}
 }
 
 Player::~Player()
@@ -250,7 +264,7 @@ void Player::render(sf::RenderWindow & window)
 
 	//draw our sprite
 	m_sprite.setPosition(m_playerBody->GetPosition().x * PPM, m_playerBody->GetPosition().y * PPM);
-	window.draw(m_sprite);
+	window.draw(m_sprite, &m_recolourShader);
 
 	//drawing our player
 	m_playerRect.setPosition(m_playerBody->GetPosition().x * PPM, m_playerBody->GetPosition().y * PPM);
@@ -699,6 +713,21 @@ void Player::setSpriteTexture(sf::Sprite& sprite, sf::Texture & texture, sf::Vec
 	sprite.setTexture(texture);
 	sprite.setTextureRect(sf::IntRect(0,0, frameSize.x, frameSize.y));
 	sprite.setOrigin(sprite.getLocalBounds().left + xOffset, sprite.getLocalBounds().top + sprite.getLocalBounds().height / 2);
+}
+
+void Player::setColour(sf::Color color)
+{
+	//Calculate our new colours, needs to be a number between 0 and 1 so we divide each paractmeter by 255
+	float newR = color.r / 255.0;
+	float newG = color.g / 255.0;
+	float newB = color.b / 255.0;
+	float newA = color.a / 255.0;
+
+	//Set our shade runiform variables to our new calculated colour
+	m_recolourShader.setUniform("newR", newR);
+	m_recolourShader.setUniform("newG", newG);
+	m_recolourShader.setUniform("newB", newB);
+	m_recolourShader.setUniform("newA", newA);
 }
 
 b2Body * Player::getJumpBody()

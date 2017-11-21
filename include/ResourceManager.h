@@ -3,6 +3,7 @@
 #include "SFML\Graphics.hpp"
 #include <iostream>
 #include <mutex>
+#include <map>
 
 /// <summary>
 /// Authors: Daryl Keogh
@@ -18,16 +19,19 @@ public:
 	//Method to load in files on request (this cna be overloaded to work with many different file types such as fonts and audio)
 	void acquireResource(std::string resourceId, thor::ResourceLoader<sf::Texture> textureLoader);
 	void acquireResource(std::string resourceId, thor::ResourceLoader<sf::Font> fontLoader);
+	void acquireShader(std::string resourceId, std::string shaderPath);
 
 	//getters
 	thor::ResourceHolder<sf::Texture, std::string>& getTextureHolder();
 	thor::ResourceHolder<sf::Font, std::string>& getFontHolder();
-
+	std::map<std::string, std::string>& getShaderHolder();
 private:
 	//holds all of our textures
 	thor::ResourceHolder<sf::Texture, std::string> m_textureHolder;
 	//Holds fonts
 	thor::ResourceHolder<sf::Font, std::string> m_fontHolder;
+	//Holds shaders
+	std::map<std::string, std::string> m_shaderHolder;
 
 	//Our GUI Resources
 	thor::ResourceLoader<sf::Texture> m_buttonLayout = thor::Resources::fromFile<sf::Texture>("./resources/GUI/Button Spritesheet.png");
@@ -45,6 +49,9 @@ private:
 	thor::ResourceLoader<sf::Texture> m_playerRun = thor::Resources::fromFile<sf::Texture>("./resources/Textures/Run Spritesheet.png");
 	thor::ResourceLoader<sf::Texture> m_swordLight = thor::Resources::fromFile<sf::Texture>("./resources/Textures/Sword Light.png");
 	thor::ResourceLoader<sf::Texture> m_playerLight = thor::Resources::fromFile<sf::Texture>("./resources/Textures/Player Light.png");
+
+	//Our shader paths
+	std::string m_recolourShaderPath = "./resources/Shaders/Recolour Shader.frag";
 
 	//Our font(s)
 	thor::ResourceLoader<sf::Font> m_oxinFont = thor::Resources::fromFile<sf::Font>("./resources/Fonts/OXIN.ttf");

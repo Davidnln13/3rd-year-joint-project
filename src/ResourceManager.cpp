@@ -28,6 +28,9 @@ ResourceManager::ResourceManager()
 		acquireResource("playerLight", m_playerLight);
 		acquireResource("swordLight", m_swordLight);
 
+		//Load our shaders
+		acquireShader("recolourShader", m_recolourShaderPath);
+
 		//Load Fonts
 		acquireResource("oxinFont", m_oxinFont);
 	}
@@ -55,6 +58,13 @@ void ResourceManager::acquireResource(std::string resourceId, thor::ResourceLoad
 	m_fontHolder.acquire(resourceId, fontLoader);
 }
 
+//loads in our shaders
+void ResourceManager::acquireShader(std::string resourceId, std::string shaderPath)
+{
+	//adds a string with the key 'resourceId' with the path to the shader
+	m_shaderHolder[resourceId] = shaderPath;
+}
+
 thor::ResourceHolder<sf::Texture, std::string>& ResourceManager::getTextureHolder()
 {
 	return m_textureHolder;
@@ -63,4 +73,9 @@ thor::ResourceHolder<sf::Texture, std::string>& ResourceManager::getTextureHolde
 thor::ResourceHolder<sf::Font, std::string>& ResourceManager::getFontHolder()
 {
 	return m_fontHolder;
+}
+
+std::map<std::string, std::string>& ResourceManager::getShaderHolder()
+{
+	return m_shaderHolder;
 }

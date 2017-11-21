@@ -42,6 +42,7 @@ public:
 	void addFramesToAnimation(float lengthOfOneFrame, int numOfFrames, thor::FrameAnimation& animation, sf::Vector2i& frameSize, std::string animationName, float lengthOfAnimation); //adds a specified amount of frames to an animation
 	//we will use this to set the texture of our sprite so we can change between animations, we use the offset because the plaeyr will not always be in the center of the image on each animation
 	void setSpriteTexture(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2i frameSize, float xOffset); 
+	void setColour(sf::Color color); //set sthe colour of the player
 
 	//Getters
 	b2Body* getJumpBody();
@@ -128,6 +129,9 @@ private:
 	thor::Animator<sf::Sprite, std::string> m_animator;
 	float m_idleTime; //holds teh amount of time gone since we last played our idle animation
 	float m_runTime; //holds teh amount of time gone since we last played our run animation
+
+	//Shaders
+	sf::Shader m_recolourShader;
 
 	//Const variables
 	float const RAD_TO_DEG;
