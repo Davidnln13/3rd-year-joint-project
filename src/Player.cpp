@@ -159,7 +159,7 @@ Player::Player(sf::Vector2f position, std::string direction = "left") :
 	m_attackClock.restart(); //start our clock when the player is created
 
 	//Setting up our sprites
-	setSpriteTexture(m_sprite, resourceManager.getTextureHolder()["idlePlayer"], sf::Vector2i(42, 87), 24);
+	setSpriteTexture(m_sprite, resourceManager.getTextureHolder()["playerIdle"], sf::Vector2i(42, 87), 24);
 	setSpriteTexture(m_lightSprite, resourceManager.getTextureHolder()["playerLight"], sf::Vector2i(300, 300), 150);
 
 	if (m_isFacingLeft)
@@ -413,7 +413,7 @@ void Player::handleJoystick(JoystickController & controller)
 		if (m_idleTime >= 0.5f && m_canAttack && m_canJump)
 		{
 			m_idleTime = 0;
-			setSpriteTexture(m_sprite, resourceManager.getTextureHolder()["idlePlayer"], sf::Vector2i(42, 87), 24);
+			setSpriteTexture(m_sprite, resourceManager.getTextureHolder()["playerIdle"], sf::Vector2i(42, 87), 24);
 			m_animator.stop(); //stop any animation playing at the moment
 			m_animator.play() << "idle";
 		}

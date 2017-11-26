@@ -17,7 +17,7 @@ public:
 	~ResourceManager();
 
 	//Method to load in files on request (this cna be overloaded to work with many different file types such as fonts and audio)
-	void acquireResource(std::string resourceId, thor::ResourceLoader<sf::Texture> textureLoader);
+	void acquireResource(std::string resourceId, thor::ResourceLoader<sf::Texture> textureLoader, bool isSmooth = true);
 	void acquireResource(std::string resourceId, thor::ResourceLoader<sf::Font> fontLoader);
 	void acquireShader(std::string resourceId, std::string shaderPath);
 

@@ -1,3 +1,4 @@
+#version 330
 uniform sampler2D currentTexture;
 vec4 newColor;
 uniform float newR = 1;

@@ -22,9 +22,9 @@ ResourceManager::ResourceManager()
 		acquireResource("stoneTile", m_stoneTile);
 
 		//Load player textures
-		acquireResource("idlePlayer", m_idlePlayer);
-		acquireResource("playerAttack", m_playerAttack);
-		acquireResource("playerRun", m_playerRun);
+		acquireResource("playerIdle", m_idlePlayer, false); //setting our animations to not smooth eliminates artefacts
+		acquireResource("playerAttack", m_playerAttack, false);
+		acquireResource("playerRun", m_playerRun, false);
 		acquireResource("playerLight", m_playerLight);
 		acquireResource("swordLight", m_swordLight);
 
@@ -46,10 +46,10 @@ ResourceManager::~ResourceManager()
 }
 
 //This method acquires our texture and then sets our texture smooth to true
-void ResourceManager::acquireResource(std::string resourceId, thor::ResourceLoader<sf::Texture> textureLoader)
+void ResourceManager::acquireResource(std::string resourceId, thor::ResourceLoader<sf::Texture> textureLoader, bool isSmooth)
 {
 	m_textureHolder.acquire(resourceId, textureLoader);
-	m_textureHolder[resourceId].setSmooth(false);
+	m_textureHolder[resourceId].setSmooth(isSmooth);
 }
 
 //This method acquires our fonts
