@@ -38,6 +38,7 @@ private:
 	thor::ResourceLoader<sf::Texture> m_swordIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/sword icon.png");
 	thor::ResourceLoader<sf::Texture> m_optionsIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/settings icon.png");
 	thor::ResourceLoader<sf::Texture> m_exitIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/exit icon.png");
+	thor::ResourceLoader<sf::Texture> m_helpIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/help icon.png");
 	thor::ResourceLoader<sf::Texture> m_crossedSwordIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/Crossed Sword Icon.png");
 
 	//Our Level tiles
