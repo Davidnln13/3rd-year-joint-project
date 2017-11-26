@@ -13,9 +13,10 @@ ResourceManager::ResourceManager()
 	{
 		//load GUI
 		acquireResource("Button Spritesheet", m_buttonLayout);
-		acquireResource("Sword Icon", m_swordIcon);
+		acquireResource("Sword Icon", m_swordIcon, false);
 		acquireResource("Options Icon", m_optionsIcon);
 		acquireResource("Exit Icon", m_exitIcon);
+		acquireResource("Crossed Sword Icon", m_crossedSwordIcon);
 
 		//Load level textures
 		acquireResource("castleBG", m_castleBg);

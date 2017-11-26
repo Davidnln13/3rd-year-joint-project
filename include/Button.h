@@ -26,11 +26,11 @@ private:
 	Label m_label;
 
 	//Animation variables
-	sf::Clock m_animationClock; //our animation clock, we will use this to update our animations
-	sf::IntRect m_selectedRect; //the frame of our spritesheet we show when our button is selected
-	sf::IntRect m_unselectedRect;//the frame of our spritesheet we show when our button is not selected
-	sf::IntRect m_currentRect; //the current rectangle of the spritesheet we want to show
-	thor::FrameAnimation m_selectAnimation, m_deselectAnimation;
+	sf::Clock m_animationClock, m_iconAnimationClock; //our animation clock, we will use this to update our animations
+	sf::IntRect m_selectedRect, m_iconSelectedRect; //the frame of our spritesheet we show when our button is selected
+	sf::IntRect m_unselectedRect, m_iconUnselectedRect;//the frame of our spritesheet we show when our button is not selected
+	thor::FrameAnimation m_selectAnimation, m_deselectAnimation, m_iconSelectAnimation, m_iconDeselectAnimation;
 	thor::AnimationMap<sf::Sprite, std::string> m_animationHolder;//our select and deselect animations
-	thor::Animator<sf::Sprite, std::string> m_animator;
+	thor::Animator<sf::Sprite, std::string> m_buttonAnimator;
+	thor::Animator<sf::Sprite, std::string> m_iconAnimator;
 };
