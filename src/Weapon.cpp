@@ -17,15 +17,18 @@ Weapon::Weapon(sf::Vector2f position) :
 	boxShape.SetAsBox((m_rect.getSize().x / 2.f) / PPM, (m_rect.getSize().y / 2.f) / PPM);
 
 	m_bodyFixt.shape = &boxShape;
-	m_bodyFixt.density = .2; //giving the sword a mass of .2
+	m_bodyFixt.density = .2f; //giving the sword a mass of .2
 	m_bodyFixt.isSensor = true;
 	m_body->CreateFixture(&m_bodyFixt);
 	m_body->SetUserData(this);
 
 	m_rect.setOrigin(m_rect.getSize().x / 2, m_rect.getSize().y / 2); //setting the origin to the center of the box
 	m_rect.setFillColor(sf::Color::Transparent);
-	m_rect.setOutlineColor(sf::Color::Red);
+	m_rect.setOutlineColor(sf::Color::White);
 	m_rect.setOutlineThickness(1);
+
+	m_sprite.setTexture(resourceManager.getTextureHolder()["sword"]);
+	m_sprite.setOrigin(m_sprite.getLocalBounds().left + (m_sprite.getLocalBounds().width / 2.0f) + 7.5f, m_sprite.getLocalBounds().top + m_sprite.getLocalBounds().height / 2.0f);
 
 	m_lightSprite.setTexture(resourceManager.getTextureHolder()["swordLight"]);
 	m_lightSprite.setOrigin(m_lightSprite.getLocalBounds().left + m_lightSprite.getLocalBounds().width / 2, m_lightSprite.getLocalBounds().top + m_lightSprite.getLocalBounds().height / 2);
@@ -63,7 +66,12 @@ void Weapon::render(sf::RenderWindow & window)
 
 	m_rect.setPosition(m_body->GetPosition().x * PPM, m_body->GetPosition().y * PPM);
 	m_rect.setRotation(m_body->GetAngle() * (180.f / thor::Pi)); //have to convert from radians to degrees here
-	window.draw(m_rect);
+
+	m_sprite.setPosition(m_body->GetPosition().x * PPM, m_body->GetPosition().y * PPM);
+	m_sprite.setRotation(m_body->GetAngle() * (180.f / thor::Pi));
+
+	window.draw(m_sprite);
+	//window.draw(m_rect);
 }
 
 void Weapon::respawn()
@@ -150,14 +158,27 @@ void Weapon::setSwordThrown()
 
 	if (m_throwDirection == "Left")
 	{
-		m_body->ApplyLinearImpulseToCenter(b2Vec2(.55, 0), true);
+		m_body->ApplyLinearImpulseToCenter(b2Vec2(.225f, 0), true);
 		m_body->ApplyTorque(1.5, true);
 	}
 	else
 	{
-		m_body->ApplyLinearImpulseToCenter(b2Vec2(-.55, 0), true);
+		m_body->ApplyLinearImpulseToCenter(b2Vec2(-.225f, 0), true);
 		m_body->ApplyTorque(-1.5, true);
 	}
 	m_body->SetGravityScale(1);
 	m_setSensor = true;
+}
+
+void Weapon::setSwordDirection(std::string direction)
+{
+	if (direction == "Right")
+		m_sprite.setScale(1,1);
+	else if(direction == "Left")
+		m_sprite.setScale(-1, 1);
+}
+
+void Weapon::negateSword()
+{
+		m_sprite.setScale(m_sprite.getScale().x * -1,1);
 }

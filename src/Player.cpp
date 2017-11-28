@@ -163,7 +163,10 @@ Player::Player(sf::Vector2f position, std::string direction = "left") :
 	setSpriteTexture(m_lightSprite, resourceManager.getTextureHolder()["playerLight"], sf::Vector2i(300, 300), 150);
 
 	if (m_isFacingLeft)
+	{
+		m_sword.negateSword();
 		m_sprite.setScale(-1, 1);
+	}
 
 	//Setup all of our animations
 	setUpAnimations();
@@ -278,10 +281,10 @@ void Player::render(sf::RenderWindow & window)
 	m_jumpRect.setPosition(m_jumpBody->GetPosition().x * PPM, m_jumpBody->GetPosition().y * PPM);
 	m_jumpRect.setRotation(m_jumpBody->GetAngle() * RAD_TO_DEG); //have to convert from radians to degrees here
 
+	m_sword.render(window);
 	window.draw(m_playerRect);
 	window.draw(m_forearmRect);
 	window.draw(m_jumpRect);
-	m_sword.render(window);
 }
 
 void Player::moveRight()
@@ -445,6 +448,8 @@ void Player::invertPlayerJoint(bool facingLeft)
 		}
 
 		m_sprite.setScale(m_sprite.getScale().x * -1, 1);
+		if(m_holdingSword)
+			m_sword.negateSword(); //negate the sprite scale of our sword
 	}
 }
 
@@ -590,9 +595,15 @@ void Player::pickUpWeapon()
 	m_holdingSword = true;
 
 	if (m_isFacingLeft)
+	{
+		m_sword.setSwordDirection("Left");
 		setArmToSwordJoint(0, 15, b2Vec2(28.5f / PPM, 0));
+	}
 	else
+	{
+		m_sword.setSwordDirection("Right");
 		setArmToSwordJoint(-15, 0, b2Vec2(-28.5f / PPM, 0));
+	}
 }
 
 void Player::setArmToSwordJoint(float lowerAngle, float upperAngle, b2Vec2 anchorPos)
@@ -718,10 +729,10 @@ void Player::setSpriteTexture(sf::Sprite& sprite, sf::Texture & texture, sf::Vec
 void Player::setColour(sf::Color color)
 {
 	//Calculate our new colours, needs to be a number between 0 and 1 so we divide each paractmeter by 255
-	float newR = color.r / 255.0;
-	float newG = color.g / 255.0;
-	float newB = color.b / 255.0;
-	float newA = color.a / 255.0;
+	float newR = color.r / 255.0f;
+	float newG = color.g / 255.0f;
+	float newB = color.b / 255.0f;
+	float newA = color.a / 255.0f;
 
 	//Set our shade runiform variables to our new calculated colour
 	m_recolourShader.setUniform("newR", newR);

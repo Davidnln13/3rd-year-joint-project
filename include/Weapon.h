@@ -25,6 +25,7 @@ public:
 	void applyForce(b2Vec2 force);
 	void pickUp(); //picks up the weapon
 	void parried();
+	void negateSword();
 
 	//getters
 	b2Body* getBody();
@@ -33,6 +34,7 @@ public:
 	//Setters
 	void setPosition(b2Vec2 pos, float angle);
 	void setSwordThrown();
+	void setSwordDirection(std::string direction);
 private:
 	bool m_swordThrown;
 	bool m_setSensor;
@@ -40,6 +42,7 @@ private:
 	b2Body* m_body;
 	b2Body* m_pivotBody;
 	b2FixtureDef m_bodyFixt;
+	sf::Sprite m_sprite;
 	sf::RectangleShape m_rect;
 	b2RevoluteJoint* m_pivotJoint;
 	sf::Sprite m_lightSprite;

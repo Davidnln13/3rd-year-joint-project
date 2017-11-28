@@ -29,6 +29,7 @@ ResourceManager::ResourceManager()
 		acquireResource("playerRun", m_playerRun, false);
 		acquireResource("playerLight", m_playerLight);
 		acquireResource("swordLight", m_swordLight);
+		acquireResource("sword", m_sword);
 
 		//Load our shaders
 		acquireShader("recolourShader", m_recolourShaderPath);
