@@ -45,9 +45,6 @@
     <ClCompile Include="src\Player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Boundary.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\JoystickController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -72,11 +69,19 @@
     <ClCompile Include="src\PauseScreen.cpp">
       <Filter>Source Files\Screen Source Files</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="src\Help.cpp">
       <Filter>Source Files\Screen Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Options.cpp">
       <Filter>Source Files\Screen Source Files</Filter>
+=======
+    <ClCompile Include="src\Level.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Obstacle.cpp">
+      <Filter>Source Files</Filter>
+>>>>>>> e2e247f6de2fe0e3ae37a319926dd2441aebc508
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -96,9 +101,6 @@
       <Filter>Header Files\Screen Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Player.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Boundary.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\JoystickController.h">
@@ -125,11 +127,19 @@
     <ClInclude Include="include\PauseScreen.h">
       <Filter>Header Files\Screen Header Files</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="include\Help.h">
       <Filter>Header Files\Screen Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Options.h">
       <Filter>Header Files\Screen Header Files</Filter>
+=======
+    <ClInclude Include="include\Level.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Obstacle.h">
+      <Filter>Header Files</Filter>
+>>>>>>> e2e247f6de2fe0e3ae37a319926dd2441aebc508
     </ClInclude>
   </ItemGroup>
 </Project>

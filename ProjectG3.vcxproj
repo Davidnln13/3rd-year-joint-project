@@ -129,13 +129,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Audio.cpp" />
-    <ClCompile Include="src\Boundary.cpp" />
+    <ClCompile Include="src\Obstacle.cpp" />
     <ClCompile Include="src\Button.cpp" />
     <ClCompile Include="src\ContactListener.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\Help.cpp" />
     <ClCompile Include="src\JoystickController.cpp" />
     <ClCompile Include="src\Label.cpp" />
+    <ClCompile Include="src\Level.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\MainMenu.cpp" />
     <ClCompile Include="src\Options.cpp" />
@@ -148,13 +149,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Audio.h" />
-    <ClInclude Include="include\Boundary.h" />
+    <ClInclude Include="include\Obstacle.h" />
     <ClInclude Include="include\Button.h" />
     <ClInclude Include="include\ContactListener.h" />
     <ClInclude Include="include\Game.h" />
     <ClInclude Include="include\Help.h" />
     <ClInclude Include="include\JoystickController.h" />
     <ClInclude Include="include\Label.h" />
+    <ClInclude Include="include\Level.h" />
     <ClInclude Include="include\MainMenu.h" />
     <ClInclude Include="include\Options.h" />
     <ClInclude Include="include\PauseScreen.h" />

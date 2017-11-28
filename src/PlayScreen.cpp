@@ -3,30 +3,23 @@
 PlayScreen::PlayScreen(std::string name, Audio& audio) :
 	Screen(name),
 	m_audioPlayScreen(audio),
-	m_player1(sf::Vector2f(1280 - ( 1280 / 8.f), 720.f - ( 720.f / 4)), sf::Vector2f(25, 75 ), "left"),
-	m_player2(sf::Vector2f(1280 / 8.f, 720.f - (720.f / 4)), sf::Vector2f(25, 75), "right"),
-	m_floor(sf::Vector2f(1280, 35), sf::Vector2f(1280 / 2.f, 720 - (35 / 2)))
+	m_level(audio, resourceManager.getTextureHolder()["castleBG"])
 {
-	world.SetContactListener(&m_contactListener);
-	m_contactListener.setPlayers(m_player1, m_player2);
+
 }
 
 void PlayScreen::update()
 {
 	//update our players
-	m_player1.update();
-	m_player2.update();
-	
+
+	m_level.update();
 }
 
 void PlayScreen::render(sf::RenderWindow& window)
 {
 	window.clear(sf::Color::White);
 
-	m_player1.render(window); //draw the first player	
-	m_player2.render(window); //draw the second player
-
-	m_floor.render(window); //draw the floor
+	m_level.render(window);
 }
 
 void PlayScreen::start()
@@ -44,14 +37,11 @@ std::string PlayScreen::handleInput(JoystickController& controller1, JoystickCon
 {
 	auto currentScreen = m_name;
 
-	m_player1.handleJoystick(controller1);
-	m_player2.handleJoystick(controller2);
-	if ((controller1.isButtonPressed("X") && m_player1.getCanAttack() == true)||(controller2.isButtonPressed("X") && m_player2.getCanAttack() == true))
-	{
-		m_audioPlayScreen.m_soundMap["SwordSwing"].play();
-	}
+	//Handle input in the level
+	m_level.handleInput(controller1, controller2);
 
-	if (controller1.isButtonPressed("Start"))
+	//if either player has pressed tsart then pause the game
+	if (controller1.isButtonPressed("Start") || controller2.isButtonPressed("Start"))
 		currentScreen = "pause"; //go to pause screen
 
 	return currentScreen;

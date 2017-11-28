@@ -1,8 +1,6 @@
 #pragma once
 #include "Screen.h"
-#include "Player.h"
-#include "Boundary.h"
-#include "ContactListener.h"
+#include "Level.h"
 
 /// <summary>
 /// Author: Daryl keogh
@@ -19,14 +17,9 @@ public:
 	void start() override;
 	void end() override;
 	std::string handleInput(JoystickController& controller1, JoystickController& controller2) override;
-
+	Audio& m_audioPlayScreen;
 	//getters
 	std::string getName() override;
 private:
-	Player m_player1;
-	Player m_player2;
-	Audio& m_audioPlayScreen;
-	//since we will have levels, then boundary objects will be in the level and possibly the player too
-	Boundary m_floor;
-	ContactListener m_contactListener;
+	Level m_level;
 };
