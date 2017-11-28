@@ -3,7 +3,7 @@
 Weapon::Weapon(sf::Vector2f position) :
 	m_rect(sf::Vector2f(35, 5)),
 	m_swordThrown(false),
-	m_destroyPivot(false)
+	m_setSensor(false)
 {
 	//creating our Box2d body and fixture for the player
 	b2BodyDef bodyDef;
@@ -38,20 +38,20 @@ Weapon::~Weapon()
 
 void Weapon::update()
 {
-	if (m_destroyPivot && m_pivotJoint != nullptr)
+	//If our bool is true, set our wepaon sesnor to false
+	if (m_setSensor)
 	{
 		m_body->GetFixtureList()->SetSensor(false);
-		world.DestroyJoint(m_pivotJoint);
-		m_pivotJoint = nullptr;
-		m_destroyPivot = false;
+		m_setSensor = false;
 	}
 
+	//If we have thrown our sword then move our sword in the direction it was thrown
 	if (m_swordThrown)
 	{
 		if (m_throwDirection == "Left")
-			m_pivotBody->SetLinearVelocity(b2Vec2(-24, 0));
+			m_body->SetLinearVelocity(b2Vec2(-24, 0));
 		else
-			m_pivotBody->SetLinearVelocity(b2Vec2(24, 0));
+			m_body->SetLinearVelocity(b2Vec2(24, 0));
 	}
 }
 
@@ -64,11 +64,6 @@ void Weapon::render(sf::RenderWindow & window)
 	m_rect.setPosition(m_body->GetPosition().x * PPM, m_body->GetPosition().y * PPM);
 	m_rect.setRotation(m_body->GetAngle() * (180.f / thor::Pi)); //have to convert from radians to degrees here
 	window.draw(m_rect);
-}
-
-void Weapon::attack(b2Vec2 force)
-{
-
 }
 
 void Weapon::respawn()
@@ -89,7 +84,7 @@ void Weapon::respawn()
 	m_body->ApplyTorque(0, true);
 
 	m_swordThrown = false;
-	m_destroyPivot = false;
+	m_setSensor = false;
 }
 
 void Weapon::throwWeapon(std::string direction)
@@ -101,32 +96,7 @@ void Weapon::throwWeapon(std::string direction)
 	m_body->SetLinearVelocity(b2Vec2(0,0)); //reset the velocity of our sword
 	m_body->SetAngularVelocity(0); //reset the angular velocity
 
-	b2BodyDef bodyDef;
-	bodyDef.type = b2_dynamicBody;
-	bodyDef.fixedRotation = true;
-	bodyDef.gravityScale = 0;
-	bodyDef.position.Set(m_body->GetPosition().x, m_body->GetPosition().y);
-	m_pivotBody = world.CreateBody(&bodyDef);
-
-	b2CircleShape cs;
-	cs.m_radius = 5 / 2 / PPM;
-
-	b2FixtureDef pivotFixDef;
-	pivotFixDef.shape = &cs;
-	pivotFixDef.density = 1;
-	pivotFixDef.isSensor = true;
-	m_pivotBody->CreateFixture(&pivotFixDef);
-	m_pivotBody->SetUserData(this);
-
-	//Creating the revolte joint between our sword and our pivot
-	b2RevoluteJointDef pivot;
-	pivot.bodyA = m_body;
-	pivot.bodyB = m_pivotBody;
-	pivot.collideConnected = false; //so our sword and pivot dont collide
-	pivot.localAnchorA.Set(0, 0);
-	pivot.localAnchorB.Set(0, 0);
-	m_pivotJoint = (b2RevoluteJoint*)world.CreateJoint(&pivot);
-
+	//Apply a torque to our body so it spins
 	if (direction == "Left")
 		m_body->ApplyTorque(-5, true);
 	else
@@ -189,5 +159,5 @@ void Weapon::setSwordThrown()
 		m_body->ApplyTorque(-1.5, true);
 	}
 	m_body->SetGravityScale(1);
-	m_destroyPivot = true;
+	m_setSensor = true;
 }

@@ -20,7 +20,6 @@ public:
 
 	void update();
 	void render(sf::RenderWindow& window);
-	void attack(b2Vec2 force);
 	void respawn();
 	void throwWeapon(std::string direction);
 	void applyForce(b2Vec2 force);
@@ -36,7 +35,7 @@ public:
 	void setSwordThrown();
 private:
 	bool m_swordThrown;
-	bool m_destroyPivot;
+	bool m_setSensor;
 	std::string m_throwDirection; //the direction our sword was thrown in
 	b2Body* m_body;
 	b2Body* m_pivotBody;
