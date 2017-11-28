@@ -6,6 +6,7 @@ MainMenu::MainMenu(std::string name, Audio& audio) :
 	m_optionsBtn(sf::Vector2f(640, 288), "options", "Options Icon"),
 	m_helpBtn(sf::Vector2f(640, 432), "help", "Help Icon"),
 	m_exitBtn(sf::Vector2f(640, 576), "exit", "Exit Icon"),
+	m_audioMainScreen(audio),
 	m_btnIndex(0)
 {
 	//adding our buttons to our buttons map
@@ -40,7 +41,7 @@ void MainMenu::render(sf::RenderWindow& window)
 void MainMenu::start()
 {
 	m_active = true;
-
+	m_audioMainScreen.updateMusic("Main");
 	//Selects the first button in our list as the currently selected button
 	selectButton(0);
 }

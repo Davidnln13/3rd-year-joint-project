@@ -72,6 +72,12 @@
     <ClCompile Include="src\PauseScreen.cpp">
       <Filter>Source Files\Screen Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Help.cpp">
+      <Filter>Source Files\Screen Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Options.cpp">
+      <Filter>Source Files\Screen Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Game.h">
@@ -117,6 +123,12 @@
       <Filter>Header Files\Widget Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\PauseScreen.h">
+      <Filter>Header Files\Screen Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Help.h">
+      <Filter>Header Files\Screen Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Options.h">
       <Filter>Header Files\Screen Header Files</Filter>
     </ClInclude>
   </ItemGroup>

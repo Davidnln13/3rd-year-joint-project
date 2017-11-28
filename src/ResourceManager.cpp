@@ -13,12 +13,15 @@ ResourceManager::ResourceManager()
 	{
 		//load GUI
 		acquireResource("Button Spritesheet", m_buttonLayout);
+		acquireResource("Back Icon", m_backIcon);
+		acquireResource("Controller", m_controllerPic);
 		acquireResource("Sword Icon", m_swordIcon);
 		acquireResource("Options Icon", m_optionsIcon);
 		acquireResource("Help Icon", m_helpIcon);
 		acquireResource("Exit Icon", m_exitIcon);
 		acquireResource("Continue Icon", m_continueIcon);
 		acquireResource("Main Menu Icon", m_mainMenuIcon);
+	
 
 		//Load Fonts
 		acquireResource("oxinFont", m_oxinFont);

@@ -36,8 +36,9 @@ private:
 	thor::ResourceLoader<sf::Texture> m_helpIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/help icon.png");
 	thor::ResourceLoader<sf::Texture> m_exitIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/exit icon.png");
 	thor::ResourceLoader<sf::Texture> m_continueIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/continue icon.png");
+	thor::ResourceLoader<sf::Texture> m_backIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/back icon.png");
 	thor::ResourceLoader<sf::Texture> m_mainMenuIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/main menu icon.png");
-
+	thor::ResourceLoader<sf::Texture> m_controllerPic = thor::Resources::fromFile<sf::Texture>("./resources/GUI/controller.png");
 
 	//Our font(s)
 	thor::ResourceLoader<sf::Font> m_oxinFont = thor::Resources::fromFile<sf::Font>("./resources/Fonts/OXIN.ttf");

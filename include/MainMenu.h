@@ -28,6 +28,7 @@ private:
 	Button m_optionsBtn;
 	Button m_helpBtn;
 	Button m_exitBtn;
+	Audio& m_audioMainScreen;
 	std::map<std::string, Button*> m_buttons; //our map of buttons
 	std::vector<Button*> m_btnList; //we will use this to select/deselect buttons in our menu
 	int m_btnIndex; //the index of the button we are currently focused on

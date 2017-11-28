@@ -5,18 +5,47 @@
 Audio::Audio()
 {
 	//music
-	m_music[0].openFromFile("./resources/Audio/Music.ogg");
+	m_musicMap["TitleMusic"].openFromFile("./resources/Audio/TitleMusic.ogg");
+	m_musicMap["GameMusic"].openFromFile("./resources/Audio/GameMusic.ogg");
 
-	if (!m_soundBuffer[0].loadFromFile("./resources/Audio/SwordCollide.wav"))
+	//sounds 
+	if (!m_soundBufferMap["SwordSwing"].loadFromFile("./resources/Audio/SwordSwing.wav"))
 	{
-		std::cout << "Cant Find File" << std::endl;
+		std::cout << "Cant find file" << std::endl;
 	}
-	m_soundArray[0].setBuffer(m_soundBuffer[0]);
-}
-void Audio::update()
-{
-	if (m_music[0].getStatus() == sf::Music::Status::Stopped)
+	m_soundMap["SwordSwing"].setBuffer(m_soundBufferMap["SwordSwing"]);
+	
+	for (auto& key : m_soundMap)
 	{
-		m_music[0].play();
+		m_soundMap[key.first].setVolume(50);
+	}
+	for (auto& key : m_musicMap)
+	{
+		m_musicMap[key.first].setVolume(100);
+	}
+}
+void Audio::updateMusic(std::string name)
+{
+	if (startMusic == false)
+	{
+		startMusic = true;
+		m_musicMap["GameMusic"].stop();
+		m_musicMap["TitleMusic"].setLoop(true);
+		m_musicMap["TitleMusic"].play();
+		currentName = "Main";
+	}
+	if (name == "Main" && currentName != "Main")
+	{
+		m_musicMap["GameMusic"].stop();
+		m_musicMap["TitleMusic"].setLoop(true);
+		m_musicMap["TitleMusic"].play();
+		currentName = "Main";
+	}
+	else if (name == "Game" && currentName != "Game")
+	{
+		m_musicMap["TitleMusic"].stop();
+		m_musicMap["GameMusic"].setLoop(true);
+		m_musicMap["GameMusic"].play();
+		currentName = "Game";
 	}
 }

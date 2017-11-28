@@ -16,7 +16,7 @@ void PlayScreen::update()
 	//update our players
 	m_player1.update();
 	m_player2.update();
-	m_audioPlayScreen.update();
+	
 }
 
 void PlayScreen::render(sf::RenderWindow& window)
@@ -31,12 +31,12 @@ void PlayScreen::render(sf::RenderWindow& window)
 
 void PlayScreen::start()
 {
+	m_audioPlayScreen.updateMusic("Game");
 	m_active = true;
 }
 
 void PlayScreen::end()
 {
-	m_audioPlayScreen.m_music[0].stop();
 	m_active = false;
 }
 
@@ -48,7 +48,7 @@ std::string PlayScreen::handleInput(JoystickController& controller1, JoystickCon
 	m_player2.handleJoystick(controller2);
 	if ((controller1.isButtonPressed("X") && m_player1.getCanAttack() == true)||(controller2.isButtonPressed("X") && m_player2.getCanAttack() == true))
 	{
-		m_audioPlayScreen.m_soundArray[0].play();
+		m_audioPlayScreen.m_soundMap["SwordSwing"].play();
 	}
 
 	if (controller1.isButtonPressed("Start"))

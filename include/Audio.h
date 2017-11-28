@@ -1,5 +1,6 @@
 #pragma once
 #include "SFML\Audio.hpp"
+#include <map>
 
 enum GameState;
 class JoystickController;
@@ -8,10 +9,11 @@ class Audio
 {
 public:
 	Audio();
-	sf::Music& getSong() { return m_music[musicIndexer]; };
-	void update();
-	sf::Music m_music[1];
-	sf::SoundBuffer m_soundBuffer[1];
-	sf::Sound m_soundArray[1];
-	int musicIndexer = 0;
+	//audio maps
+	std::map<std::string, sf::Music> m_musicMap;
+	std::map<std::string, sf::SoundBuffer> m_soundBufferMap;
+	std::map<std::string, sf::Sound> m_soundMap;
+	std::string currentName = "Main";
+	bool startMusic = false;
+	void updateMusic(std::string name);
 };

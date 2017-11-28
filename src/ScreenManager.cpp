@@ -4,13 +4,16 @@ ScreenManager::ScreenManager() :
 	m_pauseScreen("pause", m_audio),
 	m_playScreen("play game", m_audio),
 	m_mainScreen("main menu", m_audio),
+	m_helpScreen("help", m_audio),
+	m_optionsScreen("options",m_audio),
 	m_closeWindow(false)
 {
 	//asigning our screens to our map 
 	screens[m_pauseScreen.getName()] = &m_pauseScreen;
 	screens[m_playScreen.getName()] = &m_playScreen;
 	screens[m_mainScreen.getName()] = &m_mainScreen;
-
+	screens[m_helpScreen.getName()] = &m_helpScreen;
+	screens[m_optionsScreen.getName()] = &m_optionsScreen;
 	goToScreen("main menu"); //go to the main menu
 }
 
@@ -34,6 +37,11 @@ void ScreenManager::goToScreen(std::string screenName)
 {
 	auto temp = screens[screenName]; //get the screen pointer in the dictionary with the key 'screenName'
 
+	std::string currentScreenName;
+
+	if(nullptr != m_currentScreen)
+		currentScreenName = m_currentScreen->getName();
+
 	if (temp != nullptr) 
 	{
 		//if our current screen ptr points to something then stop the screen
@@ -45,6 +53,19 @@ void ScreenManager::goToScreen(std::string screenName)
 		m_currentScreen = temp; //assign the new screen
 
 		m_currentScreen->start(); //start the new screen
+
+		//setPreviousScreen("help", Help, currentScreenName);
+		if (m_currentScreen->getName() == "help")
+		{
+			auto tempHelp = dynamic_cast<Help*>(m_currentScreen);
+			tempHelp->setPreviousScreen(currentScreenName);
+		}
+		if (m_currentScreen->getName() == "options")
+		{
+			auto tempOptions= dynamic_cast<Options*>(m_currentScreen);
+			tempOptions->setPreviousScreen(currentScreenName);
+		}
+		
 	}
 }
 
@@ -56,10 +77,20 @@ void ScreenManager::handleJoystick(JoystickController& controller1, JoystickCont
 	{
 		if (screen == "exit")
 			m_closeWindow = true;
-		else
+		else 
 			goToScreen(screen);
 	}
 }
+//
+//template<class T>
+//inline void ScreenManager::setPreviousScreen(std::string currentScreen, T classType, std::string oldScreen)
+//{
+//	if (m_currentScreen->getName() == currentScreen)
+//	{
+//		auto tempScreen = dynamic_cast<T*>(m_currentScreen);
+//		tempScreen->setPreviousScreen(oldScreen);
+//	}
+//}
 
 std::string ScreenManager::getCurrentScreenName()
 {
