@@ -1,0 +1,6 @@
+{
+   "Lights":[
+      {"PosX": [100, 200, 300, 400], "PosY": [50, 100, 150, 200]}
+   ],
+   "Game Developers": ["David", "Daryl"]
+}

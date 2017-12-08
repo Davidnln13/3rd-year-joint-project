@@ -18,7 +18,8 @@ Game::Game() :
 	m_window(sf::VideoMode(1280, 720), "David & Daryl Year 3 Project"),
 	m_screenManager(),
 	m_controller1(0), //creating our first controller with index 0, so the first controller connected to the pc will be controller 1/player 1
-	m_controller2(1)
+	m_controller2(1),
+	m_loader()
 {
 	init();
 }

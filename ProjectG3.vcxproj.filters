@@ -1,145 +1,141 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="Source Files\Screen Source Files">
-      <UniqueIdentifier>{37eac194-8515-4849-8896-191bcb1aa5f0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Screen Header Files">
-      <UniqueIdentifier>{6b7648d1-ec0e-4f6c-a187-09536fbc85f3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Widget Header Files">
-      <UniqueIdentifier>{87cd3d25-1124-4701-b531-f9fef1006071}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Widget Source Files">
-      <UniqueIdentifier>{4b976fcc-cea9-4969-9ef6-28de7d94cfea}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="src\Game.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ScreenManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\MainMenu.cpp">
-      <Filter>Source Files\Screen Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\PlayScreen.cpp">
-      <Filter>Source Files\Screen Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Player.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\JoystickController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ResourceManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Weapon.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ContactListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Audio.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Button.cpp">
-      <Filter>Source Files\Widget Source Files</Filter>
+    <ClCompile Include="src\ContactListener.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Label.cpp">
-      <Filter>Source Files\Widget Source Files</Filter>
+    <ClCompile Include="src\Game.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\PauseScreen.cpp">
-      <Filter>Source Files\Screen Source Files</Filter>
-    </ClCompile>
-<<<<<<< HEAD
     <ClCompile Include="src\Help.cpp">
-      <Filter>Source Files\Screen Source Files</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Options.cpp">
-      <Filter>Source Files\Screen Source Files</Filter>
-=======
+    <ClCompile Include="src\JoystickController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="src\Level.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Obstacle.cpp">
       <Filter>Source Files</Filter>
->>>>>>> e2e247f6de2fe0e3ae37a319926dd2441aebc508
+    </ClCompile>
+    <ClCompile Include="src\Player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ResourceManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ScreenManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Button.cpp">
+      <Filter>Source Files\Widget Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Label.cpp">
+      <Filter>Source Files\Widget Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PlayScreen.cpp">
+      <Filter>Source Files\Screen Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PauseScreen.cpp">
+      <Filter>Source Files\Screen Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MainMenu.cpp">
+      <Filter>Source Files\Screen Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Options.cpp">
+      <Filter>Source Files\Screen Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LevelLoader.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\Game.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\ScreenManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\MainMenu.h">
-      <Filter>Header Files\Screen Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\PlayScreen.h">
-      <Filter>Header Files\Screen Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Screen.h">
-      <Filter>Header Files\Screen Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Player.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\JoystickController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\ResourceManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Weapon.h">
+    <ClInclude Include="include\Audio.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\ContactListener.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Audio.h">
+    <ClInclude Include="include\Game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Button.h">
-      <Filter>Header Files\Widget Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Label.h">
-      <Filter>Header Files\Widget Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\PauseScreen.h">
-      <Filter>Header Files\Screen Header Files</Filter>
-    </ClInclude>
-<<<<<<< HEAD
     <ClInclude Include="include\Help.h">
-      <Filter>Header Files\Screen Header Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Options.h">
-      <Filter>Header Files\Screen Header Files</Filter>
-=======
-    <ClInclude Include="include\Level.h">
+    <ClInclude Include="include\JoystickController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Weapon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ScreenManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ResourceManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Obstacle.h">
       <Filter>Header Files</Filter>
->>>>>>> e2e247f6de2fe0e3ae37a319926dd2441aebc508
     </ClInclude>
+    <ClInclude Include="include\Level.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\PlayScreen.h">
+      <Filter>Header Files\Screen Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Screen.h">
+      <Filter>Header Files\Screen Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Options.h">
+      <Filter>Header Files\Screen Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MainMenu.h">
+      <Filter>Header Files\Screen Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\PauseScreen.h">
+      <Filter>Header Files\Screen Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Button.h">
+      <Filter>Header Files\Widget Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Label.h">
+      <Filter>Header Files\Widget Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\LevelLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{431ab550-2e3c-4016-b8c7-204b7e4bd1ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{ceed6ff0-5c3d-40b8-8a08-bf3ca1b48645}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Screen Headers">
+      <UniqueIdentifier>{a6ec6e85-549c-4002-8b7c-023c8ed50296}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Widget Headers">
+      <UniqueIdentifier>{af663ab6-d925-49a0-a154-7e57fad07c0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Screen Source">
+      <UniqueIdentifier>{19fcb4a9-5276-472a-bc08-e29c04feadab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Widget Source">
+      <UniqueIdentifier>{ef05f61b-0238-44ac-a032-e21e050eb026}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>
