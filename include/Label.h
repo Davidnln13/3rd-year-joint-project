@@ -13,6 +13,8 @@ public:
 	void deSelect();
 	void draw(sf::RenderWindow& window);
 
+	sf::Text& getText();
+
 private:
 	sf::Text m_text;
 	sf::Vector2f m_position;

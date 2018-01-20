@@ -1,6 +1,9 @@
 #include "Button.h"
 
 Button::Button(sf::Vector2f position, std::string name, std::string iconName = "Sword Icon"):
+	m_alpha(255), //alpha starts at 255, so the button is completely opaque
+	m_fadeIn(false),
+	m_fadeOut(false),
 	m_position(position),
 	m_name(name),
 	m_label(name, m_position),
@@ -36,6 +39,12 @@ void Button::update()
 	//Update and animate our icon
 	m_iconAnimator.update(m_iconAnimationClock.restart());
 	m_iconAnimator.animate(m_icon);
+
+	//If our bool is true call the fade in method
+	if (m_fadeIn)
+		fade(255);
+	else if (m_fadeOut)
+		fade(0);
 }
 
 void Button::render(sf::RenderWindow & window)
@@ -45,6 +54,36 @@ void Button::render(sf::RenderWindow & window)
 	m_label.draw(window);
 }
 
+
+void Button::fade(int desiredAlpha)
+{
+	//If our alpha is below our desired alpha then increase our alpha
+	if (m_alpha < desiredAlpha)
+	{
+		m_alpha += 3;
+
+		if (m_alpha >= 255)
+		{
+			m_alpha = 255;
+			m_fadeIn = false;
+		}
+
+	}
+	//else if our alpha is above our ddesired alpha then decrease our alpha
+	else if(m_alpha > desiredAlpha)
+	{
+		m_alpha -= 3;
+
+		if (m_alpha <= 0)
+		{
+			m_alpha = 0;
+			m_fadeOut = false;
+		}
+	}
+
+	applyAlpha(m_alpha);
+}
+
 void Button::select()
 {
 	m_label.select();
@@ -52,6 +91,7 @@ void Button::select()
 	m_iconAnimator.play() << "iconSelected";
 	m_sprite.setTextureRect(m_selectedRect);
 	m_icon.setTextureRect(m_iconSelectedRect);
+	m_selected = true;
 }
 
 void Button::deSelect()
@@ -61,6 +101,7 @@ void Button::deSelect()
 	m_iconAnimator.play() << "iconDeselected";
 	m_sprite.setTextureRect(m_unselectedRect);
 	m_icon.setTextureRect(m_iconUnselectedRect);
+	m_selected = false;
 }
 
 void Button::setUpAnimation()
@@ -101,7 +142,50 @@ void Button::setUpAnimation()
 	m_animationHolder.addAnimation("iconDeselected", m_iconDeselectAnimation, sf::seconds(0.075f));
 }
 
+void Button::applyAlpha(float value)
+{
+	auto iColor = m_icon.getColor(); //get the color of the icon
+	auto sColor = m_sprite.getColor(); //get the color of the button sprite
+	auto tColor = m_label.getText().getFillColor(); //get the color of our text on the button
+
+	//Change the alpha of our sprites and text
+	iColor.a = value;
+	sColor.a = value;
+	tColor.a = value;
+
+	//Set the colour of our sprites and text with their new alpha value
+	m_icon.setColor(iColor);
+	m_sprite.setColor(sColor);
+	m_label.getText().setFillColor(tColor);
+}
+
 std::string& Button::getName()
 {
 	return m_name;
+}
+
+float Button::getAlpha()
+{
+	return m_alpha;
+}
+
+bool Button::getSelected()
+{
+	return m_selected;
+}
+
+void Button::setAlpha(float a)
+{
+	m_alpha = a;
+	applyAlpha(m_alpha); //apply our new alpha value to our sprites
+}
+
+void Button::setFadeIn(bool fade)
+{
+	m_fadeIn = fade;
+}
+
+void Button::setFadeOut(bool fade)
+{
+	m_fadeOut = fade;
 }

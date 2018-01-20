@@ -7,7 +7,8 @@ MainMenu::MainMenu(std::string name, Audio& audio) :
 	m_helpBtn(sf::Vector2f(640, 432), "help", "Help Icon"),
 	m_exitBtn(sf::Vector2f(640, 576), "exit", "Exit Icon"),
 	m_audioMainScreen(audio),
-	m_btnIndex(0)
+	m_btnIndex(0),
+	m_btnToFadeIn(0)
 {
 	//adding our buttons to our buttons map
 	m_buttons[m_playGameBtn.getName()] = &m_playGameBtn; 
@@ -20,8 +21,13 @@ MainMenu::MainMenu(std::string name, Audio& audio) :
 	m_btnList.push_back(&m_helpBtn);
 	m_btnList.push_back(&m_exitBtn);
 
-	test.x = 1;
-	test.y = 1;
+
+	//Set the alpha of all of our buttons to 0
+	for (auto& btn : m_buttons)
+		btn.second->setAlpha(0);
+
+	//Set the first button to fade in
+	m_btnList.at(m_btnToFadeIn)->setFadeIn(true);
 }
 
 void MainMenu::update()
@@ -29,6 +35,12 @@ void MainMenu::update()
 	//loop through our buttons map and update each one
 	for (auto key : m_buttons)
 		key.second->update();
+
+	if (m_btnToFadeIn < 3 && m_btnList.at(m_btnToFadeIn)->getAlpha() == 255)
+	{
+		m_btnToFadeIn++;
+		m_btnList.at(m_btnToFadeIn)->setFadeIn(true);
+	}
 }
 
 void MainMenu::render(sf::RenderWindow& window)
@@ -44,8 +56,19 @@ void MainMenu::start()
 {
 	m_active = true;
 	m_audioMainScreen.updateMusic("Main");
-	//Selects the first button in our list as the currently selected button
-	selectButton(0);
+
+	bool btnAlreadySelected = false;
+	for (auto& btn : m_btnList)
+	{
+		if (btn->getSelected())
+			btnAlreadySelected = true;
+	}
+
+	if (false == btnAlreadySelected)
+	{
+		//Selects the first button in our list as the currently selected button if no othe rbutton was previously selected
+		selectButton(0);
+	}
 }
 
 void MainMenu::end()
