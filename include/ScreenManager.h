@@ -27,9 +27,9 @@ public:
 
 private:
 	//Declare our different screens here
-	PauseScreen m_pauseScreen;
 	Options m_optionsScreen;
 	PlayScreen m_playScreen;
+	PauseScreen m_pauseScreen;
 	MainMenu m_mainScreen;
 	Help m_helpScreen;
 	Audio m_audio;

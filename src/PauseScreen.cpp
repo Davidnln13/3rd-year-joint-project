@@ -1,12 +1,13 @@
 #include "PauseScreen.h"
 
-PauseScreen::PauseScreen(std::string name, Audio & audio) :
+PauseScreen::PauseScreen(std::string name, Audio & audio, Screen& playScreen) :
 	Screen(name),
 	m_continueBtn(sf::Vector2f(640, 144), "continue", "Continue Icon"),
 	m_optionsBtn(sf::Vector2f(640, 288), "options", "Options Icon"),
 	m_helpBtn(sf::Vector2f(640, 432), "help", "Help Icon"),
 	m_mainMenuBtn(sf::Vector2f(640, 576), "main menu", "Main Menu Icon"),
-	m_btnIndex(0)
+	m_btnIndex(0),
+	m_playScreen(&playScreen)
 {
 	//adding our buttons to our buttons map
 	m_buttons[m_continueBtn.getName()] = &m_continueBtn;
@@ -18,6 +19,9 @@ PauseScreen::PauseScreen(std::string name, Audio & audio) :
 	m_btnList.push_back(&m_optionsBtn);
 	m_btnList.push_back(&m_helpBtn);
 	m_btnList.push_back(&m_mainMenuBtn);
+
+	m_overlay.setSize(sf::Vector2f(1280, 720));
+	m_overlay.setFillColor(sf::Color(255, 255, 255, 100));
 }
 
 void PauseScreen::update()
@@ -29,7 +33,10 @@ void PauseScreen::update()
 
 void PauseScreen::render(sf::RenderWindow & window)
 {
-	window.clear(sf::Color::White);
+	m_playScreen->render(window); //draw our playscreen in the background
+
+	window.draw(m_overlay);
+
 	//loop through our buttons map and render each one
 	for (auto key : m_buttons)
 		key.second->render(window);

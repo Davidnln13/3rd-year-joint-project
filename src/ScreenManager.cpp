@@ -1,8 +1,8 @@
 #include "ScreenManager.h"
 
 ScreenManager::ScreenManager() :
-	m_pauseScreen("pause", m_audio),
 	m_playScreen("play game", m_audio),
+	m_pauseScreen("pause", m_audio, m_playScreen),
 	m_mainScreen("main menu", m_audio),
 	m_helpScreen("help", m_audio),
 	m_optionsScreen("options",m_audio),
