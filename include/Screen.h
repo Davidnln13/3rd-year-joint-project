@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <SFML\Graphics.hpp>
+#include "Vector2Helper.h"
 #include "Audio.h"
 #include "ResourceManager.h"
 #include "Button.h"

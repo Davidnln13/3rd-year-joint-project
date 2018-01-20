@@ -19,6 +19,9 @@ MainMenu::MainMenu(std::string name, Audio& audio) :
 	m_btnList.push_back(&m_optionsBtn);
 	m_btnList.push_back(&m_helpBtn);
 	m_btnList.push_back(&m_exitBtn);
+
+	test.x = 1;
+	test.y = 1;
 }
 
 void MainMenu::update()
@@ -35,7 +38,6 @@ void MainMenu::render(sf::RenderWindow& window)
 	//loop through our buttons map and render each one
 	for (auto key : m_buttons)
 		key.second->render(window);
-
 }
 
 void MainMenu::start()
