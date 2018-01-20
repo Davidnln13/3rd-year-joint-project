@@ -25,6 +25,9 @@ Button::Button(sf::Vector2f position, std::string name, std::string iconName = "
 
 	m_icon.setOrigin(m_icon.getLocalBounds().left + 55 / 2.0f, m_icon.getLocalBounds().top + m_icon.getLocalBounds().height / 2.0f); //setting the origin of our button to the center of our texture
 	m_icon.setPosition(m_sprite.getGlobalBounds().left + 27.5f, m_position.y);
+	//If our button is a back button, then flip our arrow icon
+	if (name == "Back" || name == "back")
+		m_icon.setScale(sf::Vector2f(-1, 1));
 
 	//Setup our select/deselect animations
 	setUpAnimation();

@@ -2,7 +2,7 @@
 
 Options::Options(std::string name, Audio& audio) :
 	Screen(name),
-	m_back(sf::Vector2f(640, 676), "Back", "Back Icon"),
+	m_back(sf::Vector2f(640, 676), "Back", "Arrow Icon"),
 	m_btnIndex(0),
 	m_previousScreen(name)
 {

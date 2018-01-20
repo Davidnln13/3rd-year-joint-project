@@ -38,11 +38,10 @@ private:
 	thor::ResourceLoader<sf::Texture> m_optionsIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/settings icon.png");	
 	thor::ResourceLoader<sf::Texture> m_helpIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/help icon.png");
 	thor::ResourceLoader<sf::Texture> m_exitIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/exit icon.png");
-	thor::ResourceLoader<sf::Texture> m_continueIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/continue icon.png");
-	thor::ResourceLoader<sf::Texture> m_backIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/back icon.png");
 	thor::ResourceLoader<sf::Texture> m_mainMenuIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/main menu icon.png");
 	thor::ResourceLoader<sf::Texture> m_controllerPic = thor::Resources::fromFile<sf::Texture>("./resources/GUI/controller.png");
 	thor::ResourceLoader<sf::Texture> m_crossedSwordIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/Crossed Sword Icon.png");
+	thor::ResourceLoader<sf::Texture> m_arrowIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/Arrow Icon.png");
 
 	//Our Level tiles
 	thor::ResourceLoader<sf::Texture> m_castleBg = thor::Resources::fromFile<sf::Texture>("./resources/Textures/Castle BG.png");

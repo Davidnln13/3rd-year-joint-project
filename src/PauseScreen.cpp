@@ -2,7 +2,7 @@
 
 PauseScreen::PauseScreen(std::string name, Audio & audio, Screen& playScreen) :
 	Screen(name),
-	m_continueBtn(sf::Vector2f(640, 144), "continue", "Continue Icon"),
+	m_continueBtn(sf::Vector2f(640, 144), "continue", "Arrow Icon"),
 	m_optionsBtn(sf::Vector2f(640, 288), "options", "Options Icon"),
 	m_helpBtn(sf::Vector2f(640, 432), "help", "Help Icon"),
 	m_mainMenuBtn(sf::Vector2f(640, 576), "main menu", "Main Menu Icon"),

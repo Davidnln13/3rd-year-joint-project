@@ -13,9 +13,6 @@
     <ClCompile Include="src\Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Help.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\JoystickController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -58,6 +55,9 @@
     <ClCompile Include="src\LevelLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Help.cpp">
+      <Filter>Source Files\Screen Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Audio.h">
@@ -67,9 +67,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Game.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Help.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\JoystickController.h">
@@ -119,6 +116,9 @@
     </ClInclude>
     <ClInclude Include="include\Vector2Helper.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Help.h">
+      <Filter>Header Files\Screen Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

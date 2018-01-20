@@ -13,14 +13,13 @@ ResourceManager::ResourceManager()
 	{
 		//load GUI
 		acquireResource("Button Spritesheet", m_buttonLayout);
-		acquireResource("Back Icon", m_backIcon);
 		acquireResource("Controller", m_controllerPic);
 		acquireResource("Options Icon", m_optionsIcon);
 		acquireResource("Exit Icon", m_exitIcon);
-		acquireResource("Continue Icon", m_continueIcon);
 		acquireResource("Main Menu Icon", m_mainMenuIcon);
 		acquireResource("Help Icon", m_helpIcon);
 		acquireResource("Crossed Sword Icon", m_crossedSwordIcon);
+		acquireResource("Arrow Icon", m_arrowIcon);
 
 		//Load level textures
 		acquireResource("castleBG", m_castleBg);
