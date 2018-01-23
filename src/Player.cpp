@@ -10,6 +10,7 @@ Player::Player(sf::Vector2f position, std::string direction = "left") :
 	m_holdingSword(true),
 	m_parried(false),
 	m_switchedSwordPos(false),
+	m_playingPickup(false),
 	m_moveSpeed(7.0f),
 	m_gravityScale(2.75f),
 	m_weaponPos(1), //the centre of our player
@@ -195,6 +196,12 @@ void Player::update()
 	m_animator.animate(m_sprite);
 
 	m_sword.update();
+
+	if (m_playingPickup)
+	{
+		if (m_pickupClock.getElapsedTime().asSeconds() >= 0.4f)
+			m_playingPickup = false;
+	}
 
 	if (m_switchedSwordPos)
 	{
@@ -423,7 +430,7 @@ void Player::handleJoystick(JoystickController & controller)
 
 	if (moved == false)
 	{
-		if (m_idleTime >= 0.5f && m_canAttack && m_canJump)
+		if (m_idleTime >= 0.5f && m_canAttack && m_canJump && m_playingPickup == false)
 		{
 			m_idleTime = 0;
 			setSpriteTexture(m_sprite, resourceManager.getTextureHolder()["playerIdle"], sf::Vector2i(42, 87), 24);
@@ -488,6 +495,15 @@ void Player::changeSwordStance(std::string direction)
 			setSwordStance(-m_weaponPosChange);
 			m_switchedSwordPos = true;
 			m_stanceChangeClock.restart();//restart our stance clock
+		}
+		//If we can move our sword down anymore and we dont have our sword then play the pickup animation
+		else if(m_weaponPos == 0 && false == m_holdingSword && false == m_playingPickup)
+		{
+			setSpriteTexture(m_sprite, resourceManager.getTextureHolder()["playerPickup"], sf::Vector2i(42, 87), 23);
+			m_animator.stop();
+			m_animator.play() << "pickup";
+			m_playingPickup = true;
+			m_pickupClock.restart();//restart our stance clock
 		}
 	}
 
@@ -633,7 +649,7 @@ void Player::setArmToSwordJoint(float lowerAngle, float upperAngle, b2Vec2 ancho
 		//Set the local ancjorB point for our joint
 		armToSword.localAnchorB.Set(anchorPos.x, anchorPos.y);
 
-		//If our arm to swor djoint is not anullptr then delete the current joint from the world and recreate it below
+		//If our arm to swor djoint is not a nullptr then delete the current joint from the world and recreate it below
 		if (nullptr != m_armToSwordJoint)
 		{
 			//Only destroy and recreate our arm to sword joint if we are actualy holding a sword
@@ -712,12 +728,14 @@ void Player::setUpAnimations()
 	auto attackFrameSize = sf::Vector2i(56, 88);
 	auto runFrameSize = sf::Vector2i(63, 87);
 	auto jumpFrameSize = sf::Vector2i(52, 87);
+	auto pickupFrameSize = sf::Vector2i(42, 87);
 
 	//Adding all of our animations to our animation holder
 	addFramesToAnimation(0.1f, 5, m_idleAnimation, idleFrameSize, "idle", .5f);
 	addFramesToAnimation(0.1f, 10, m_attackAnimation, attackFrameSize, "attack", .35f);
 	addFramesToAnimation(0.1f, 20, m_runAnimation, runFrameSize, "run", .75f);
 	addFramesToAnimation(0.1f, 10, m_jumpAnimation, jumpFrameSize, "jump", .15f);
+	addFramesToAnimation(0.1f, 20, m_pickupAnimation, pickupFrameSize, "pickup", 0.4f);
 }
 
 void Player::addFramesToAnimation(float lengthOfOneFrame, int numOfFrames, thor::FrameAnimation & animation, sf::Vector2i & frameSize, std::string animationName, float lengthOfAnimation)

@@ -88,6 +88,8 @@ private:
 	float m_attackRate;
 	sf::Clock m_attackClock;
 	sf::Clock m_stanceChangeClock;
+	sf::Clock m_pickupClock;
+	bool m_playingPickup; //bool to show that we are playing the pickup animation
 
 	sf::Vector2f m_position;
 	b2Vec2 m_startPosition;
@@ -124,7 +126,7 @@ private:
 
 	//Animation variables
 	sf::Clock m_animationClock; //our animation clock, we will use this to update our animations
-	thor::FrameAnimation m_idleAnimation, m_attackAnimation, m_runAnimation, m_jumpAnimation;
+	thor::FrameAnimation m_idleAnimation, m_attackAnimation, m_runAnimation, m_jumpAnimation, m_pickupAnimation;
 	thor::AnimationMap<sf::Sprite, std::string> m_animationHolder;//our select and deselect animations
 	thor::Animator<sf::Sprite, std::string> m_animator;
 	float m_idleTime; //holds teh amount of time gone since we last played our idle animation

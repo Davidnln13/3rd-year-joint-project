@@ -30,6 +30,7 @@ ResourceManager::ResourceManager()
 		acquireResource("playerAttack", m_playerAttack, false);
 		acquireResource("playerRun", m_playerRun, false);
 		acquireResource("playerJump", m_playerJump, true);
+		acquireResource("playerPickup", m_playerPickup, true);
 		acquireResource("playerLight", m_playerLight);
 		acquireResource("swordLight", m_swordLight);
 		acquireResource("sword", m_sword);

@@ -52,6 +52,7 @@ private:
 	thor::ResourceLoader<sf::Texture> m_playerAttack = thor::Resources::fromFile<sf::Texture>("./resources/Textures/Attack Spritesheet.png");
 	thor::ResourceLoader<sf::Texture> m_playerRun = thor::Resources::fromFile<sf::Texture>("./resources/Textures/Run Spritesheet.png");
 	thor::ResourceLoader<sf::Texture> m_playerJump = thor::Resources::fromFile<sf::Texture>("./resources/Textures/Jump Spritesheet.png");
+	thor::ResourceLoader<sf::Texture> m_playerPickup = thor::Resources::fromFile<sf::Texture>("./resources/Textures/Pickup Spritesheet.png");
 	thor::ResourceLoader<sf::Texture> m_swordLight = thor::Resources::fromFile<sf::Texture>("./resources/Textures/Sword Light.png");
 	thor::ResourceLoader<sf::Texture> m_playerLight = thor::Resources::fromFile<sf::Texture>("./resources/Textures/Player Light.png");
 	thor::ResourceLoader<sf::Texture> m_sword= thor::Resources::fromFile<sf::Texture>("./resources/Textures/sword.png");
