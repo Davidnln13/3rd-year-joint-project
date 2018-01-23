@@ -222,6 +222,12 @@ void Player::update()
 		swordClashed();
 	}
 
+	//If we are in the air then apply a force downwards
+	if (m_canJump == false)
+	{
+		m_playerBody->ApplyForceToCenter(b2Vec2(0, 10),true);
+	}
+
 	//if our respawn variable is true then respawn our player
 	if (m_respawn)
 		respawn();
@@ -556,6 +562,7 @@ void Player::respawn()
 		m_sprite.setScale(-1, 1);
 		setPlayerToArmJoint(-2.5f, 0, b2Vec2(15 / PPM, 18 / PPM));
 		setArmToSwordJoint(0, 15, b2Vec2(28.5f / PPM, 0));
+		m_sword.setSwordDirection("Left");
 		m_isFacingLeft = true;
 	}
 	else
@@ -563,6 +570,7 @@ void Player::respawn()
 		m_sprite.setScale(1, 1);
 		setPlayerToArmJoint(0, 02.5f, b2Vec2(-15 / PPM, 18 / PPM));
 		setArmToSwordJoint(-15, 0, b2Vec2(-28.5f / PPM, 0));
+		m_sword.setSwordDirection("Right");
 		m_isFacingLeft = false;
 	}
 
