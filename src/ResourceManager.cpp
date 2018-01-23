@@ -29,6 +29,7 @@ ResourceManager::ResourceManager()
 		acquireResource("playerIdle", m_idlePlayer, false); //setting our animations to not smooth eliminates artefacts
 		acquireResource("playerAttack", m_playerAttack, false);
 		acquireResource("playerRun", m_playerRun, false);
+		acquireResource("playerJump", m_playerJump, true);
 		acquireResource("playerLight", m_playerLight);
 		acquireResource("swordLight", m_swordLight);
 		acquireResource("sword", m_sword);

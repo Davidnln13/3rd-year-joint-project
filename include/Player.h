@@ -124,7 +124,7 @@ private:
 
 	//Animation variables
 	sf::Clock m_animationClock; //our animation clock, we will use this to update our animations
-	thor::FrameAnimation m_idleAnimation, m_attackAnimation, m_runAnimation;
+	thor::FrameAnimation m_idleAnimation, m_attackAnimation, m_runAnimation, m_jumpAnimation;
 	thor::AnimationMap<sf::Sprite, std::string> m_animationHolder;//our select and deselect animations
 	thor::Animator<sf::Sprite, std::string> m_animator;
 	float m_idleTime; //holds teh amount of time gone since we last played our idle animation

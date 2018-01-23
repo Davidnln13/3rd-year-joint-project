@@ -288,7 +288,7 @@ void Player::render(sf::RenderWindow & window)
 	m_jumpRect.setRotation(m_jumpBody->GetAngle() * RAD_TO_DEG); //have to convert from radians to degrees here
 
 	m_sword.render(window);
-	window.draw(m_playerRect);
+	//window.draw(m_playerRect);
 	window.draw(m_forearmRect);
 	window.draw(m_jumpRect);
 }
@@ -309,7 +309,7 @@ void Player::attack()
 {
 	if (m_canAttack && m_holdingSword) //if we can attack and we have a sword
 	{
-		setSpriteTexture(m_sprite, resourceManager.getTextureHolder()["playerAttack"], sf::Vector2i(49, 88), 24);
+		setSpriteTexture(m_sprite, resourceManager.getTextureHolder()["playerAttack"], sf::Vector2i(56, 88), 24.0f);
 
 		m_animator.stop(); //stop any animations playing
 		m_animator.play() << "attack";
@@ -351,6 +351,10 @@ void Player::jump()
 {
 	m_playerBody->ApplyForceToCenter(b2Vec2(0, -4000),true);
 	m_canJump = false;
+
+	setSpriteTexture(m_sprite, resourceManager.getTextureHolder()["playerJump"], sf::Vector2i(52, 87), 27.5f);
+	m_animator.stop(); //stop any animation playing at the moment
+	m_animator.play() << "jump";
 }
 
 void Player::handleJoystick(JoystickController & controller)
@@ -376,7 +380,7 @@ void Player::handleJoystick(JoystickController & controller)
 
 	if (controller.isButtonHeld("LeftThumbStickLeft") && m_canAttack)
 	{
-		if (m_runTime >= .75f)
+		if (m_runTime >= .75f && m_canJump)
 		{
 			setSpriteTexture(m_sprite, resourceManager.getTextureHolder()["playerRun"], sf::Vector2i(63, 87), 36);
 			m_animator.stop();
@@ -390,7 +394,7 @@ void Player::handleJoystick(JoystickController & controller)
 	}
 	if (controller.isButtonHeld("LeftThumbStickRight") && m_canAttack)
 	{
-		if (m_runTime >= .75f)
+		if (m_runTime >= .75f && m_canJump)
 		{
 			setSpriteTexture(m_sprite, resourceManager.getTextureHolder()["playerRun"], sf::Vector2i(63, 87), 36);
 			m_animator.stop();
@@ -705,13 +709,15 @@ void Player::setUpAnimations()
 	m_animationClock.restart(); //starting our animation clock
 
 	auto idleFrameSize = sf::Vector2i(42, 87);
-	auto attackFrameSize = sf::Vector2i(49, 88);
+	auto attackFrameSize = sf::Vector2i(56, 88);
 	auto runFrameSize = sf::Vector2i(63, 87);
+	auto jumpFrameSize = sf::Vector2i(52, 87);
 
 	//Adding all of our animations to our animation holder
 	addFramesToAnimation(0.1f, 5, m_idleAnimation, idleFrameSize, "idle", .5f);
 	addFramesToAnimation(0.1f, 10, m_attackAnimation, attackFrameSize, "attack", .35f);
 	addFramesToAnimation(0.1f, 20, m_runAnimation, runFrameSize, "run", .75f);
+	addFramesToAnimation(0.1f, 10, m_jumpAnimation, jumpFrameSize, "jump", .15f);
 }
 
 void Player::addFramesToAnimation(float lengthOfOneFrame, int numOfFrames, thor::FrameAnimation & animation, sf::Vector2i & frameSize, std::string animationName, float lengthOfAnimation)
