@@ -144,6 +144,11 @@ sf::Sprite & Weapon::getLight()
 	return m_lightSprite;
 }
 
+sf::Vector2f Weapon::getPosition()
+{
+	return sf::Vector2f(m_body->GetPosition().x * PPM, m_body->GetPosition().y * PPM);
+}
+
 void Weapon::setPosition(b2Vec2 pos, float angle)
 {
 	m_body->SetTransform(pos, angle * (180.f / thor::Pi));

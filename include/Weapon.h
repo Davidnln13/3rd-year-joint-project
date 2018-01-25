@@ -30,6 +30,7 @@ public:
 	//getters
 	b2Body* getBody();
 	sf::Sprite& getLight();
+	sf::Vector2f getPosition();
 
 	//Setters
 	void setPosition(b2Vec2 pos, float angle);

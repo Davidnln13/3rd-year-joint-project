@@ -11,6 +11,7 @@ Player::Player(sf::Vector2f position, std::string direction = "left") :
 	m_parried(false),
 	m_switchedSwordPos(false),
 	m_playingPickup(false),
+	m_canPickupSword(false),
 	m_moveSpeed(7.0f),
 	m_gravityScale(2.75f),
 	m_weaponPos(1), //the centre of our player
@@ -19,7 +20,7 @@ Player::Player(sf::Vector2f position, std::string direction = "left") :
 	m_startPosition(position.x / PPM, position.y / PPM),
 	m_playerRect(sf::Vector2f(18, 87)),
 	m_forearmRect(sf::Vector2f(15, 5)),
-	m_jumpRect(sf::Vector2f(18, 3)),
+	m_jumpRect(sf::Vector2f(28, 3)),
 	m_sword(position),
 	m_animator(m_animationHolder),
 	m_idleTime(.5f),
@@ -199,7 +200,13 @@ void Player::update()
 
 	if (m_playingPickup)
 	{
-		if (m_pickupClock.getElapsedTime().asSeconds() >= 0.4f)
+		if (m_pickupClock.getElapsedTime().asSeconds() >= 0.125f && m_canPickupSword ||
+			m_pickupClock.getElapsedTime().asSeconds() >= 0.125f && distance(sf::Vector2f(m_playerBody->GetPosition().x * PPM, m_playerBody->GetPosition().y * PPM), m_sword.getPosition(), 75))
+		{
+			m_pickupSword = true;
+			m_canPickupSword = false;
+		}
+		if (m_pickupClock.getElapsedTime().asSeconds() >= 0.25f)
 			m_playingPickup = false;
 	}
 
@@ -364,6 +371,19 @@ void Player::jump()
 	m_animator.play() << "jump";
 }
 
+void Player::pickupSword()
+{
+	//If we dont have our sword then play the pickup animation 
+	if (false == m_holdingSword && false == m_playingPickup)
+	{
+		setSpriteTexture(m_sprite, resourceManager.getTextureHolder()["playerPickup"], sf::Vector2i(42, 87), 23);
+		m_animator.stop();
+		m_animator.play() << "pickup";
+		m_playingPickup = true;
+		m_pickupClock.restart();//restart our stance clock
+	}
+}
+
 void Player::handleJoystick(JoystickController & controller)
 {
 	bool moved = false;
@@ -423,7 +443,8 @@ void Player::handleJoystick(JoystickController & controller)
 	if (controller.isButtonPressed("X"))
 		attack();
 	if (controller.isButtonPressed("Y"))
-		respawn();
+		pickupSword();
+		//respawn(); uncomment this if you want to respawn
 
 	if (controller.isButtonPressed("A") && m_canJump)
 		jump();
@@ -495,15 +516,6 @@ void Player::changeSwordStance(std::string direction)
 			setSwordStance(-m_weaponPosChange);
 			m_switchedSwordPos = true;
 			m_stanceChangeClock.restart();//restart our stance clock
-		}
-		//If we can move our sword down anymore and we dont have our sword then play the pickup animation
-		else if(m_weaponPos == 0 && false == m_holdingSword && false == m_playingPickup)
-		{
-			setSpriteTexture(m_sprite, resourceManager.getTextureHolder()["playerPickup"], sf::Vector2i(42, 87), 23);
-			m_animator.stop();
-			m_animator.play() << "pickup";
-			m_playingPickup = true;
-			m_pickupClock.restart();//restart our stance clock
 		}
 	}
 
@@ -735,7 +747,7 @@ void Player::setUpAnimations()
 	addFramesToAnimation(0.1f, 10, m_attackAnimation, attackFrameSize, "attack", .35f);
 	addFramesToAnimation(0.1f, 20, m_runAnimation, runFrameSize, "run", .75f);
 	addFramesToAnimation(0.1f, 10, m_jumpAnimation, jumpFrameSize, "jump", .15f);
-	addFramesToAnimation(0.1f, 20, m_pickupAnimation, pickupFrameSize, "pickup", 0.4f);
+	addFramesToAnimation(0.1f, 20, m_pickupAnimation, pickupFrameSize, "pickup", 0.25f);
 }
 
 void Player::addFramesToAnimation(float lengthOfOneFrame, int numOfFrames, thor::FrameAnimation & animation, sf::Vector2i & frameSize, std::string animationName, float lengthOfAnimation)
@@ -822,7 +834,7 @@ void Player::setSwordThrown()
 }
 void Player::setPickupWeapon()
 {
-	m_pickupSword = true;
+	m_canPickupSword = true;
 }
 bool Player::getCanAttack()
 {

@@ -22,6 +22,7 @@ public:
 	void attack();
 	void throwSword();
 	void jump();
+	void pickupSword();
 	void handleJoystick(JoystickController& controller);
 	void invertPlayerJoint(bool facingLeft); //inverts the joints for our player, so we can swap where the weapon and arm is jointed to
 	void changeSwordStance(std::string direction); //changes teh position our sword is will be in the y position
@@ -73,7 +74,8 @@ private:
 	bool m_isAiming; //bool to show if the player is holding LT to aim their sword to throw it
 	bool m_holdingSword; //bool to show if the player is holding a sword or not
 	bool m_swordClashed; // bool to set sword clash
-	bool m_pickupSword; //bool to determine whteer to pickup a sword or not
+	bool m_pickupSword; //bool to determine wheter to pickup a sword or not
+	bool m_canPickupSword; //bool to determine wheter we CAN pickup a sword or not
 	bool m_parried; //bool to determine if we have bene parried
 	bool m_switchedSwordPos; //bool to show if we have switched sword positions on the y axis
 	float m_moveSpeed; //the speed at which our player move shorizontally
