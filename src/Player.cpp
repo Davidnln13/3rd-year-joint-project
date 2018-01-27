@@ -12,7 +12,7 @@ Player::Player(sf::Vector2f position, std::string direction = "left") :
 	m_switchedSwordPos(false),
 	m_playingPickup(false),
 	m_canPickupSword(false),
-	m_moveSpeed(7.0f),
+	m_moveSpeed(7.5f),
 	m_gravityScale(2.75f),
 	m_weaponPos(1), //the centre of our player
 	m_attackRate(0.50f),
@@ -42,117 +42,26 @@ Player::Player(sf::Vector2f position, std::string direction = "left") :
 	else if (direction == "right")
 		m_isFacingLeft = false;
 
-	//creating our Box2d body and fixture for the player
-	m_playerbodyDef.type = b2_dynamicBody;
-	m_playerbodyDef.position.Set(m_position.x / PPM, m_position.y / PPM); //spawn the player in the center of the screen
-	m_playerbodyDef.fixedRotation = true;
-	m_playerbodyDef.bullet = true; // we make our body a bullet so collision detection occurs more often for or player(s)
-	m_playerBody = world.CreateBody(&m_playerbodyDef); //add the body to the world
-	m_playerBody->SetUserData(this);
-	m_playerBody->SetGravityScale(m_gravityScale);
+	//Creating our bodies using our CreateBody Method
+	m_playerBody = &createBody(m_playerBody, b2_dynamicBody, b2Vec2(m_position.x / PPM, (m_position.y + m_playerRect.getSize().y / 2.f) / PPM), true, true, m_gravityScale);
+	m_forearmBody = &createBody(m_forearmBody, b2_dynamicBody, b2Vec2(m_position.x / PPM, m_position.y / PPM), true, true, m_gravityScale);
+	m_jumpBody = &createBody(m_jumpBody, b2_dynamicBody, b2Vec2(m_position.x / PPM, (m_position.y + m_playerRect.getSize().y / 2.f) / PPM), true, true, m_gravityScale);
+	m_leftSensorBody = &createBody(m_leftSensorBody, b2_dynamicBody, b2Vec2((m_position.x - m_playerRect.getSize().x / 2.0f) / PPM, m_position.y / PPM), true, true, m_gravityScale);
+	m_rightSensorBody = &createBody(m_rightSensorBody, b2_dynamicBody, b2Vec2((m_position.x + m_playerRect.getSize().x / 2.0f) / PPM, m_position.y / PPM), true, true, m_gravityScale);
 
-	m_forearmBodyDef.type = b2_dynamicBody;
-	m_forearmBodyDef.position.Set(m_position.x / PPM, m_position.y / PPM);
-	m_forearmBodyDef.fixedRotation = true;
-	m_forearmBody = world.CreateBody(&m_forearmBodyDef); //add the body to the world
-	m_forearmBody->SetUserData(this);
-	m_forearmBody->SetGravityScale(m_gravityScale);
+	//Creating our fixtures for each of our bodies
+	createFixture(m_playerBody, m_playerRect.getSize().x, m_playerRect.getSize().y, false, 1.5f, 0.0f, 0.1f);
+	createFixture(m_forearmBody, m_forearmRect.getSize().x, m_forearmRect.getSize().y, true, .25f, 0.0f, 1.0f);
+	createFixture(m_jumpBody, m_jumpRect.getSize().x, m_jumpRect.getSize().y, true, 0.0f, 0.0f, 1.0f);
+	createFixture(m_leftSensorBody, m_leftWallSensorRect.getSize().x, m_leftWallSensorRect.getSize().y, true, 0.0f, 0.0f, 1.0f);
+	createFixture(m_rightSensorBody, m_rightWallSensorRect.getSize().x, m_rightWallSensorRect.getSize().y, true, 0.0f, 0.0f, 1.0f);
 
-	//creating our jump body
-	b2BodyDef jumpDef;
-	jumpDef.type = b2_dynamicBody;
-	jumpDef.position.Set(m_position.x / PPM, (m_position.y + m_playerRect.getSize().y / 2.f) / PPM); //place our jumping body at the bottom of the player
-	jumpDef.userData = this;
-	jumpDef.bullet = true; //we want our jump body to be a bullet so collision detection occurs more often, this will allow for smoother jumping
-	m_jumpBody = world.CreateBody(&jumpDef);
-	m_jumpBody->SetUserData(this);
-	m_jumpBody->SetGravityScale(m_gravityScale);
-
-	b2BodyDef leftSensorBodyDef;
-	leftSensorBodyDef.type = b2_dynamicBody;
-	leftSensorBodyDef.position.Set((m_position.x - m_playerRect.getSize().x / 2.0f ) / PPM, m_position.y / PPM);
-	leftSensorBodyDef.userData = this;
-	leftSensorBodyDef.fixedRotation = true;
-	leftSensorBodyDef.bullet = true; //we want our jump body to be a bullet so collision detection occurs more often, this will allow for smoother jumping
-	m_leftSensorBody = world.CreateBody(&leftSensorBodyDef);
-	m_leftSensorBody->SetGravityScale(m_gravityScale);
-
-	b2BodyDef rightSensorBodyDef;
-	rightSensorBodyDef.type = b2_dynamicBody;
-	rightSensorBodyDef.position.Set((m_position.x + m_playerRect.getSize().x / 2.0f) / PPM, m_position.y / PPM);
-	rightSensorBodyDef.userData = this;
-	rightSensorBodyDef.fixedRotation = true;
-	rightSensorBodyDef.bullet = true; //we want our jump body to be a bullet so collision detection occurs more often, this will allow for smoother jumping
-	m_rightSensorBody = world.CreateBody(&rightSensorBodyDef);
-	m_rightSensorBody->SetGravityScale(m_gravityScale);
-
-	b2PolygonShape playerShape;
-	playerShape.SetAsBox((m_playerRect.getSize().x / 2.f) / PPM, (m_playerRect.getSize().y / 2.f) / PPM);
-
-	b2PolygonShape forearmShape;
-	forearmShape.SetAsBox((m_forearmRect.getSize().x / 2.f) / PPM, (m_forearmRect.getSize().y / 2.f) / PPM);
-
-	b2PolygonShape jumpShape;
-	jumpShape.SetAsBox(m_jumpRect.getSize().x / 2.f / PPM, m_jumpRect.getSize().y / 2.f / PPM);
-
-	b2PolygonShape wallSensorShape;
-	wallSensorShape.SetAsBox(m_leftWallSensorRect.getSize().x / 2.f / PPM, m_leftWallSensorRect.getSize().y / 2.f / PPM);
-
-	b2FixtureDef leftSensorDef;
-	leftSensorDef.isSensor = true;
-	leftSensorDef.density = 0.0f;
-	leftSensorDef.shape = &wallSensorShape;
-	m_leftSensorBody->CreateFixture(&leftSensorDef);
-
-	b2FixtureDef rightSensorDef;
-	rightSensorDef.shape = &wallSensorShape;
-	rightSensorDef.isSensor = true;
-	rightSensorDef.density = 0.0f;
-	m_rightSensorBody->CreateFixture(&rightSensorDef);
-
-	b2FixtureDef playerDef;
-	playerDef.shape = &playerShape;
-	playerDef.density = 1.5; //giving the player a mass of 1.5
-	playerDef.restitution = 0.0f;
-	playerDef.friction = 0.1f;
-	m_playerBody->CreateFixture(&playerDef);
-
-	b2FixtureDef forearmFixDef;
-	forearmFixDef.shape = &forearmShape;
-	forearmFixDef.density = .25f; //giving the arm a mass of 0.1
-	forearmFixDef.isSensor = true;
-	m_forearmBody->CreateFixture(&forearmFixDef);
-
-	b2FixtureDef jumpFixDef;
-	jumpFixDef.shape = &jumpShape;
-	jumpFixDef.isSensor = true;
-	m_jumpBody->CreateFixture(&jumpFixDef);
-
-	m_playerRect.setOrigin(m_playerRect.getSize().x / 2.f, m_playerRect.getSize().y / 2.f); //setting the origin to the center of the box
-	m_playerRect.setFillColor(sf::Color::Transparent);
-	m_playerRect.setOutlineColor(sf::Color::Red);
-	m_playerRect.setOutlineThickness(1);
-
-	m_forearmRect.setOrigin(m_forearmRect.getSize().x / 2.f, m_forearmRect.getSize().y / 2.f); //setting the origin to the center of the box
-	m_forearmRect.setFillColor(sf::Color::White);
-	m_forearmRect.setOutlineThickness(0);
-
-	m_jumpRect.setOrigin(m_jumpRect.getSize().x / 2.f, m_jumpRect.getSize().y / 2.f); //setting the origin to the center of the box
-	m_jumpRect.setFillColor(sf::Color::Transparent);
-	m_jumpRect.setOutlineColor(sf::Color::Green);
-	m_jumpRect.setOutlineThickness(1);
-
-	/*------> TEMPORARY <------*/
-	m_leftWallSensorRect.setOrigin(m_leftWallSensorRect.getSize().x / 2.f, m_leftWallSensorRect.getSize().y / 2.f); //setting the origin to the center of the box
-	m_leftWallSensorRect.setFillColor(sf::Color::Transparent);
-	m_leftWallSensorRect.setOutlineColor(sf::Color::Green);
-	m_leftWallSensorRect.setOutlineThickness(1);
-
-	m_rightWallSensorRect.setOrigin(m_rightWallSensorRect.getSize().x / 2.f, m_rightWallSensorRect.getSize().y / 2.f); //setting the origin to the center of the box
-	m_rightWallSensorRect.setFillColor(sf::Color::Transparent);
-	m_rightWallSensorRect.setOutlineColor(sf::Color::Green);
-	m_rightWallSensorRect.setOutlineThickness(1);
-	/*------> TEMPORARY <------*/
+	//Creating/Setting up our rectangles for our bodies
+	createRectangle(m_playerRect, sf::Vector2f(m_playerRect.getSize().x / 2.f, m_playerRect.getSize().y / 2.f), sf::Color::Transparent, sf::Color::Red, 1);
+	createRectangle(m_forearmRect, sf::Vector2f(m_forearmRect.getSize().x / 2.f, m_forearmRect.getSize().y / 2.f), sf::Color::White, sf::Color::Transparent, 0);
+	createRectangle(m_jumpRect, sf::Vector2f(m_jumpRect.getSize().x / 2.f, m_jumpRect.getSize().y / 2.f), sf::Color::Transparent, sf::Color::Green, 1);
+	createRectangle(m_leftWallSensorRect, sf::Vector2f(m_leftWallSensorRect.getSize().x / 2.f, m_leftWallSensorRect.getSize().y / 2.f), sf::Color::Transparent, sf::Color::Green, 1);
+	createRectangle(m_rightWallSensorRect, sf::Vector2f(m_rightWallSensorRect.getSize().x / 2.f, m_rightWallSensorRect.getSize().y / 2.f), sf::Color::Transparent, sf::Color::Green, 1);
 
 	//Creating the joint between our arm and player
 	m_playerToArmJointDef.bodyA = m_playerBody;
@@ -254,6 +163,46 @@ Player::Player(sf::Vector2f position, std::string direction = "left") :
 Player::~Player()
 {
 	
+}
+
+b2Body& Player::createBody(b2Body* body, b2BodyType bodyType, b2Vec2 position, bool isBullet, bool fixRotation, float gravityScale)
+{
+	b2BodyDef bodyDef;//Create a body definition
+
+	bodyDef.type = bodyType; //Set the body type (Dynamic, Static, Kinematic)
+	bodyDef.position.Set(position.x, position.y); //Sets the inital position of the body
+	bodyDef.fixedRotation = fixRotation; //If this bool is true then the body will keep its rotation when it collides
+	bodyDef.bullet = isBullet; //If isBulle tis true then collision detection will occur more frequently
+	body = world.CreateBody(&bodyDef); //add the body to the world
+	body->SetUserData(this); //Set the user data of this body to this object (Player)
+	body->SetGravityScale(gravityScale); //Set the gravity scale of the body
+	return *body; //return the body
+}
+
+void Player::createFixture(b2Body * body, float width, float height, bool isSensor, float density, float restitution, float friction)
+{
+	b2PolygonShape shape;
+	b2FixtureDef fixDef;
+
+	//Creating our shape
+	shape.SetAsBox(width / 2.0f / PPM, height / 2.0 / PPM);
+
+	//Setting the parameters of the fixture
+	fixDef.shape = &shape;
+	fixDef.isSensor = isSensor;
+	fixDef.density = density;
+	fixDef.restitution = restitution;
+	fixDef.friction = friction;
+	
+	body->CreateFixture(&fixDef); //Create the fixture for the passed ove rbody
+}
+
+void Player::createRectangle(sf::RectangleShape & rect, sf::Vector2f origin, sf::Color fill, sf::Color stroke, float strokeWidth)
+{
+	rect.setOrigin(origin);
+	rect.setFillColor(fill);
+	rect.setOutlineColor(stroke);
+	rect.setOutlineThickness(strokeWidth);
 }
 
 void Player::update()
@@ -450,7 +399,7 @@ void Player::throwSword()
 
 void Player::jump()
 {
-	m_playerBody->ApplyForceToCenter(b2Vec2(0, -4000),true);
+	m_playerBody->ApplyForceToCenter(b2Vec2(0, -5750),true);
 	m_canJump = false;
 
 	setSpriteTexture(m_sprite, resourceManager.getTextureHolder()["playerJump"], sf::Vector2i(52, 87), 27.5f);

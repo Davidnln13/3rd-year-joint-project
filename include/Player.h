@@ -15,6 +15,11 @@ public:
 	Player(sf::Vector2f position, std::string direction);
 	~Player(); //Any classes that have a box2d body should have that body deleted in here
 
+	//This method creates a box2d body using the passed over arguments
+	b2Body& createBody(b2Body* body, b2BodyType bodyType, b2Vec2 position, bool isBullet, bool fixRotation, float gravityScale);
+	void createFixture(b2Body* body, float width, float height, bool isSensor, float density, float restitution, float friction);
+	void createRectangle(sf::RectangleShape& rect, sf::Vector2f origin, sf::Color fill, sf::Color stroke, float strokeWidth);
+
 	void update();
 	void render(sf::RenderWindow& window);
 	void moveRight();
@@ -117,10 +122,6 @@ private:
 	b2PrismaticJointDef m_playerToArmJointDef;
 	b2WeldJointDef m_jumpSensorJointDef;
 	b2RevoluteJointDef m_armToSwordJointDef;
-
-	//Our body defs, we will hold a reference to our bodie defeinitions so we can easily modify the bodies on the fly
-	b2BodyDef m_playerbodyDef;
-	b2BodyDef m_forearmBodyDef;
 
 	//Sprite variables
 	sf::Sprite m_sprite;

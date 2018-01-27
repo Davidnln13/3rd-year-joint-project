@@ -109,13 +109,14 @@ void Level::setUpFloor()
 	for (int i = 0; i < floorData.size(); i++)
 	{
 		bool createFloor = false;
+		int startX = floorData.at(i)["StartX"]; // Store the X value here due to dodgy references in JSON
 
 		for (int j = 0; j < floorData.at(i)["TileAmount"]; j++)
 		{
 			sf::Sprite tile;
 			tile.setTexture(resourceManager.getTextureHolder()["stoneTile"]); 
 			tile.setOrigin(tile.getLocalBounds().left + tile.getLocalBounds().width / 2.0f, tile.getLocalBounds().top + tile.getLocalBounds().height / 2.0f);
-			tile.setPosition(floorData.at(i)["StartX"] + (50 * j), floorData.at(i)["posY"]);
+			tile.setPosition(startX + (50 * j), floorData.at(i)["PosY"]);
 			m_floorSprites.push_back(tile);
 			createFloor = true; //set our bool to true
 		}
@@ -123,9 +124,10 @@ void Level::setUpFloor()
 		if (createFloor && floorData.at(i)["HasBody"])
 		{
 			//Get the length of the created floor
-			auto floorLength = 50 * floorData.at(i)["TileAmount"];
+			int floorLength = 50 * floorData.at(i)["TileAmount"];
+			std::cout << (startX - 25) + (floorLength / 2.0f) << std::endl;
 			//We create an obstacle (a box2d object) with the specified position and size and push it to our floor vector
-			m_floors.push_back(Obstacle(sf::Vector2f(floorData.at(i)["StartX"] - 25 + floorLength / 2.0f, floorData.at(i)["posY"]), sf::Vector2f(floorLength, 50)));
+			m_floors.push_back(Obstacle(sf::Vector2f((startX - 25) + (floorLength / 2.0f), floorData.at(i)["PosY"]), sf::Vector2f(floorLength, 50)));
 		}
 	}
 }
@@ -134,7 +136,7 @@ void Level::setupAnimations()
 {
 	auto torchData = m_levelLoader.data()["Level " + std::to_string(m_levelNumber)]["Torches"];
 
-	//the size of one frame in our spritesheet is 400 x 55 pixels
+	//the size of one frame
 	auto torchSourceSize = sf::Vector2i(14, 30);
 	auto torchLightSize = sf::Vector2i(200, 200);
 
