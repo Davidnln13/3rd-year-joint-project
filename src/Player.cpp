@@ -20,7 +20,9 @@ Player::Player(sf::Vector2f position, std::string direction = "left") :
 	m_startPosition(position.x / PPM, position.y / PPM),
 	m_playerRect(sf::Vector2f(18, 87)),
 	m_forearmRect(sf::Vector2f(15, 5)),
-	m_jumpRect(sf::Vector2f(28, 3)),
+	m_jumpRect(sf::Vector2f(18, 3)),
+	m_leftWallSensorRect(sf::Vector2f(3, 87)),
+	m_rightWallSensorRect(sf::Vector2f(3, 87)),
 	m_sword(position),
 	m_animator(m_animationHolder),
 	m_idleTime(.5f),
@@ -66,6 +68,24 @@ Player::Player(sf::Vector2f position, std::string direction = "left") :
 	m_jumpBody->SetUserData(this);
 	m_jumpBody->SetGravityScale(m_gravityScale);
 
+	b2BodyDef leftSensorBodyDef;
+	leftSensorBodyDef.type = b2_dynamicBody;
+	leftSensorBodyDef.position.Set((m_position.x - m_playerRect.getSize().x / 2.0f ) / PPM, m_position.y / PPM);
+	leftSensorBodyDef.userData = this;
+	leftSensorBodyDef.fixedRotation = true;
+	leftSensorBodyDef.bullet = true; //we want our jump body to be a bullet so collision detection occurs more often, this will allow for smoother jumping
+	m_leftSensorBody = world.CreateBody(&leftSensorBodyDef);
+	m_leftSensorBody->SetGravityScale(m_gravityScale);
+
+	b2BodyDef rightSensorBodyDef;
+	rightSensorBodyDef.type = b2_dynamicBody;
+	rightSensorBodyDef.position.Set((m_position.x + m_playerRect.getSize().x / 2.0f) / PPM, m_position.y / PPM);
+	rightSensorBodyDef.userData = this;
+	rightSensorBodyDef.fixedRotation = true;
+	rightSensorBodyDef.bullet = true; //we want our jump body to be a bullet so collision detection occurs more often, this will allow for smoother jumping
+	m_rightSensorBody = world.CreateBody(&rightSensorBodyDef);
+	m_rightSensorBody->SetGravityScale(m_gravityScale);
+
 	b2PolygonShape playerShape;
 	playerShape.SetAsBox((m_playerRect.getSize().x / 2.f) / PPM, (m_playerRect.getSize().y / 2.f) / PPM);
 
@@ -75,9 +95,26 @@ Player::Player(sf::Vector2f position, std::string direction = "left") :
 	b2PolygonShape jumpShape;
 	jumpShape.SetAsBox(m_jumpRect.getSize().x / 2.f / PPM, m_jumpRect.getSize().y / 2.f / PPM);
 
+	b2PolygonShape wallSensorShape;
+	wallSensorShape.SetAsBox(m_leftWallSensorRect.getSize().x / 2.f / PPM, m_leftWallSensorRect.getSize().y / 2.f / PPM);
+
+	b2FixtureDef leftSensorDef;
+	leftSensorDef.isSensor = true;
+	leftSensorDef.density = 0.0f;
+	leftSensorDef.shape = &wallSensorShape;
+	m_leftSensorBody->CreateFixture(&leftSensorDef);
+
+	b2FixtureDef rightSensorDef;
+	rightSensorDef.shape = &wallSensorShape;
+	rightSensorDef.isSensor = true;
+	rightSensorDef.density = 0.0f;
+	m_rightSensorBody->CreateFixture(&rightSensorDef);
+
 	b2FixtureDef playerDef;
 	playerDef.shape = &playerShape;
 	playerDef.density = 1.5; //giving the player a mass of 1.5
+	playerDef.restitution = 0.0f;
+	playerDef.friction = 0.1f;
 	m_playerBody->CreateFixture(&playerDef);
 
 	b2FixtureDef forearmFixDef;
@@ -104,6 +141,18 @@ Player::Player(sf::Vector2f position, std::string direction = "left") :
 	m_jumpRect.setFillColor(sf::Color::Transparent);
 	m_jumpRect.setOutlineColor(sf::Color::Green);
 	m_jumpRect.setOutlineThickness(1);
+
+	/*------> TEMPORARY <------*/
+	m_leftWallSensorRect.setOrigin(m_leftWallSensorRect.getSize().x / 2.f, m_leftWallSensorRect.getSize().y / 2.f); //setting the origin to the center of the box
+	m_leftWallSensorRect.setFillColor(sf::Color::Transparent);
+	m_leftWallSensorRect.setOutlineColor(sf::Color::Green);
+	m_leftWallSensorRect.setOutlineThickness(1);
+
+	m_rightWallSensorRect.setOrigin(m_rightWallSensorRect.getSize().x / 2.f, m_rightWallSensorRect.getSize().y / 2.f); //setting the origin to the center of the box
+	m_rightWallSensorRect.setFillColor(sf::Color::Transparent);
+	m_rightWallSensorRect.setOutlineColor(sf::Color::Green);
+	m_rightWallSensorRect.setOutlineThickness(1);
+	/*------> TEMPORARY <------*/
 
 	//Creating the joint between our arm and player
 	m_playerToArmJointDef.bodyA = m_playerBody;
@@ -153,10 +202,27 @@ Player::Player(sf::Vector2f position, std::string direction = "left") :
 	m_jumpSensorJointDef.collideConnected = false; //so our sensor and player dont collide
 	m_jumpSensorJointDef.localAnchorA.Set(0, (m_playerRect.getSize().y / 2.f) / PPM); //center of the player
 	m_jumpSensorJointDef.localAnchorB.Set(0, 0);
-	m_jumpSensorJointDef.enableLimit = true;
-	m_jumpSensorJointDef.lowerTranslation = 0;
-	m_jumpSensorJointDef.upperTranslation = 0;
-	m_jumpSensorJoint = (b2PrismaticJoint*)world.CreateJoint(&m_jumpSensorJointDef);
+	m_jumpSensorJoint = (b2WeldJoint*)world.CreateJoint(&m_jumpSensorJointDef);
+
+	/*------> TEMPORARY <------*/
+	b2WeldJointDef leftWeld;
+	leftWeld.bodyA = m_leftSensorBody;
+	leftWeld.bodyB = m_playerBody;
+	leftWeld.collideConnected = false; //so our sensor and player dont collide
+	leftWeld.localAnchorA.Set(-(m_playerRect.getSize().x  / 2.0f) / PPM, 0);
+	leftWeld.localAnchorB.Set(0, 0);
+	m_leftWallSensorJoint = (b2WeldJoint*)world.CreateJoint(&leftWeld);
+
+	b2WeldJointDef rightWeld;
+	rightWeld.bodyA = m_rightSensorBody;
+	rightWeld.bodyB = m_playerBody;
+	rightWeld.collideConnected = false; //so our sensor and player dont collide
+	rightWeld.localAnchorA.Set((m_playerRect.getSize().x / 2.0f) / PPM, 0);
+	rightWeld.localAnchorB.Set(0, 0);
+	m_rightWallSensorJoint = (b2WeldJoint*)world.CreateJoint(&rightWeld);
+	/*------> TEMPORARY <------*/
+
+
 
 	m_attackClock.restart(); //start our clock when the player is created
 
@@ -301,10 +367,23 @@ void Player::render(sf::RenderWindow & window)
 	m_jumpRect.setPosition(m_jumpBody->GetPosition().x * PPM, m_jumpBody->GetPosition().y * PPM);
 	m_jumpRect.setRotation(m_jumpBody->GetAngle() * RAD_TO_DEG); //have to convert from radians to degrees here
 
+	/*------> TEMPORARY <------*/
+	m_leftWallSensorRect.setPosition(m_leftSensorBody->GetPosition().x * PPM, m_leftSensorBody->GetPosition().y * PPM);
+	m_leftWallSensorRect.setRotation(m_leftSensorBody->GetAngle() * RAD_TO_DEG); //have to convert from radians to degrees here
+	m_rightWallSensorRect.setPosition(m_rightSensorBody->GetPosition().x * PPM, m_rightSensorBody->GetPosition().y * PPM);
+	m_rightWallSensorRect.setRotation(m_rightSensorBody->GetAngle() * RAD_TO_DEG); //have to convert from radians to degrees here
+	/*------> TEMPORARY <------*/
+
+
 	m_sword.render(window);
-	//window.draw(m_playerRect);
+	window.draw(m_playerRect);
 	window.draw(m_forearmRect);
 	window.draw(m_jumpRect);
+
+	/*------> TEMPORARY <------*/
+	window.draw(m_rightWallSensorRect);
+	window.draw(m_leftWallSensorRect);
+	/*------> TEMPORARY <------*/
 }
 
 void Player::moveRight()
@@ -316,7 +395,15 @@ void Player::moveRight()
 void Player::moveLeft()
 {
 	invertPlayerJoint(true);
-	m_playerBody->SetLinearVelocity(b2Vec2(-m_moveSpeed, m_playerBody->GetLinearVelocity().y));
+
+	b2Vec2 vel = m_playerBody->GetLinearVelocity();
+	float desiredVel = -m_moveSpeed;
+	float velChange = desiredVel - vel.x;
+	float force = m_playerBody->GetMass() * velChange / (1 / 60.0);
+	m_playerBody->ApplyForce(b2Vec2(force, 0), m_playerBody->GetWorldCenter(), true);
+
+	//m_playerBody->ApplyLinearImpulseToCenter(b2Vec2(-(m_moveSpeed / 10.0f), 0), true);
+	//m_playerBody->SetLinearVelocity(b2Vec2(-m_moveSpeed, m_playerBody->GetLinearVelocity().y));
 }
 
 void Player::attack()

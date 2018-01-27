@@ -86,6 +86,7 @@ void Level::render(sf::RenderWindow & window)
 	m_player1.render(window); //draw the first player	
 	m_player2.render(window); //draw the second player
 
+	//Blend our lights into our overlay
 	window.draw(m_overlaySprite, sf::BlendMultiply);
 }
 
@@ -118,13 +119,13 @@ void Level::setUpFloor()
 			m_floorSprites.push_back(tile);
 			createFloor = true; //set our bool to true
 		}
-		//If our bool has changed then create our floor
-		if (createFloor)
+		//If our bool has changed and our floor has a body then create our floor
+		if (createFloor && floorData.at(i)["HasBody"])
 		{
 			//Get the length of the created floor
 			auto floorLength = 50 * floorData.at(i)["TileAmount"];
 			//We create an obstacle (a box2d object) with the specified position and size and push it to our floor vector
-			m_floors.push_back(Obstacle(sf::Vector2f(floorLength / 2.0f, floorData.at(i)["posY"]), sf::Vector2f(floorLength, 50)));
+			m_floors.push_back(Obstacle(sf::Vector2f(floorData.at(i)["StartX"] - 25 + floorLength / 2.0f, floorData.at(i)["posY"]), sf::Vector2f(floorLength, 50)));
 		}
 	}
 }

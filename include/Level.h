@@ -47,7 +47,7 @@ private:
 	Player m_player1;
 	Player m_player2;
 
-	//Our floors are made up of sever tiles, therefore we need a collection to hold our tiles
+	//Our floors are made up of several tiles, therefore we need a collection to hold our tiles
 	std::vector<sf::Sprite> m_floorSprites;
 
 	//Our contact listener, we will use this class to handle collisions with sensors

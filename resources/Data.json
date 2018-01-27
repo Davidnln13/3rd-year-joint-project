@@ -6,6 +6,12 @@
           "posY":695,
           "TileAmount":26,
           "HasBody":true
+        },
+        {
+          "StartX":1225,
+          "posY":600,
+          "TileAmount":5,
+          "HasBody":true
         }
       ],
       "Torches":[

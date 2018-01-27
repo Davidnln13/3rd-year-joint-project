@@ -13,9 +13,9 @@ Obstacle::Obstacle(sf::Vector2f position, sf::Vector2f size)
 	boxShape.SetAsBox((size.x / 2.f) / PPM, (size.y / 2.f) / PPM);
 
 	b2FixtureDef boxFixDef;
-	boxFixDef.density = 1; 
-	boxFixDef.friction = .7f;
-	boxFixDef.restitution = 0.39f;
+	boxFixDef.density = 100; 
+	boxFixDef.friction = .25f;
+	boxFixDef.restitution = 0.0f;
 	boxFixDef.shape = &boxShape;
 	m_body->CreateFixture(&boxFixDef);
 

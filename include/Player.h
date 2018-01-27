@@ -98,9 +98,7 @@ private:
 	sf::Vector2f m_armPosDest; //the destination of our arm position
 
 	//Our rectangles to draw our player and forearm
-	sf::RectangleShape m_playerRect;
-	sf::RectangleShape m_forearmRect;
-	sf::RectangleShape m_jumpRect;
+	sf::RectangleShape m_playerRect, m_forearmRect, m_jumpRect, m_leftWallSensorRect, m_rightWallSensorRect;
 
 	//Our weapon variable
 	Weapon m_sword;
@@ -109,13 +107,15 @@ private:
 	b2Body* m_playerBody;
 	b2Body* m_forearmBody;
 	b2Body* m_jumpBody; //our jump body, we will use this body to determine if we can jump or not
+	b2Body* m_leftSensorBody;
+	b2Body* m_rightSensorBody;
 	b2PrismaticJoint* m_playerToArmJoint; //the joint between our the players body and the players arm
-	b2PrismaticJoint* m_jumpSensorJoint; //the joint between our jump sensor and the player
+	b2WeldJoint* m_jumpSensorJoint, *m_leftWallSensorJoint, *m_rightWallSensorJoint; //the joints between our jump and wall sensors and the player
 	b2RevoluteJoint* m_armToSwordJoint; //the joitnt bewteen our players arm and the sword
 
 	//We hold the definitions as variables so we can easily change joint definition variables on the fly without recreating them each time
 	b2PrismaticJointDef m_playerToArmJointDef;
-	b2PrismaticJointDef m_jumpSensorJointDef;
+	b2WeldJointDef m_jumpSensorJointDef;
 	b2RevoluteJointDef m_armToSwordJointDef;
 
 	//Our body defs, we will hold a reference to our bodie defeinitions so we can easily modify the bodies on the fly
