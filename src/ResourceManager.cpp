@@ -24,13 +24,15 @@ ResourceManager::ResourceManager()
 		//Load level textures
 		acquireResource("castleBG", m_castleBg);
 		acquireResource("stoneTile", m_stoneTile);
+		acquireResource("torch", m_torch);
+		acquireResource("torchLight", m_torchLight);
 
 		//Load player textures
 		acquireResource("playerIdle", m_idlePlayer, false); //setting our animations to not smooth eliminates artefacts
 		acquireResource("playerAttack", m_playerAttack, false);
 		acquireResource("playerRun", m_playerRun, false);
-		acquireResource("playerJump", m_playerJump, true);
-		acquireResource("playerPickup", m_playerPickup, true);
+		acquireResource("playerJump", m_playerJump, false);
+		acquireResource("playerPickup", m_playerPickup, false);
 		acquireResource("playerLight", m_playerLight);
 		acquireResource("swordLight", m_swordLight);
 		acquireResource("sword", m_sword);

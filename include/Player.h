@@ -131,8 +131,8 @@ private:
 	thor::FrameAnimation m_idleAnimation, m_attackAnimation, m_runAnimation, m_jumpAnimation, m_pickupAnimation;
 	thor::AnimationMap<sf::Sprite, std::string> m_animationHolder;//our select and deselect animations
 	thor::Animator<sf::Sprite, std::string> m_animator;
-	float m_idleTime; //holds teh amount of time gone since we last played our idle animation
-	float m_runTime; //holds teh amount of time gone since we last played our run animation
+	float m_idleTime; //holds the amount of time gone since we last played our idle animation
+	float m_runTime; //holds the amount of time gone since we last played our run animation
 
 	//Shaders
 	sf::Shader m_recolourShader;

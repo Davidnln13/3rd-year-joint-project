@@ -7,6 +7,24 @@
           "TileAmount":26,
           "HasBody":true
         }
+      ],
+      "Torches":[
+        {
+          "PosX":160,
+          "PosY":695
+        },
+        {
+          "PosX":480,
+          "PosY":695
+        },
+        {
+          "PosX":800,
+          "PosY":695
+        },
+        {
+          "PosX":1120,
+          "PosY":695
+        }
       ]
    }
 }

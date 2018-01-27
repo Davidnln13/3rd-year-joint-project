@@ -15,18 +15,30 @@
 class Level
 {
 public:
-	Level(Audio& audio);
+	Level(Audio& audio, int levelNum);
 
 	void update();
 	void render(sf::RenderWindow& window);
 	void handleInput(JoystickController& controller1, JoystickController& controller2);
 	void setUpFloor();
 
+	void setupAnimations();
+
 private:
+	int m_levelNumber;
+
 	//Our level background sprite
 	sf::Sprite m_bg;
 	sf::Sprite m_overlaySprite;
 	sf::RenderTexture m_overlayTexture;
+
+	//Torch variables
+	std::vector<sf::Sprite> m_torchSprites, m_torchLightSprites;
+	std::vector<sf::Clock> m_torchClocks, m_torchLightClocks;//our animation clocks, we will use this to update our animations
+	sf::Clock m_loopClock; 
+	thor::FrameAnimation m_torchAnimation, m_torchLightAnimation;
+	thor::AnimationMap<sf::Sprite, std::string> m_animationHolder;//our select and deselect animations
+	std::vector<thor::Animator<sf::Sprite, std::string>*> m_torchAnimators, m_torchLightAnimators;
 
 	//Obstacle variables
 	std::vector<Obstacle> m_floors;
@@ -35,10 +47,10 @@ private:
 	Player m_player1;
 	Player m_player2;
 
-	//The floor is made up of a collection of bodies and 
+	//Our floors are made up of sever tiles, therefore we need a collection to hold our tiles
 	std::vector<sf::Sprite> m_floorSprites;
 
-	//Our contact listener, we will use this class to hadnle collisions with sensors
+	//Our contact listener, we will use this class to handle collisions with sensors
 	ContactListener m_contactListener;
 
 	//A reference to our audio
