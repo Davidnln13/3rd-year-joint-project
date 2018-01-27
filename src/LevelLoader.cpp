@@ -1,20 +1,21 @@
 #include "LevelLoader.h"
-#include <fstream>
-#include <iostream>
 
 LevelLoader::LevelLoader()
 {
+	//Create an if stream
 	std::ifstream ifs ("./resources/Data.json", std::ifstream::in);
 
-	json j;
+	//Read the if stream into our variable
+	ifs >> m_loadedData;
 
-	ifs >> j;
-
+	//Close the stream
 	ifs.close();
 
-	auto position = j["Lights"][0]["PosY"].at(1);
-	auto name = j["Game Developers"].at(0);
+	//auto position = j["Lights"][0]["PosY"].at(1);
+	//auto name = j["Game Developers"].at(0);
+}
 
-	std::cout << name;
-	std::cout << position;
+json& LevelLoader::data()
+{
+	return m_loadedData;
 }

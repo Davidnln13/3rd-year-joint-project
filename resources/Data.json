@@ -1,6 +1,12 @@
 {
-   "Lights":[
-      {"PosX": [100, 200, 300, 400], "PosY": [50, 100, 150, 200]}
-   ],
-   "Game Developers": ["David", "Daryl"]
+   "Level 1":{
+      "Floors":[
+        {
+          "StartX":25,
+          "posY":695,
+          "TileAmount":26,
+          "HasBody":true
+        }
+      ]
+   }
 }

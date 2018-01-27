@@ -3,15 +3,14 @@
 PlayScreen::PlayScreen(std::string name, Audio& audio) :
 	Screen(name),
 	m_audioPlayScreen(audio),
-	m_level(audio, resourceManager.getTextureHolder()["castleBG"])
+	m_level(audio)
 {
 
 }
 
 void PlayScreen::update()
 {
-	//update our players
-
+	//update our level
 	m_level.update();
 }
 

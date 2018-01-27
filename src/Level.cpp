@@ -1,20 +1,21 @@
 #include "Level.h"
 
-Level::Level(Audio& audio, sf::Texture& levelBackground) :
+Level::Level(Audio& audio) :
 	m_player1(sf::Vector2f(1120.0f, 540.0f), "left"),
 	m_player2(sf::Vector2f(160.0f, 540.0f), "right"),
-	m_floor(sf::Vector2f(640.0f, 695.0f), sf::Vector2f(1280, 50)),
-	m_audioRef(audio)
+	m_audioRef(audio),
+	m_levelLoader()
 {
 	//Set up the contact listener for box2d
 	world.SetContactListener(&m_contactListener);
 	//Set pointers to our player objects in our contact listener
 	m_contactListener.setPlayers(m_player1, m_player2);
 
-	//Set the textur eof our sprite and place it at 0,0
-	m_bg.setTexture(levelBackground);
+	//Set the texture of our sprite and place it at 0,0
+	m_bg.setTexture(resourceManager.getTextureHolder()["castleBG"]);
 	m_bg.setPosition(0, 0);
 
+	//Setup the floor of our level
 	setUpFloor();
 
 	//setting the parameters of our dark overlay, we will draw lights onto this render texture
@@ -45,7 +46,7 @@ void Level::render(sf::RenderWindow & window)
 	window.draw(m_bg); //draw the background
 
 	//Rendering our floor
-	for each (sf::Sprite tile in m_floorSprites)
+	for each (auto tile in m_floorSprites)
 		window.draw(tile);
 
 	m_player1.render(window); //draw the first player	
@@ -68,12 +69,28 @@ void Level::handleInput(JoystickController & controller1, JoystickController & c
 
 void Level::setUpFloor()
 {
-	for (int i = 0; i < 26; i++)
+	auto floorData = m_levelLoader.data()["Level 1"]["Floors"];
+
+	for (int i = 0; i < floorData.size(); i++)
 	{
-		sf::Sprite floorTile;
-		floorTile.setTexture(resourceManager.getTextureHolder()["stoneTile"]);
-		floorTile.setOrigin(floorTile.getLocalBounds().left + floorTile.getLocalBounds().width / 2.0f, floorTile.getLocalBounds().top + floorTile.getLocalBounds().height / 2.0f);
-		floorTile.setPosition(25 + (50 * i), 695);
-		m_floorSprites.push_back(floorTile);
+		bool createFloor = false;
+
+		for (int j = 0; j < floorData.at(i)["TileAmount"]; j++)
+		{
+			sf::Sprite tile;
+			tile.setTexture(resourceManager.getTextureHolder()["stoneTile"]); 
+			tile.setOrigin(tile.getLocalBounds().left + tile.getLocalBounds().width / 2.0f, tile.getLocalBounds().top + tile.getLocalBounds().height / 2.0f);
+			tile.setPosition(floorData.at(i)["StartX"] + (50 * j), floorData.at(i)["posY"]);
+			m_floorSprites.push_back(tile);
+			createFloor = true; //set our bool to true
+		}
+		//If our bool has changed then create our floor
+		if (createFloor)
+		{
+			//Get the length of the created floor
+			auto floorLength = 50 * floorData.at(i)["TileAmount"];
+			//We create an obstacle (a box2d object) with the specified position and size
+			m_floors.push_back(Obstacle(sf::Vector2f(floorLength / 2.0f, floorData.at(i)["posY"]), sf::Vector2f(floorLength, 50)));
+		}
 	}
 }

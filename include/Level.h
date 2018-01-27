@@ -1,4 +1,5 @@
 #pragma once
+#include "LevelLoader.h"
 #include "Player.h"
 #include "Obstacle.h"
 #include "ContactListener.h"
@@ -14,7 +15,7 @@
 class Level
 {
 public:
-	Level(Audio& audio, sf::Texture& levelBackground);
+	Level(Audio& audio);
 
 	void update();
 	void render(sf::RenderWindow& window);
@@ -28,7 +29,7 @@ private:
 	sf::RenderTexture m_overlayTexture;
 
 	//Obstacle variables
-	Obstacle m_floor;
+	std::vector<Obstacle> m_floors;
 
 	//Our player objects
 	Player m_player1;
@@ -42,4 +43,7 @@ private:
 
 	//A reference to our audio
 	Audio& m_audioRef;
+
+	//Our level loader 
+	LevelLoader m_levelLoader;
 };
