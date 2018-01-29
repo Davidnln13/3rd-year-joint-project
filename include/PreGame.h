@@ -18,7 +18,37 @@ public:
 	void end() override;
 	std::string handleInput(JoystickController& controller1, JoystickController& controller2) override;
 
+	void selectButton(int newIndex);
+	void setButtonText(OptionButton* btn, std::string text);
+
+	void setIconSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position);
+
 	//getters
 	std::string getName() override;
 private:
+	//Our options variables
+	int m_killLimit;
+	int m_timeLimit;
+	int m_gameMode;
+	int m_map;
+	int const MAX_MAP = 0, MAX_GAME_MODE = 0; //Our const variables
+	int* m_currentOption;
+	std::map<OptionButton*, int*> m_optionMapper; //this allows us to change the options on our pre game screen by mapping options to certain buttons
+
+	//Our buttons
+	OptionButton* m_currentButton;
+	OptionButton m_gameModeBtn;
+	OptionButton m_timeLimitBtn;
+	OptionButton m_killLimitBtn;
+	OptionButton m_mapBtn;
+	std::map<std::string, OptionButton*> m_buttons; //our map of buttons
+	std::vector<OptionButton*> m_btnList; //we will use this to select/deselect buttons in our menu
+	int m_btnIndex; //the index of the button we are currently focused on
+	bool m_buttonPressed; //bool to hold wheter we have pressed on a button or not
+
+	//Our navigation icons
+	sf::Sprite m_backIcon;
+	sf::Sprite m_startIcon;
+	Label m_backLabel;
+	Label m_startLabel;
 };

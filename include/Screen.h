@@ -5,6 +5,7 @@
 #include "Audio.h"
 #include "ResourceManager.h"
 #include "Button.h"
+#include "OptionButton.h"
 #include "JoystickController.h"
 
 /// <summary>

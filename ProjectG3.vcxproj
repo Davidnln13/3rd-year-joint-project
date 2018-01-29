@@ -140,6 +140,7 @@
     <ClCompile Include="src\Level.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\MainMenu.cpp" />
+    <ClCompile Include="src\OptionButton.cpp" />
     <ClCompile Include="src\Options.cpp" />
     <ClCompile Include="src\PauseScreen.cpp" />
     <ClCompile Include="src\Player.cpp" />
@@ -161,6 +162,7 @@
     <ClInclude Include="include\Label.h" />
     <ClInclude Include="include\Level.h" />
     <ClInclude Include="include\MainMenu.h" />
+    <ClInclude Include="include\OptionButton.h" />
     <ClInclude Include="include\Options.h" />
     <ClInclude Include="include\PauseScreen.h" />
     <ClInclude Include="include\Player.h" />

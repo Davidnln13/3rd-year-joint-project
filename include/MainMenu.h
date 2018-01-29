@@ -30,6 +30,7 @@ private:
 	Button m_exitBtn;
 	Audio& m_audioMainScreen;
 	std::map<std::string, Button*> m_buttons; //our map of buttons
+	std::map<Button*, std::string> m_buttonNavigator; //We will use this map to navigate through our menus (switching between screens)
 	std::vector<Button*> m_btnList; //we will use this to select/deselect buttons in our menu
 	int m_btnIndex; //the index of the button we are currently focused on
 	int m_btnToFadeIn; //the index of the button to fade in

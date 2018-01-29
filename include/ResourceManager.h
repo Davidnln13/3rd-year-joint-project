@@ -35,9 +35,15 @@ private:
 
 	//Our GUI Resources
 	thor::ResourceLoader<sf::Texture> m_buttonLayout = thor::Resources::fromFile<sf::Texture>("./resources/GUI/Button Spritesheet.png");
+	thor::ResourceLoader<sf::Texture> m_buttonSelected = thor::Resources::fromFile<sf::Texture>("./resources/GUI/Selected Button Spritesheet.png");
 	thor::ResourceLoader<sf::Texture> m_optionsIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/settings icon.png");	
 	thor::ResourceLoader<sf::Texture> m_helpIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/help icon.png");
 	thor::ResourceLoader<sf::Texture> m_exitIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/exit icon.png");
+	thor::ResourceLoader<sf::Texture> m_timerIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/Timer Icon.png");
+	thor::ResourceLoader<sf::Texture> m_killIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/Kill Icon.png");
+	thor::ResourceLoader<sf::Texture> m_mapIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/Map Icon.png");
+	thor::ResourceLoader<sf::Texture> m_startIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/Start Icon.png");
+	thor::ResourceLoader<sf::Texture> m_backIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/Back Icon.png");
 	thor::ResourceLoader<sf::Texture> m_mainMenuIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/main menu icon.png");
 	thor::ResourceLoader<sf::Texture> m_controllerPic = thor::Resources::fromFile<sf::Texture>("./resources/GUI/controller.png");
 	thor::ResourceLoader<sf::Texture> m_crossedSwordIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/Crossed Sword Icon.png");
@@ -64,4 +70,5 @@ private:
 
 	//Our font(s)
 	thor::ResourceLoader<sf::Font> m_oxinFont = thor::Resources::fromFile<sf::Font>("./resources/Fonts/OXIN.ttf");
+	thor::ResourceLoader<sf::Font> m_arialFont = thor::Resources::fromFile<sf::Font>("./resources/Fonts/ARIAL.ttf");
 };

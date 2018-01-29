@@ -1,9 +1,9 @@
 #include "Label.h"
 
-Label::Label(std::string textString, sf::Vector2f& position):
+Label::Label(std::string textString, sf::Vector2f& position, sf::Font& font):
 	m_position(position.x + 27.5f, position.y)
 {
-	m_text.setFont(resourceManager.getFontHolder()["oxinFont"]);
+	m_text.setFont(font);
 	m_text.setCharacterSize(30);
 	m_text.setString(textString);
 	m_text.setOrigin(m_text.getLocalBounds().left + m_text.getLocalBounds().width / 2.0f, m_text.getLocalBounds().top + m_text.getGlobalBounds().height / 2.0f);
@@ -32,6 +32,26 @@ void Label::deSelect()
 void Label::draw(sf::RenderWindow & window)
 {
 	window.draw(m_text);
+}
+
+void Label::setText(std::string text)
+{
+	m_text.setString(text);
+	m_text.setOrigin(m_text.getLocalBounds().left + m_text.getLocalBounds().width / 2.0f, m_text.getLocalBounds().top + m_text.getGlobalBounds().height / 2.0f);
+	m_text.setPosition(m_position);
+}
+
+void Label::setText(std::string text, sf::Font & font, sf::Color color)
+{
+	m_text.setFont(font);
+	m_text.setString(text);
+	m_text.setOrigin(m_text.getLocalBounds().left + m_text.getLocalBounds().width / 2.0f, m_text.getLocalBounds().top + m_text.getGlobalBounds().height / 2.0f);
+	m_text.setPosition(m_position);
+}
+
+void Label::setColor(sf::Color color)
+{
+	m_text.setFillColor(color);
 }
 
 sf::Text & Label:: getText()

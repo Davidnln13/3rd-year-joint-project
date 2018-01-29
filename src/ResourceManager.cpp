@@ -13,6 +13,7 @@ ResourceManager::ResourceManager()
 	{
 		//load GUI
 		acquireResource("Button Spritesheet", m_buttonLayout);
+		acquireResource("Button Selected", m_buttonSelected);
 		acquireResource("Controller", m_controllerPic);
 		acquireResource("Options Icon", m_optionsIcon);
 		acquireResource("Exit Icon", m_exitIcon);
@@ -20,6 +21,11 @@ ResourceManager::ResourceManager()
 		acquireResource("Help Icon", m_helpIcon);
 		acquireResource("Crossed Sword Icon", m_crossedSwordIcon);
 		acquireResource("Arrow Icon", m_arrowIcon);
+		acquireResource("Timer Icon", m_timerIcon);
+		acquireResource("Kill Icon", m_killIcon);
+		acquireResource("Map Icon", m_mapIcon);
+		acquireResource("Start Icon", m_startIcon);
+		acquireResource("Back Icon", m_backIcon);
 
 		//Load level textures
 		acquireResource("castleBG", m_castleBg);
@@ -42,6 +48,7 @@ ResourceManager::ResourceManager()
 
 		//Load Fonts
 		acquireResource("oxinFont", m_oxinFont);
+		acquireResource("arialFont", m_arialFont);
 	}
 	catch (thor::ResourceLoadingException& e)
 	{

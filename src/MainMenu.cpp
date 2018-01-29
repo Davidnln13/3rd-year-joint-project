@@ -21,6 +21,12 @@ MainMenu::MainMenu(std::string name, Audio& audio) :
 	m_btnList.push_back(&m_helpBtn);
 	m_btnList.push_back(&m_exitBtn);
 
+	m_buttonNavigator[&m_playGameBtn] = "pre game";
+	m_buttonNavigator[&m_optionsBtn] = "options";
+	m_buttonNavigator[&m_helpBtn] = "help";
+	m_buttonNavigator[&m_exitBtn] = "exit";
+
+
 
 	//Set the alpha of all of our buttons to 0
 	for (auto& btn : m_buttons)
@@ -85,7 +91,7 @@ std::string MainMenu::handleInput(JoystickController& controller1, JoystickContr
 	auto currentScreen = m_name; //the current screen we are on is m_name ie. "mainMenu"
 
 	if (controller1.isButtonPressed("A"))
-		currentScreen = m_btnList.at(m_btnIndex)->getName(); //assign the current screen the name of our button
+		currentScreen = m_buttonNavigator.at(m_btnList.at(m_btnIndex)); //assign the current screen the value of the button navigator with the key of the button
 
 	if (controller1.isButtonPressed("LeftThumbStickUp") || controller1.isButtonPressed("DpadUp"))
 	{

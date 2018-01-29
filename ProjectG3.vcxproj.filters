@@ -61,6 +61,9 @@
     <ClCompile Include="src\PreGame.cpp">
       <Filter>Source Files\Screen Source</Filter>
     </ClCompile>
+    <ClCompile Include="src\OptionButton.cpp">
+      <Filter>Source Files\Widget Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Audio.h">
@@ -125,6 +128,9 @@
     </ClInclude>
     <ClInclude Include="include\PreGame.h">
       <Filter>Header Files\Screen Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\OptionButton.h">
+      <Filter>Header Files\Widget Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
