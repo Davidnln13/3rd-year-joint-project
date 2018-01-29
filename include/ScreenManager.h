@@ -5,6 +5,7 @@
 #include "PauseScreen.h"
 #include "Help.h"
 #include "Options.h"
+#include "PreGame.h"
 
 class ScreenManager
 {
@@ -19,9 +20,6 @@ public:
 
 	void handleJoystick(JoystickController& controller1, JoystickController& controller2);
 
-	template <class T>
-	void setPreviousScreen(std::string currentScreen, T classType, std::string oldScreen);
-
 	//Getters
 	std::string getCurrentScreenName();
 
@@ -29,6 +27,7 @@ private:
 	//Declare our different screens here
 	Options m_optionsScreen;
 	PlayScreen m_playScreen;
+	PreGameScreen m_preGameScreen;
 	PauseScreen m_pauseScreen;
 	MainMenu m_mainScreen;
 	Help m_helpScreen;

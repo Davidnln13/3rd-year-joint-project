@@ -144,6 +144,7 @@
     <ClCompile Include="src\PauseScreen.cpp" />
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\PlayScreen.cpp" />
+    <ClCompile Include="src\PreGame.cpp" />
     <ClCompile Include="src\ResourceManager.cpp" />
     <ClCompile Include="src\ScreenManager.cpp" />
     <ClCompile Include="src\Weapon.cpp" />
@@ -164,6 +165,7 @@
     <ClInclude Include="include\PauseScreen.h" />
     <ClInclude Include="include\Player.h" />
     <ClInclude Include="include\PlayScreen.h" />
+    <ClInclude Include="include\PreGame.h" />
     <ClInclude Include="include\ResourceManager.h" />
     <ClInclude Include="include\Screen.h" />
     <ClInclude Include="include\ScreenManager.h" />

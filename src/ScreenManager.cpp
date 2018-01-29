@@ -6,6 +6,7 @@ ScreenManager::ScreenManager() :
 	m_mainScreen("main menu", m_audio),
 	m_helpScreen("help", m_audio),
 	m_optionsScreen("options",m_audio),
+	m_preGameScreen("pre game", m_audio),
 	m_closeWindow(false)
 {
 	//asigning our screens to our map 
@@ -14,6 +15,7 @@ ScreenManager::ScreenManager() :
 	screens[m_mainScreen.getName()] = &m_mainScreen;
 	screens[m_helpScreen.getName()] = &m_helpScreen;
 	screens[m_optionsScreen.getName()] = &m_optionsScreen;
+	screens[m_preGameScreen.getName()] = &m_preGameScreen;
 	goToScreen("main menu"); //go to the main menu
 }
 
@@ -81,16 +83,7 @@ void ScreenManager::handleJoystick(JoystickController& controller1, JoystickCont
 			goToScreen(screen);
 	}
 }
-//
-//template<class T>
-//inline void ScreenManager::setPreviousScreen(std::string currentScreen, T classType, std::string oldScreen)
-//{
-//	if (m_currentScreen->getName() == currentScreen)
-//	{
-//		auto tempScreen = dynamic_cast<T*>(m_currentScreen);
-//		tempScreen->setPreviousScreen(oldScreen);
-//	}
-//}
+
 
 std::string ScreenManager::getCurrentScreenName()
 {
