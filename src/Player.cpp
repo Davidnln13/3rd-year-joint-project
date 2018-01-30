@@ -341,7 +341,12 @@ void Player::render(sf::RenderWindow & window)
 void Player::moveRight()
 {
 	invertPlayerJoint(false);
-	m_playerBody->SetLinearVelocity(b2Vec2(m_moveSpeed, m_playerBody->GetLinearVelocity().y));
+
+	b2Vec2 vel = m_playerBody->GetLinearVelocity();
+	float desiredVel = m_moveSpeed;
+	float velChange = desiredVel - vel.x;
+	float force = m_playerBody->GetMass() * velChange / (1 / 60.0);
+	m_playerBody->ApplyForce(b2Vec2(force, 0), m_playerBody->GetWorldCenter(), true);
 }
 
 void Player::moveLeft()
@@ -353,9 +358,6 @@ void Player::moveLeft()
 	float velChange = desiredVel - vel.x;
 	float force = m_playerBody->GetMass() * velChange / (1 / 60.0);
 	m_playerBody->ApplyForce(b2Vec2(force, 0), m_playerBody->GetWorldCenter(), true);
-
-	//m_playerBody->ApplyLinearImpulseToCenter(b2Vec2(-(m_moveSpeed / 10.0f), 0), true);
-	//m_playerBody->SetLinearVelocity(b2Vec2(-m_moveSpeed, m_playerBody->GetLinearVelocity().y));
 }
 
 void Player::attack()
