@@ -113,8 +113,16 @@ std::string PreGameScreen::handleInput(JoystickController & controller1, Joystic
 
 	if (controller1.isButtonPressed("A"))
 	{
-		m_buttonPressed = true;
-		m_btnList.at(m_btnIndex)->pressed(true);
+		if (m_buttonPressed)
+		{
+			m_buttonPressed = false;
+			m_btnList.at(m_btnIndex)->pressed(false);
+		}
+		else
+		{
+			m_buttonPressed = true;
+			m_btnList.at(m_btnIndex)->pressed(true);
+		}
 	}
 
 	//If a button is not pressed then check for navigation

@@ -85,6 +85,7 @@ private:
 	bool m_switchedSwordPos; //bool to show if we have switched sword positions on the y axis
 	float m_moveSpeed; //the speed at which our player move shorizontally
 	float m_gravityScale; //the scale of gravity on our bodies
+	sf::Clock m_respawnClock; //Our clock to respawn the player, we will use this clock to put a timer between spawns
 
 	std::string m_startingDirection; //temporary for now
 

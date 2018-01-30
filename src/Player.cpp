@@ -26,7 +26,7 @@ Player::Player(sf::Vector2f position, std::string direction = "left") :
 	m_sword(position),
 	m_animator(m_animationHolder),
 	m_idleTime(.5f),
-	m_runTime(1),
+	m_runTime(.7f),
 	RAD_TO_DEG(180.f / thor::Pi),
 	DEG_TO_RAD(thor::Pi / 180.f)
 {
@@ -207,90 +207,93 @@ void Player::createRectangle(sf::RectangleShape & rect, sf::Vector2f origin, sf:
 
 void Player::update()
 {
-	//Update our animation
-	m_animator.update(m_animationClock.restart());
-	m_animator.animate(m_sprite);
-
-	m_sword.update();
-
-	if (m_playingPickup)
-	{
-		if (m_pickupClock.getElapsedTime().asSeconds() >= 0.125f && m_canPickupSword ||
-			m_pickupClock.getElapsedTime().asSeconds() >= 0.125f && distance(sf::Vector2f(m_playerBody->GetPosition().x * PPM, m_playerBody->GetPosition().y * PPM), m_sword.getPosition(), 75))
-		{
-			m_pickupSword = true;
-			m_canPickupSword = false;
-		}
-		if (m_pickupClock.getElapsedTime().asSeconds() >= 0.25f)
-			m_playingPickup = false;
-	}
-
-	if (m_switchedSwordPos)
-	{
-		//if the time elapsed since the clock was started/restarted is greater than or equal to our stance change rate
-		if (m_stanceChangeClock.getElapsedTime().asSeconds() >= 0.125f)
-		{
-			m_switchedSwordPos = false;
-		}
-	}
-
-	//if we were parried and we are holding a sword
-	if (m_parried && m_holdingSword)
-	{
-		parried();
-	}
-
-	if(m_pickupSword)
-	{ 
-		pickUpWeapon();
-		m_pickupSword = false;
-	}
-
-	if(m_swordClashed)
-	{
-		swordClashed();
-	}
-
-	//If we are in the air then apply a force downwards
-	if (m_canJump == false)
-	{
-		m_playerBody->ApplyForceToCenter(b2Vec2(0, 10),true);
-	}
 
 	//if our respawn variable is true then respawn our player
-	if (m_respawn)
+	if (m_respawn && m_respawnClock.getElapsedTime().asSeconds() >= 0.0f)
 		respawn();
-
-	checkCanAttack(); //checks if we can attack or not
-
-	//if we have attacked then set our linear velocity to move in the direction we are facing
-	if(m_canAttack == false)
+	else
 	{
-		//if our sword hasnt reached our 
-		if (m_swordReachedPos == false)
-		{
-			//get the current position fo our arm
-			auto armPos = sf::Vector2f(m_forearmBody->GetPosition().x * PPM, m_forearmBody->GetPosition().y * PPM);
+		//Update our animation
+		m_animator.update(m_animationClock.restart());
+		m_animator.animate(m_sprite);
 
-			//if our arm has not reached its destination then set its velocity
-			if (distance(armPos, m_armPosDest, 10.0f) == false)
+		m_sword.update();
+
+		if (m_playingPickup)
+		{
+			if (m_pickupClock.getElapsedTime().asSeconds() >= 0.125f && m_canPickupSword ||
+				m_pickupClock.getElapsedTime().asSeconds() >= 0.125f && distance(sf::Vector2f(m_playerBody->GetPosition().x * PPM, m_playerBody->GetPosition().y * PPM), m_sword.getPosition(), 75))
 			{
-				if (m_isFacingLeft)
-					m_forearmBody->SetLinearVelocity(b2Vec2(-48, 0)); 
+				m_pickupSword = true;
+				m_canPickupSword = false;
+			}
+			if (m_pickupClock.getElapsedTime().asSeconds() >= 0.25f)
+				m_playingPickup = false;
+		}
+
+		if (m_switchedSwordPos)
+		{
+			//if the time elapsed since the clock was started/restarted is greater than or equal to our stance change rate
+			if (m_stanceChangeClock.getElapsedTime().asSeconds() >= 0.125f)
+			{
+				m_switchedSwordPos = false;
+			}
+		}
+
+		//if we were parried and we are holding a sword
+		if (m_parried && m_holdingSword)
+		{
+			parried();
+		}
+
+		if (m_pickupSword)
+		{
+			pickUpWeapon();
+			m_pickupSword = false;
+		}
+
+		if (m_swordClashed)
+		{
+			swordClashed();
+		}
+
+		//If we are in the air then apply a force downwards
+		if (m_canJump == false)
+		{
+			m_playerBody->ApplyForceToCenter(b2Vec2(0, 10), true);
+		}
+
+		checkCanAttack(); //checks if we can attack or not
+
+		//if we have attacked then set our linear velocity to move in the direction we are facing
+		if (m_canAttack == false)
+		{
+			//if our sword hasnt reached our 
+			if (m_swordReachedPos == false)
+			{
+				//get the current position fo our arm
+				auto armPos = sf::Vector2f(m_forearmBody->GetPosition().x * PPM, m_forearmBody->GetPosition().y * PPM);
+
+				//if our arm has not reached its destination then set its velocity
+				if (distance(armPos, m_armPosDest, 10.0f) == false)
+				{
+					if (m_isFacingLeft)
+						m_forearmBody->SetLinearVelocity(b2Vec2(-48, 0));
+					else
+						m_forearmBody->SetLinearVelocity(b2Vec2(48, 0));
+				}
 				else
-					m_forearmBody->SetLinearVelocity(b2Vec2(48, 0));
+					m_swordReachedPos = true;
 			}
 			else
-				m_swordReachedPos = true;
+			{
+				applyArmPushBack(); //push back our arm
+			}
 		}
 		else
 		{
 			applyArmPushBack(); //push back our arm
 		}
-	}
-	else
-	{
-		applyArmPushBack(); //push back our arm
 	}
 
 }
@@ -443,7 +446,7 @@ void Player::handleJoystick(JoystickController & controller)
 
 	if (controller.isButtonHeld("LeftThumbStickLeft") && m_canAttack)
 	{
-		if (m_runTime >= .75f && m_canJump)
+		if (m_runTime >= .7f && m_canJump)
 		{
 			setSpriteTexture(m_sprite, resourceManager.getTextureHolder()["playerRun"], sf::Vector2i(63, 87), 36);
 			m_animator.stop();
@@ -457,7 +460,7 @@ void Player::handleJoystick(JoystickController & controller)
 	}
 	if (controller.isButtonHeld("LeftThumbStickRight") && m_canAttack)
 	{
-		if (m_runTime >= .75f && m_canJump)
+		if (m_runTime >= .7f && m_canJump)
 		{
 			setSpriteTexture(m_sprite, resourceManager.getTextureHolder()["playerRun"], sf::Vector2i(63, 87), 36);
 			m_animator.stop();
@@ -480,7 +483,6 @@ void Player::handleJoystick(JoystickController & controller)
 		attack();
 	if (controller.isButtonPressed("Y"))
 		pickupSword();
-		//respawn(); uncomment this if you want to respawn
 
 	if (controller.isButtonPressed("A") && m_canJump)
 		jump();
@@ -494,7 +496,7 @@ void Player::handleJoystick(JoystickController & controller)
 			m_animator.stop(); //stop any animation playing at the moment
 			m_animator.play() << "idle";
 		}
-		m_runTime = .75f;
+		m_runTime = .7f;
 		rotateWhileRunning(false);
 		m_forearmBody->SetLinearVelocity(b2Vec2(0, m_forearmBody->GetLinearVelocity().y));
 		m_playerBody->SetLinearVelocity(b2Vec2(0, m_playerBody->GetLinearVelocity().y));
@@ -620,6 +622,7 @@ void Player::respawn()
 	m_respawn = false;
 	m_isAiming = false;
 	m_holdingSword = true;
+
 	//Set the y position of our weapon to the middle of our player
 	m_weaponPos = 1;
 
@@ -783,7 +786,7 @@ void Player::setUpAnimations()
 	//Adding all of our animations to our animation holder
 	addFramesToAnimation(0.1f, 5, m_idleAnimation, idleFrameSize, "idle", .5f);
 	addFramesToAnimation(0.1f, 10, m_attackAnimation, attackFrameSize, "attack", .35f);
-	addFramesToAnimation(0.1f, 20, m_runAnimation, runFrameSize, "run", .75f);
+	addFramesToAnimation(0.1f, 20, m_runAnimation, runFrameSize, "run", .7f);
 	addFramesToAnimation(0.1f, 10, m_jumpAnimation, jumpFrameSize, "jump", .15f);
 	addFramesToAnimation(0.1f, 20, m_pickupAnimation, pickupFrameSize, "pickup", 0.25f);
 }
@@ -851,6 +854,9 @@ void Player::setCanJump(bool canJump)
 void Player::setRespawn(bool respawn)
 {
 	m_respawn = respawn;
+
+	if (m_respawn)
+		m_respawnClock.restart();
 }
 void Player::setClashed(bool clashed)
 {
