@@ -20,6 +20,8 @@ public:
 	Audio& m_audioPlayScreen;
 	//getters
 	std::string getName() override;
+
+	void setLevel(int maxKills, int maxTime, int levelNumber);
 private:
 	Level m_level;
 };

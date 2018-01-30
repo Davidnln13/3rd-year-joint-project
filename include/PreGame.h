@@ -25,13 +25,13 @@ public:
 
 	//getters
 	std::string getName() override;
-private:
+
 	//Our options variables
-	int m_killLimit;
-	int m_timeLimit;
-	int m_gameMode;
-	int m_map;
-	int const MAX_MAP = 0, MAX_GAME_MODE = 0; //Our const variables
+	static int m_killLimit;
+	static int m_timeLimit;
+	static int m_gameMode;
+	static int m_map;
+private:
 	int* m_currentOption;
 	std::map<OptionButton*, int*> m_optionMapper; //this allows us to change the options on our pre game screen by mapping options to certain buttons
 

@@ -19,13 +19,22 @@ public:
 
 	void update();
 	void render(sf::RenderWindow& window);
-	void handleInput(JoystickController& controller1, JoystickController& controller2);
+	std::string handleInput(JoystickController& controller1, JoystickController& controller2);
 	void setUpFloor();
 
 	void setupAnimations();
 
+	void setLevelParameters(int maxKills, int maxTime, int levelNumber);
+
 private:
+	//Variables for starting our match
+	bool m_gameOver;
+	bool m_hasTimeLimit;
+	bool m_hasKillLimit;
 	int m_levelNumber;
+	int m_killLimit;
+	int m_timeLimit;
+	sf::Clock m_timeLimitClock;
 
 	//Our level background sprite
 	sf::Sprite m_bg;

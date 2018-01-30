@@ -608,6 +608,8 @@ void Player::respawn()
 	respawnBody(m_startPosition, m_playerBody);
 	respawnBody(m_startPosition, m_forearmBody);
 	respawnBody(m_startPosition, m_jumpBody);
+	respawnBody(m_startPosition, m_leftSensorBody);
+	respawnBody(m_startPosition, m_rightSensorBody);
 	respawnBody(m_startPosition, m_sword.getBody());
 
 	//Reset our booleans

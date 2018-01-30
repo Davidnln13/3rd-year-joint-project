@@ -67,6 +67,11 @@ void ScreenManager::goToScreen(std::string screenName)
 			auto tempOptions= dynamic_cast<Options*>(m_currentScreen);
 			tempOptions->setPreviousScreen(currentScreenName);
 		}
+		//Set our level parameters if we are switching to the game screen
+		if (m_currentScreen->getName() == "play game")
+		{
+			m_playScreen.setLevel(PreGameScreen::m_killLimit, PreGameScreen::m_timeLimit, PreGameScreen::m_map);
+		}
 		
 	}
 }

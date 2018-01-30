@@ -5,7 +5,10 @@ Level::Level(Audio& audio, int levelNum) :
 	m_player2(sf::Vector2f(160.0f, 540.0f), "right"),
 	m_audioRef(audio),
 	m_levelNumber(levelNum),
-	m_levelLoader()
+	m_levelLoader(),
+	m_hasTimeLimit(false),
+	m_hasKillLimit(false),
+	m_gameOver(false)
 {
 	//Set up the contact listener for box2d
 	world.SetContactListener(&m_contactListener);
@@ -30,6 +33,18 @@ Level::Level(Audio& audio, int levelNum) :
 
 void Level::update()
 {
+	//If there is a time limit and the game is not over
+	if (m_hasTimeLimit && false == m_gameOver)
+	{
+		std::cout << m_timeLimitClock.getElapsedTime().asSeconds() << std::endl;
+
+		//if the time gone since our clock was started (restart()) then set our game over to true
+		if (m_timeLimitClock.getElapsedTime().asSeconds() >= m_timeLimit)
+		{
+			m_gameOver = true;
+		}
+	}
+	
 	//Update and animate our torch and torch lights
 	for (auto i = 0; i < m_torchAnimators.size(); i++)
 	{
@@ -37,7 +52,7 @@ void Level::update()
 		m_torchAnimators.at(i)->update(m_torchClocks.at(i).restart());
 		m_torchAnimators.at(i)->animate(m_torchSprites.at(i));
 
-		//Update and animate our torche lights
+		//Update and animate our torch lights
 		m_torchLightAnimators.at(i)->update(m_torchLightClocks.at(i).restart());
 		m_torchLightAnimators.at(i)->animate(m_torchLightSprites.at(i));
 	}
@@ -90,15 +105,24 @@ void Level::render(sf::RenderWindow & window)
 	window.draw(m_overlaySprite, sf::BlendMultiply);
 }
 
-void Level::handleInput(JoystickController & controller1, JoystickController & controller2)
+std::string Level::handleInput(JoystickController & controller1, JoystickController & controller2)
 {
-	m_player1.handleJoystick(controller1);
-	m_player2.handleJoystick(controller2);
-
-	//If any player attacks 
-	if ((controller1.isButtonPressed("X") && m_player1.getCanAttack() == true) || (controller2.isButtonPressed("X") && m_player2.getCanAttack() == true))
+	if (false == m_gameOver)
 	{
-		m_audioRef.m_soundMap["SwordSwing"].play();
+		m_player1.handleJoystick(controller1);
+		m_player2.handleJoystick(controller2);
+
+		//If any player attacks 
+		if ((controller1.isButtonPressed("X") && m_player1.getCanAttack() == true) || (controller2.isButtonPressed("X") && m_player2.getCanAttack() == true))
+		{
+			m_audioRef.m_soundMap["SwordSwing"].play();
+		}
+
+		return "play game";
+	}
+	else
+	{
+		return "play game"; //Change this to end game screen afterwards
 	}
 }
 
@@ -125,7 +149,6 @@ void Level::setUpFloor()
 		{
 			//Get the length of the created floor
 			int floorLength = 50 * floorData.at(i)["TileAmount"];
-			std::cout << (startX - 25) + (floorLength / 2.0f) << std::endl;
 			//We create an obstacle (a box2d object) with the specified position and size and push it to our floor vector
 			m_floors.push_back(Obstacle(sf::Vector2f((startX - 25) + (floorLength / 2.0f), floorData.at(i)["PosY"]), sf::Vector2f(floorLength, 50)));
 		}
@@ -183,4 +206,23 @@ void Level::setupAnimations()
 
 	m_animationHolder.addAnimation("torch", m_torchAnimation, sf::seconds(.4f));
 	m_animationHolder.addAnimation("torchLight", m_torchLightAnimation, sf::seconds(.4f));
+}
+
+void Level::setLevelParameters(int maxKills, int maxTime, int levelNumber)
+{
+	m_levelNumber = levelNumber;
+	m_timeLimit = maxTime;
+	m_killLimit = maxKills;
+
+	//If our time limit is greater than zero then start our clock and set our bool
+	if (m_timeLimit > 0)
+	{
+		//We multiply our time limit by 60 to convert our second to a minute
+		m_timeLimit *= 60;
+		m_hasTimeLimit = true;
+		m_timeLimitClock.restart();
+	}
+	//If our kill limit is greater than 0 then set our bool to true
+	if (m_killLimit > 0)
+		m_hasKillLimit = true;
 }

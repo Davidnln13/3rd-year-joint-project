@@ -1,5 +1,11 @@
 #include "PreGame.h"
 
+//Initialising our pre game options vairables
+int PreGameScreen::m_killLimit = 5;
+int PreGameScreen::m_timeLimit = 5;
+int PreGameScreen::m_gameMode = 5;
+int PreGameScreen::m_map = 5;
+
 PreGameScreen::PreGameScreen(std::string name, Audio & audio) :
 	Screen(name),
 	m_gameModeBtn(sf::Vector2f(640, 144), "deathmatch", resourceManager.getFontHolder()["oxinFont"], "Options Icon"),
@@ -7,10 +13,6 @@ PreGameScreen::PreGameScreen(std::string name, Audio & audio) :
 	m_killLimitBtn(sf::Vector2f(640, 432), "kill limit", resourceManager.getFontHolder()["arialFont"], "Kill Icon"),
 	m_timeLimitBtn(sf::Vector2f(640, 576), "time limit", resourceManager.getFontHolder()["arialFont"], "Timer Icon"),
 	m_buttonPressed(false),
-	m_killLimit(5),
-	m_timeLimit(1),
-	m_gameMode(0),
-	m_map(0),
 	m_currentOption(&m_gameMode),
 	m_startLabel("start", sf::Vector2f(960, 683), resourceManager.getFontHolder()["oxinFont"]),
 	m_backLabel("back", sf::Vector2f(1180, 683), resourceManager.getFontHolder()["oxinFont"])
