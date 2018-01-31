@@ -2,6 +2,8 @@
 
 Player::Player(sf::Vector2f position, std::string direction = "left") :
 	m_canAttack(true),
+	m_canMoveLeft(true),
+	m_canMoveRight(true),
 	m_canJump(false),
 	m_canAttackTemp(true),
 	m_swordReachedPos(false),
@@ -20,9 +22,9 @@ Player::Player(sf::Vector2f position, std::string direction = "left") :
 	m_startPosition(position.x / PPM, position.y / PPM),
 	m_playerRect(sf::Vector2f(18, 87)),
 	m_forearmRect(sf::Vector2f(15, 5)),
-	m_jumpRect(sf::Vector2f(18, 3)),
-	m_leftWallSensorRect(sf::Vector2f(3, 87)),
-	m_rightWallSensorRect(sf::Vector2f(3, 87)),
+	m_jumpRect(sf::Vector2f(16, 3)),
+	m_leftWallSensorRect(sf::Vector2f(3, 86)),
+	m_rightWallSensorRect(sf::Vector2f(3, 86)),
 	m_sword(position),
 	m_animator(m_animationHolder),
 	m_idleTime(.5f),
@@ -51,10 +53,10 @@ Player::Player(sf::Vector2f position, std::string direction = "left") :
 
 	//Creating our fixtures for each of our bodies
 	createFixture(m_playerBody, m_playerRect.getSize().x, m_playerRect.getSize().y, false, 1.5f, 0.0f, 0.1f);
-	createFixture(m_forearmBody, m_forearmRect.getSize().x, m_forearmRect.getSize().y, true, .25f, 0.0f, 1.0f);
-	createFixture(m_jumpBody, m_jumpRect.getSize().x, m_jumpRect.getSize().y, true, 0.0f, 0.0f, 1.0f);
-	createFixture(m_leftSensorBody, m_leftWallSensorRect.getSize().x, m_leftWallSensorRect.getSize().y, true, 0.0f, 0.0f, 1.0f);
-	createFixture(m_rightSensorBody, m_rightWallSensorRect.getSize().x, m_rightWallSensorRect.getSize().y, true, 0.0f, 0.0f, 1.0f);
+	createFixture(m_forearmBody, m_forearmRect.getSize().x, m_forearmRect.getSize().y, true, .25f, 0.0f, .1f);
+	createFixture(m_jumpBody, m_jumpRect.getSize().x, m_jumpRect.getSize().y, true, 0.0f, 0.0f, 0.1f);
+	createFixture(m_leftSensorBody, m_leftWallSensorRect.getSize().x, m_leftWallSensorRect.getSize().y, true, 0.0f, 0.0f, 0.1f);
+	createFixture(m_rightSensorBody, m_rightWallSensorRect.getSize().x, m_rightWallSensorRect.getSize().y, true, 0.0f, 0.0f, .1f);
 
 	//Creating/Setting up our rectangles for our bodies
 	createRectangle(m_playerRect, sf::Vector2f(m_playerRect.getSize().x / 2.f, m_playerRect.getSize().y / 2.f), sf::Color::Transparent, sf::Color::Red, 1);
@@ -118,7 +120,7 @@ Player::Player(sf::Vector2f position, std::string direction = "left") :
 	leftWeld.bodyA = m_leftSensorBody;
 	leftWeld.bodyB = m_playerBody;
 	leftWeld.collideConnected = false; //so our sensor and player dont collide
-	leftWeld.localAnchorA.Set(-(m_playerRect.getSize().x  / 2.0f) / PPM, 0);
+	leftWeld.localAnchorA.Set((m_playerRect.getSize().x  / 2.0f) / PPM, 0);
 	leftWeld.localAnchorB.Set(0, 0);
 	m_leftWallSensorJoint = (b2WeldJoint*)world.CreateJoint(&leftWeld);
 
@@ -126,7 +128,7 @@ Player::Player(sf::Vector2f position, std::string direction = "left") :
 	rightWeld.bodyA = m_rightSensorBody;
 	rightWeld.bodyB = m_playerBody;
 	rightWeld.collideConnected = false; //so our sensor and player dont collide
-	rightWeld.localAnchorA.Set((m_playerRect.getSize().x / 2.0f) / PPM, 0);
+	rightWeld.localAnchorA.Set(-(m_playerRect.getSize().x / 2.0f) / PPM, 0);
 	rightWeld.localAnchorB.Set(0, 0);
 	m_rightWallSensorJoint = (b2WeldJoint*)world.CreateJoint(&rightWeld);
 	/*------> TEMPORARY <------*/
@@ -328,7 +330,7 @@ void Player::render(sf::RenderWindow & window)
 
 
 	m_sword.render(window);
-	window.draw(m_playerRect);
+	//window.draw(m_playerRect);
 	window.draw(m_forearmRect);
 	window.draw(m_jumpRect);
 
@@ -342,22 +344,28 @@ void Player::moveRight()
 {
 	invertPlayerJoint(false);
 
-	b2Vec2 vel = m_playerBody->GetLinearVelocity();
-	float desiredVel = m_moveSpeed;
-	float velChange = desiredVel - vel.x;
-	float force = m_playerBody->GetMass() * velChange / (1 / 60.0);
-	m_playerBody->ApplyForce(b2Vec2(force, 0), m_playerBody->GetWorldCenter(), true);
+	if (m_canMoveRight)
+	{
+		b2Vec2 vel = m_playerBody->GetLinearVelocity();
+		float desiredVel = m_moveSpeed;
+		float velChange = desiredVel - vel.x;
+		float force = m_playerBody->GetMass() * velChange / (1 / 60.0);
+		m_playerBody->ApplyForce(b2Vec2(force, 0), m_playerBody->GetWorldCenter(), true);
+	}
 }
 
 void Player::moveLeft()
 {
 	invertPlayerJoint(true);
 
-	b2Vec2 vel = m_playerBody->GetLinearVelocity();
-	float desiredVel = -m_moveSpeed;
-	float velChange = desiredVel - vel.x;
-	float force = m_playerBody->GetMass() * velChange / (1 / 60.0);
-	m_playerBody->ApplyForce(b2Vec2(force, 0), m_playerBody->GetWorldCenter(), true);
+	if (m_canMoveLeft)
+	{
+		b2Vec2 vel = m_playerBody->GetLinearVelocity();
+		float desiredVel = -m_moveSpeed;
+		float velChange = desiredVel - vel.x;
+		float force = m_playerBody->GetMass() * velChange / (1 / 60.0);
+		m_playerBody->ApplyForce(b2Vec2(force, 0), m_playerBody->GetWorldCenter(), true);
+	}
 }
 
 void Player::attack()
@@ -404,7 +412,7 @@ void Player::throwSword()
 
 void Player::jump()
 {
-	m_playerBody->ApplyForceToCenter(b2Vec2(0, -5750),true);
+	m_playerBody->ApplyForceToCenter(b2Vec2(0, -6200),true);
 	m_canJump = false;
 
 	setSpriteTexture(m_sprite, resourceManager.getTextureHolder()["playerJump"], sf::Vector2i(52, 87), 27.5f);
@@ -581,10 +589,14 @@ void Player::checkCanAttack()
 
 void Player::applyArmPushBack()
 {
-	if (m_isFacingLeft)
-		m_forearmBody->ApplyForceToCenter(b2Vec2(4.5f, 0), true);
-	else
-		m_forearmBody->ApplyForceToCenter(b2Vec2(-4.5f, 0), true);
+	//If the distance between the arm and the player is greater than 20 pixels then push the arm back towards the player
+	if (!distance(sf::Vector2f(m_forearmBody->GetPosition().x * PPM, m_forearmBody->GetPosition().y * PPM), sf::Vector2f(m_playerBody->GetPosition().x * PPM, m_playerBody->GetPosition().y * PPM), 20))
+	{
+		if (m_isFacingLeft)
+			m_forearmBody->ApplyForceToCenter(b2Vec2(4.5f, 0), true);
+		else
+			m_forearmBody->ApplyForceToCenter(b2Vec2(-4.5f, 0), true);
+	}
 }
 
 void Player::rotateWhileRunning(bool rotate)
@@ -848,6 +860,16 @@ b2Body * Player::getSwordBody()
 	return m_sword.getBody();
 }
 
+b2Body * Player::getLeftSensorBody()
+{
+	return m_leftSensorBody;
+}
+
+b2Body * Player::getRightSensorBody()
+{
+	return m_rightSensorBody;
+}
+
 void Player::setCanJump(bool canJump)
 {
 	m_canJump = canJump;
@@ -874,6 +896,14 @@ void Player::setParried(bool parried)
 {
 	m_parried = parried;
 }
+void Player::setCanMoveLeft(bool canMove)
+{
+	m_canMoveLeft = canMove;
+}
+void Player::setCanMoveRight(bool canMove)
+{
+	m_canMoveRight = canMove;
+}
 void Player::setSwordThrown()
 {
 	m_sword.setSwordThrown();
@@ -897,6 +927,11 @@ bool Player::holdingSword()
 bool Player::switchedWeaponPos()
 {
 	return m_switchedSwordPos;
+}
+
+bool Player::facingLeft()
+{
+	return m_isFacingLeft;
 }
 
 sf::Sprite & Player::getLight()

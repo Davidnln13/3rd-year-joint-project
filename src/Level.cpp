@@ -36,7 +36,8 @@ void Level::update()
 	//If there is a time limit and the game is not over
 	if (m_hasTimeLimit && false == m_gameOver)
 	{
-		std::cout << m_timeLimitClock.getElapsedTime().asSeconds() << std::endl;
+		//Outputting the time left in the game
+		//std::cout << m_timeLimitClock.getElapsedTime().asSeconds() << std::endl;
 
 		//if the time gone since our clock was started (restart()) then set our game over to true
 		if (m_timeLimitClock.getElapsedTime().asSeconds() >= m_timeLimit)

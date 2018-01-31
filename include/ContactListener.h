@@ -24,6 +24,7 @@ public:
 	bool hasSwordHitPlayer(Player* player1, Player* player2, b2Fixture& fixA, b2Fixture& fixB);
 	bool checkForSwordPickUp(Player* player, b2Fixture& fixA, b2Fixture& fixB);
 	void haveTwoSwordsCollided(Player* player1, Player* player2, b2Fixture& fixA, b2Fixture& fixB);
+	void checkCanPlayerMove(Player* player, b2Fixture& fixA, b2Fixture& fixB, bool canMove);
 
 	//Setters
 	void setPlayers(Player& player1, Player& player2);

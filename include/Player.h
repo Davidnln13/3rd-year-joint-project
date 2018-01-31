@@ -55,9 +55,12 @@ public:
 	b2Body* getArmBody();
 	b2Body* getPlayerBody();
 	b2Body* getSwordBody();
+	b2Body* getLeftSensorBody();
+	b2Body* getRightSensorBody();
 	bool getCanAttack();
 	bool holdingSword();
 	bool switchedWeaponPos();
+	bool facingLeft();
 	sf::Sprite& getLight();
 	sf::Sprite& getSwordLight();
 
@@ -66,10 +69,13 @@ public:
 	void setRespawn(bool respawn);
 	void setClashed(bool clashed);
 	void setParried(bool parried);
+	void setCanMoveLeft(bool canMove);
+	void setCanMoveRight(bool canMove);
 	void setSwordThrown();
 	void setPickupWeapon();
 
 private:
+	bool m_canMoveLeft, m_canMoveRight; //Booleans to hold wheter we can move left or right
 	bool m_isFacingLeft;
 	bool m_canAttack;
 	bool m_canAttackTemp;

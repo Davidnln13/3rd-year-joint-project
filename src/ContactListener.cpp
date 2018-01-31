@@ -9,24 +9,31 @@ void ContactListener::BeginContact(b2Contact * contact)
 	if(canPlayerJump(m_player1, m_player2, *fixA, *fixB))
 		m_player1->setCanJump(true);
 
-	if (canPlayerJump(m_player2, m_player1, *fixA, *fixB))
+	else if (canPlayerJump(m_player2, m_player1, *fixA, *fixB))
 		m_player2->setCanJump(true);
 
-	//Checking if two swords have collided
-	haveTwoSwordsCollided(m_player1, m_player2, *fixA, *fixB);
-	haveTwoSwordsCollided(m_player2, m_player1, *fixA, *fixB);
-
 	//checking if a sword has collided with a player, if so, reset the player
-	if (hasSwordHitPlayer(m_player1, m_player2, *fixA, *fixB)) //if a sword has hit the first player then respawn them
+	else if (hasSwordHitPlayer(m_player1, m_player2, *fixA, *fixB)) //if a sword has hit the first player then respawn them
 		m_player1->setRespawn(true);
-	if (hasSwordHitPlayer(m_player2, m_player1, *fixA, *fixB)) //if a sword has hit the second player then respawn them
+	else if (hasSwordHitPlayer(m_player2, m_player1, *fixA, *fixB)) //if a sword has hit the second player then respawn them
 		m_player2->setRespawn(true);
 
 	//Checking if either player has picked up a weapon
-	if (checkForSwordPickUp(m_player1, *fixA, *fixB))
+	else if (checkForSwordPickUp(m_player1, *fixA, *fixB))
 		m_player1->setPickupWeapon();
-	if (checkForSwordPickUp(m_player2, *fixA, *fixB))
+	else if (checkForSwordPickUp(m_player2, *fixA, *fixB))
 		m_player2->setPickupWeapon();
+
+	else
+	{
+		//Checking if two swords have collided
+		haveTwoSwordsCollided(m_player1, m_player2, *fixA, *fixB);
+		haveTwoSwordsCollided(m_player2, m_player1, *fixA, *fixB);
+
+		//Checks if a player is moving into a wall, if so set the players can move boolean to false
+		checkCanPlayerMove(m_player1, *fixA, *fixB, false);
+		checkCanPlayerMove(m_player2, *fixA, *fixB, false);
+	}
 }
 
 void ContactListener::EndContact(b2Contact * contact)
@@ -37,17 +44,23 @@ void ContactListener::EndContact(b2Contact * contact)
 	//invoking our canPlayerJump method to check if each player is not making contact with an invalid surface that they can jump on such as a sword
 	if (canPlayerJump(m_player1, m_player2, *fixA, *fixB))
 		m_player1->setCanJump(false);
-	if (canPlayerJump(m_player2, m_player1, *fixA, *fixB))
+	else if (canPlayerJump(m_player2, m_player1, *fixA, *fixB))
 		m_player2->setCanJump(false);
 
 	//checking if two swords have stopped colliding
-	if (fixA->GetBody() == m_player1->getSwordBody() && fixB->GetBody() == m_player2->getSwordBody()
+	else if (fixA->GetBody() == m_player1->getSwordBody() && fixB->GetBody() == m_player2->getSwordBody()
 		|| fixB->GetBody() == m_player1->getSwordBody() && fixA->GetBody() == m_player2->getSwordBody()
 		|| fixA->GetBody() == m_player2->getSwordBody() && fixB->GetBody() == m_player1->getSwordBody()
 		|| fixB->GetBody() == m_player2->getSwordBody() && fixA->GetBody() == m_player1->getSwordBody())
 	{
 		m_player1->setClashed(false);
 		m_player2->setClashed(false);
+	}
+	else
+	{
+		//Checks if a player is moving into a wall, if so set the players can move boolean to true
+		checkCanPlayerMove(m_player1, *fixA, *fixB, true);
+		checkCanPlayerMove(m_player2, *fixA, *fixB, true);
 	}
 }
 
@@ -100,6 +113,22 @@ void ContactListener::haveTwoSwordsCollided(Player * player1, Player* player2, b
 			player2->setParried(true);
 		else
 			player1->setClashed(true);
+	}
+}
+
+void ContactListener::checkCanPlayerMove(Player * player, b2Fixture & fixA, b2Fixture & fixB, bool canMove)
+{
+	if (fixA.GetBody() == player->getLeftSensorBody() && fixB.GetBody()->GetUserData() == "Boundary"
+		|| fixB.GetBody() == player->getLeftSensorBody() && fixA.GetBody()->GetUserData() == "Boundary")
+	{
+		std::cout << "HIT WALL ON THE LEFT" << std::endl;
+		player->setCanMoveLeft(canMove);
+	}
+	else if (fixA.GetBody() == player->getRightSensorBody() && fixB.GetBody()->GetUserData() == "Boundary"
+		|| fixB.GetBody() == player->getRightSensorBody() && fixA.GetBody()->GetUserData() == "Boundary")
+	{
+		std::cout << "HIT WALL ON THE RIGHT" << std::endl;
+		player->setCanMoveRight(canMove);
 	}
 }
 
