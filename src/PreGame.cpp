@@ -1,19 +1,21 @@
 #include "PreGame.h"
 
-//Initialising our pre game options vairables
-int PreGameScreen::m_killLimit = 5;
-int PreGameScreen::m_timeLimit = 5;
-int PreGameScreen::m_gameMode = 5;
-int PreGameScreen::m_map = 5;
+int GameMode::killLimit = 5;
+int GameMode::timeLimit = 1;
+int GameMode::levelNum = 0;
+int GameMode::gameModeNum = 0;
+int GameMode::maxGameModes = 2;
+int GameMode::maxLevels = 1;
 
 PreGameScreen::PreGameScreen(std::string name, Audio & audio) :
 	Screen(name),
-	m_gameModeBtn(sf::Vector2f(640, 144), "deathmatch", resourceManager.getFontHolder()["oxinFont"], "Options Icon"),
-	m_mapBtn(sf::Vector2f(640, 288), "castle", resourceManager.getFontHolder()["oxinFont"], "Map Icon"),
+	gameMode(),
+	m_gameModeBtn(sf::Vector2f(640, 144), "game mode", resourceManager.getFontHolder()["oxinFont"], "Options Icon"),
+	m_mapBtn(sf::Vector2f(640, 288), "level name", resourceManager.getFontHolder()["oxinFont"], "Map Icon"),
 	m_killLimitBtn(sf::Vector2f(640, 432), "kill limit", resourceManager.getFontHolder()["arialFont"], "Kill Icon"),
 	m_timeLimitBtn(sf::Vector2f(640, 576), "time limit", resourceManager.getFontHolder()["arialFont"], "Timer Icon"),
 	m_buttonPressed(false),
-	m_currentOption(&m_gameMode),
+	m_currentOption(&gameMode.gameModeNum),
 	m_startLabel("start", sf::Vector2f(960, 683), resourceManager.getFontHolder()["oxinFont"]),
 	m_backLabel("back", sf::Vector2f(1180, 683), resourceManager.getFontHolder()["oxinFont"])
 {
@@ -30,14 +32,16 @@ PreGameScreen::PreGameScreen(std::string name, Audio & audio) :
 	m_btnList.push_back(&m_timeLimitBtn);
 
 	//Mapping our buttons to our options variables
-	m_optionMapper[&m_gameModeBtn] = &m_gameMode;
-	m_optionMapper[&m_mapBtn] = &m_map;
-	m_optionMapper[&m_killLimitBtn] = &m_killLimit;
-	m_optionMapper[&m_timeLimitBtn] = &m_timeLimit;
+	m_optionMapper[&m_gameModeBtn] = &GameMode::gameModeNum;
+	m_optionMapper[&m_mapBtn] = &GameMode::levelNum;
+	m_optionMapper[&m_killLimitBtn] = &GameMode::killLimit;
+	m_optionMapper[&m_timeLimitBtn] = &GameMode::timeLimit;
 
-	//Change our text on our kill and time buttons
-	m_killLimitBtn.setText(std::to_string(m_killLimit), resourceManager.getFontHolder()["arialFont"]);
-	m_timeLimitBtn.setText(std::to_string(m_timeLimit) + ":00", resourceManager.getFontHolder()["arialFont"]);
+	//Change our text on our buttons
+	m_killLimitBtn.setText(std::to_string(GameMode::killLimit), resourceManager.getFontHolder()["arialFont"]);
+	m_timeLimitBtn.setText(std::to_string(GameMode::timeLimit) + ":00", resourceManager.getFontHolder()["arialFont"]);
+	m_mapBtn.setText(gameMode.levelName[GameMode::levelNum], resourceManager.getFontHolder()["oxinFont"]);
+	m_gameModeBtn.setText(gameMode.gameModes[GameMode::levelNum], resourceManager.getFontHolder()["oxinFont"]);
 
 	setIconSprite(m_startIcon, resourceManager.getTextureHolder()["Start Icon"], sf::Vector2f(914, 683));
 	setIconSprite(m_backIcon, resourceManager.getTextureHolder()["Back Icon"], sf::Vector2f(1141, 683));
@@ -175,37 +179,57 @@ std::string PreGameScreen::handleInput(JoystickController & controller1, Joystic
 		//if we have navigated through the menu then changed buttons
 		if (navigated)
 		{
-			//Checking our options
+			//Checking our options bounds
 			if (currentOptionValue < 0)
-				currentOptionValue = 0;
+			{
+				//If the button we have slected is the level button then set our current option to max level num
+				if (m_currentButton->getName() == "level name")
+					currentOptionValue = GameMode::maxLevels;
+				else if (m_currentButton->getName() == "game mode")
+					currentOptionValue = GameMode::maxGameModes;
+				else //else set our value to 0
+					currentOptionValue = 0;
+			}
+			else
+			{
+				if (m_currentButton->getName() == "level name" && currentOptionValue > 1)
+					currentOptionValue = 0;
+				else if (m_currentButton->getName() == "game mode" && currentOptionValue > 2)
+					currentOptionValue = 0;
+			}
 
+			if (m_currentButton->getName() == "game mode")
+			{
+				//If our game mode is Capture the flag, set the parameters of our game mode
+				if (currentOptionValue == 2)
+				{
+					GameMode::killLimit = 0; //set kill limit to infinite
+					GameMode::timeLimit = 3; //set time limit to 3 minutes
+				}
+				//else If our game mode is Sudden death, set the parameters of our game mode
+				else if (currentOptionValue == 1)
+				{
+					GameMode::killLimit = 1; //set kill limit to 1
+					GameMode::timeLimit = 0; //set time limit to infinite
+				}
+				//else if our current game mode is death match, set our parameters for a deathmatch
+				else if (currentOptionValue == 0)
+				{
+					GameMode::killLimit = 5; //set kill limit to 5
+					GameMode::timeLimit = 1; //set time limit to 1 minute
+				}
+			}
+
+
+			//Set our current option to our new option value
 			*m_currentOption = currentOptionValue;
 
-			//Change our kill limit button
-			if (m_currentButton->getName() == "kill limit")
-			{
-				if (*m_currentOption == 0)
-				{
-					m_currentButton->setText("infinite", resourceManager.getFontHolder()["oxinFont"]);
-				}
-				else
-				{
-					m_currentButton->setText(std::to_string(*m_currentOption),resourceManager.getFontHolder()["arialFont"]);
-				}
-			}
-			//Change our time limit button text
-			else if (m_currentButton->getName() == "time limit")
-			{
-				if (*m_currentOption == 0)
-				{
-					m_currentButton->setText("infinite", resourceManager.getFontHolder()["oxinFont"]);
-				}
-				else
-				{
-					m_currentButton->setText(std::to_string(*m_currentOption) + ":00", resourceManager.getFontHolder()["arialFont"]);
-				}
-			}
-		}
+			//Set the text for all of our butttons
+			setButtonText(m_killLimitBtn, GameMode::killLimit, "infinite", std::to_string(GameMode::killLimit), resourceManager.getFontHolder()["arialFont"], resourceManager.getFontHolder()["oxinFont"]);
+			setButtonText(m_timeLimitBtn, GameMode::timeLimit, "infinite", std::to_string(GameMode::timeLimit) + ":00", resourceManager.getFontHolder()["arialFont"], resourceManager.getFontHolder()["oxinFont"]);
+			setButtonText(m_mapBtn, GameMode::levelNum, gameMode.levelName[GameMode::levelNum], gameMode.levelName[GameMode::levelNum], resourceManager.getFontHolder()["oxinFont"], resourceManager.getFontHolder()["oxinFont"]);
+			setButtonText(m_gameModeBtn, GameMode::gameModeNum, gameMode.gameModes[GameMode::gameModeNum], gameMode.gameModes[GameMode::gameModeNum], resourceManager.getFontHolder()["oxinFont"], resourceManager.getFontHolder()["oxinFont"]);
+		}			
 
 	}
 
@@ -246,7 +270,32 @@ void PreGameScreen::setIconSprite(sf::Sprite & sprite, sf::Texture& texture, sf:
 	sprite.setPosition(position);
 }
 
+void PreGameScreen::setButtonText(OptionButton& btn, int value, std::string conditionText, std::string text, sf::Font & font, sf::Font& conditionFont)
+{
+	if (value == 0)
+	{
+		btn.setText(conditionText, conditionFont);
+	}
+	else
+	{
+		btn.setText(text, font);
+	}
+}
+
 std::string PreGameScreen::getName()
 {
 	return m_name;
+}
+
+//Our gameMode constructor
+//Here we set the default parameters for our gamemode
+GameMode::GameMode() :
+	name("Deathmatch")
+{
+	//Initialising our maps
+	GameMode::gameModes[0] = "Deathmatch";
+	GameMode::gameModes[1] = "Sudden Death";
+	GameMode::gameModes[2] = "Capture the Flag";
+	GameMode::levelName[0] = "Castle";
+	GameMode::levelName[1] = "Test level";
 }

@@ -7,7 +7,6 @@ static b2Vec2 GRAVITY = b2Vec2(0.0f, 9.8f);
 b2World world = b2World(GRAVITY); //our world variable, we can add forces to this such as gravity so it affects all b2 bodies
 ResourceManager resourceManager;
 
-
 /// <summary>
 /// Author: Daryl Keogh & David Nolan
 /// Date: 17/10/2017

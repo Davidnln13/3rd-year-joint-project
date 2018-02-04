@@ -1,12 +1,31 @@
 #pragma once
 #include "Screen.h"
 
+
+//We will use this struct to control our game mode parameters
+static struct GameMode
+{
+public:
+	GameMode(); //Our constructor
+	//Declaring our variables
+	std::string name;
+	static int gameModeNum;
+	static int levelNum;
+	static int killLimit;
+	static int timeLimit;
+	static int maxLevels;
+	static int maxGameModes;
+
+	//Declaring our maps
+	std::map<int, std::string> gameModes;
+	std::map<int, std::string> levelName;
+};
+
 /// <summary>
 /// Author: Daryl Keogh
 /// Date: 29/01/2018
 /// Description: Pre game screen to configure the game to the players desired choices
 /// </summary>
-
 class PreGameScreen : public Screen
 {
 public:
@@ -19,18 +38,17 @@ public:
 	std::string handleInput(JoystickController& controller1, JoystickController& controller2) override;
 
 	void selectButton(int newIndex);
-	void setButtonText(OptionButton* btn, std::string text);
 
+	//Setters
 	void setIconSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position);
+	void setButtonText(OptionButton* btn, std::string text);
+	void setButtonText(OptionButton& btn, int value, std::string conditionText, std::string text, sf::Font& font, sf::Font& conditionFont);
 
 	//getters
 	std::string getName() override;
 
-	//Our options variables
-	static int m_killLimit;
-	static int m_timeLimit;
-	static int m_gameMode;
-	static int m_map;
+	//Our struct variables
+	GameMode gameMode;
 private:
 	int* m_currentOption;
 	std::map<OptionButton*, int*> m_optionMapper; //this allows us to change the options on our pre game screen by mapping options to certain buttons

@@ -121,13 +121,11 @@ void ContactListener::checkCanPlayerMove(Player * player, b2Fixture & fixA, b2Fi
 	if (fixA.GetBody() == player->getLeftSensorBody() && fixB.GetBody()->GetUserData() == "Boundary"
 		|| fixB.GetBody() == player->getLeftSensorBody() && fixA.GetBody()->GetUserData() == "Boundary")
 	{
-		std::cout << "HIT WALL ON THE LEFT" << std::endl;
 		player->setCanMoveLeft(canMove);
 	}
 	else if (fixA.GetBody() == player->getRightSensorBody() && fixB.GetBody()->GetUserData() == "Boundary"
 		|| fixB.GetBody() == player->getRightSensorBody() && fixA.GetBody()->GetUserData() == "Boundary")
 	{
-		std::cout << "HIT WALL ON THE RIGHT" << std::endl;
 		player->setCanMoveRight(canMove);
 	}
 }

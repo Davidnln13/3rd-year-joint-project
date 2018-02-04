@@ -211,6 +211,10 @@ void Level::setupAnimations()
 
 void Level::setLevelParameters(int maxKills, int maxTime, int levelNumber)
 {
+	std::cout << "Kill limit: " << maxKills << std::endl;
+	std::cout << "Time limit: " << maxTime << std::endl;
+	std::cout << "Level: " << levelNumber << std::endl;
+
 	m_levelNumber = levelNumber;
 	m_timeLimit = maxTime;
 	m_killLimit = maxKills;

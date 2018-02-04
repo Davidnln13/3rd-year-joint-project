@@ -8,6 +8,13 @@
 #include "OptionButton.h"
 #include "JoystickController.h"
 
+//Creating a method that outputs a string to the console
+//This eleminates the need to write cout/endl every time
+static void printLog(std::string text)
+{
+	std::cout << text << std::endl;
+}
+
 /// <summary>
 /// Author: Daryl keogh
 /// Date: 25/10/2017
