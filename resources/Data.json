@@ -8,21 +8,21 @@
           "HasBody":true
         },
         {
-          "StartX":550,
+          "StartX":500,
           "PosY":550,
-          "TileAmount":5,
+          "TileAmount":7,
           "HasBody":true
         },
         {
           "StartX":25,
-          "PosY":305,
-          "TileAmount":5,
+          "PosY":405,
+          "TileAmount":7,
           "HasBody":true
         },
         {
-          "StartX":1055,
-          "PosY":305,
-          "TileAmount":5,
+          "StartX":1005,
+          "PosY":405,
+          "TileAmount":7,
           "HasBody":true
         }
       ],
@@ -64,6 +64,28 @@
         {
           "PosX":650,
           "PosY":550
+        }
+      ],
+      "Spawn Points":[
+        {
+          "x":125,
+          "y":335
+        },
+        {
+          "x":1155,
+          "y":335
+        },
+        {
+          "x":1155,
+          "y":540
+        },
+        {
+          "x":125,
+          "y":540
+        },
+        {
+          "x":640,
+          "y":625
         }
       ]
    }

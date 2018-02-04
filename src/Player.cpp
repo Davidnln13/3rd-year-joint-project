@@ -5,12 +5,16 @@ Player::Player(sf::Vector2f position, std::string direction = "left") :
 	m_canMoveLeft(true),
 	m_canMoveRight(true),
 	m_canJump(false),
+	m_playIconIn(true),
+	m_playIconOut(false),
+	m_playIcon(true),
 	m_canAttackTemp(true),
 	m_swordReachedPos(false),
 	m_respawn(false),
 	m_isAiming(false),
 	m_holdingSword(true),
 	m_parried(false),
+	m_dead(false),
 	m_switchedSwordPos(false),
 	m_playingPickup(false),
 	m_canPickupSword(false),
@@ -18,8 +22,10 @@ Player::Player(sf::Vector2f position, std::string direction = "left") :
 	m_gravityScale(2.75f),
 	m_weaponPos(1), //the centre of our player
 	m_attackRate(0.50f),
+	m_kills(0),
 	m_position(position),
-	m_startPosition(position.x / PPM, position.y / PPM),
+	m_lastSpawnPos(position),
+	m_spawnPosition(position.x / PPM, position.y / PPM),
 	m_playerRect(sf::Vector2f(18, 87)),
 	m_forearmRect(sf::Vector2f(15, 5)),
 	m_jumpRect(sf::Vector2f(16, 3)),
@@ -27,8 +33,11 @@ Player::Player(sf::Vector2f position, std::string direction = "left") :
 	m_rightWallSensorRect(sf::Vector2f(3, 86)),
 	m_sword(position),
 	m_animator(m_animationHolder),
+	m_iconAnimator(m_animationHolder),
 	m_idleTime(.5f),
 	m_runTime(.7f),
+	m_killLabel("0", m_position, resourceManager.getFontHolder()["arialFont"]),
+	m_livesLabel("0", m_position, resourceManager.getFontHolder()["arialFont"]),
 	RAD_TO_DEG(180.f / thor::Pi),
 	DEG_TO_RAD(thor::Pi / 180.f)
 {
@@ -140,6 +149,8 @@ Player::Player(sf::Vector2f position, std::string direction = "left") :
 	//Setting up our sprites
 	setSpriteTexture(m_sprite, resourceManager.getTextureHolder()["playerIdle"], sf::Vector2i(42, 87), 24);
 	setSpriteTexture(m_lightSprite, resourceManager.getTextureHolder()["playerLight"], sf::Vector2i(300, 300), 150);
+	setSpriteTexture(m_iconSprite, resourceManager.getTextureHolder()["Player Icons"], sf::Vector2i(16, 38), 8);
+	m_iconSprite.setPosition(m_position);
 
 	if (m_isFacingLeft)
 	{
@@ -211,13 +222,22 @@ void Player::update()
 {
 
 	//if our respawn variable is true then respawn our player
-	if (m_respawn && m_respawnClock.getElapsedTime().asSeconds() >= 0.0f)
-		respawn();
+	if (m_dead)
+	{
+		if(m_respawn)
+			respawn();
+	}
+
 	else
 	{
-		//Update our animation
+		//Update our animations
 		m_animator.update(m_animationClock.restart());
 		m_animator.animate(m_sprite);
+		m_iconAnimator.update(m_iconAnimationClock.restart());
+		m_iconAnimator.animate(m_iconSprite);
+
+		//Play our icon animation
+		playIconAnimation();
 
 		m_sword.update();
 
@@ -338,6 +358,14 @@ void Player::render(sf::RenderWindow & window)
 	window.draw(m_rightWallSensorRect);
 	window.draw(m_leftWallSensorRect);
 	/*------> TEMPORARY <------*/
+
+	window.draw(m_iconSprite);
+
+	if (m_playIcon)
+	{
+		m_killLabel.draw(window);
+		m_livesLabel.draw(window);
+	}
 }
 
 void Player::moveRight()
@@ -621,14 +649,17 @@ void Player::rotateWhileRunning(bool rotate)
 void Player::respawn()
 {
 	//Set all of our bodies to our start position and reset their velocities
-	respawnBody(m_startPosition, m_playerBody);
-	respawnBody(m_startPosition, m_forearmBody);
-	respawnBody(m_startPosition, m_jumpBody);
-	respawnBody(m_startPosition, m_leftSensorBody);
-	respawnBody(m_startPosition, m_rightSensorBody);
-	respawnBody(m_startPosition, m_sword.getBody());
+	respawnBody(m_spawnPosition, m_playerBody);
+	respawnBody(m_spawnPosition, m_forearmBody);
+	respawnBody(m_spawnPosition, m_jumpBody);
+	respawnBody(m_spawnPosition, m_leftSensorBody);
+	respawnBody(m_spawnPosition, m_rightSensorBody);
+	respawnBody(m_spawnPosition, m_sword.getBody());
 
 	//Reset our booleans
+	m_playIconIn = true;
+	m_playIconOut = false;
+	m_playIcon = true;
 	m_canAttack = true;
 	m_canJump = false;
 	m_canAttackTemp = true;
@@ -636,6 +667,11 @@ void Player::respawn()
 	m_respawn = false;
 	m_isAiming = false;
 	m_holdingSword = true;
+	m_dead = false;
+
+	//Reduce our lives if we have lives
+	if(m_lives > 0)
+		m_lives--;
 
 	//Set the y position of our weapon to the middle of our player
 	m_weaponPos = 1;
@@ -644,13 +680,12 @@ void Player::respawn()
 	m_sword.respawn();
 
 	//Setting our isFacing boolean annd also our sword joint
-	if (m_startingDirection == "left")
+	if (m_isFacingLeft)
 	{
 		m_sprite.setScale(-1, 1);
 		setPlayerToArmJoint(-2.5f, 0, b2Vec2(15 / PPM, 18 / PPM));
 		setArmToSwordJoint(0, 15, b2Vec2(28.5f / PPM, 0));
 		m_sword.setSwordDirection("Left");
-		m_isFacingLeft = true;
 	}
 	else
 	{
@@ -658,10 +693,10 @@ void Player::respawn()
 		setPlayerToArmJoint(0, 02.5f, b2Vec2(-15 / PPM, 18 / PPM));
 		setArmToSwordJoint(-15, 0, b2Vec2(-28.5f / PPM, 0));
 		m_sword.setSwordDirection("Right");
-		m_isFacingLeft = false;
 	}
 
-	m_respawn = false;
+	m_killLabel.setText(std::to_string(m_kills), sf::Vector2f(m_spawnPosition.x + 22.5f, m_spawnPosition.y - 85));
+	m_livesLabel.setText(std::to_string(m_lives), sf::Vector2f(m_spawnPosition.x + 22.5, m_spawnPosition.y - 65));
 }
 
 void Player::respawnBody(b2Vec2 position, b2Body* body)
@@ -787,15 +822,52 @@ void Player::parried()
 	m_parried = false;
 }
 
+void Player::playIconAnimation()
+{
+	if (m_playIcon)
+	{
+		if (m_playIconIn)
+		{
+			m_iconAnimator.stop();
+			m_iconAnimator.play() << "show icons";
+
+			m_playIconIn = false;
+
+			m_iconLoopClock.restart(); //restart our clock
+		}
+		else if (m_playIconOut)
+		{
+			m_iconAnimator.stop();
+			m_iconAnimator.play() << "hide icons";
+
+			m_playIconOut = false;
+			m_playIcon = false;
+		}
+
+		else if (m_playIconOut == false && m_iconLoopClock.getElapsedTime().asSeconds() > 2.15f)
+		{
+			m_playIconOut = true;
+		}
+	}
+
+	//Set the position of our icon and labels
+	m_iconSprite.setPosition(m_playerBody->GetPosition().x * PPM, m_playerBody->GetPosition().y * PPM - 75);
+	m_killLabel.setText(std::to_string(m_kills), sf::Vector2f(m_playerBody->GetPosition().x * PPM + 22.5f, m_playerBody->GetPosition().y * PPM - 85));
+	m_livesLabel.setText(std::to_string(m_lives), sf::Vector2f(m_playerBody->GetPosition().x * PPM + 22.5, m_playerBody->GetPosition().y * PPM - 65));
+}
+
 void Player::setUpAnimations()
 {
 	m_animationClock.restart(); //starting our animation clock
+	m_iconAnimationClock.restart(); //starting our icon animation clock
+	m_iconLoopClock.restart();
 
 	auto idleFrameSize = sf::Vector2i(42, 87);
 	auto attackFrameSize = sf::Vector2i(56, 88);
 	auto runFrameSize = sf::Vector2i(63, 87);
 	auto jumpFrameSize = sf::Vector2i(52, 87);
 	auto pickupFrameSize = sf::Vector2i(42, 87);
+	auto iconFrameSize = sf::Vector2i(16, 38);
 
 	//Adding all of our animations to our animation holder
 	addFramesToAnimation(0.1f, 5, m_idleAnimation, idleFrameSize, "idle", .5f);
@@ -803,6 +875,23 @@ void Player::setUpAnimations()
 	addFramesToAnimation(0.1f, 20, m_runAnimation, runFrameSize, "run", .7f);
 	addFramesToAnimation(0.1f, 10, m_jumpAnimation, jumpFrameSize, "jump", .15f);
 	addFramesToAnimation(0.1f, 20, m_pickupAnimation, pickupFrameSize, "pickup", 0.25f);
+	addFramesToAnimation(0.1f, 10, m_iconAnimationIn, iconFrameSize, "show icons", 0.15f);
+
+	//Creating our icon animation but backwards so it plays the animation in the opposite frames
+	for (int i = 0; i < 10; i++)
+	{
+		//add a frame to the animation each loop
+		auto frame = sf::IntRect(144 - (iconFrameSize.x * i), 0, iconFrameSize.x, iconFrameSize.y);
+		m_iconAnimationOut.addFrame(0.1f, frame);
+	}
+	//add the animation to our animation holder with the specified length and name
+	m_animationHolder.addAnimation("hide icons", m_iconAnimationOut, sf::seconds(0.15f));
+
+	//Set the size and color of our labels
+	m_killLabel.setSize(17);
+	m_livesLabel.setSize(17);
+	m_killLabel.setColor(sf::Color::White);
+	m_livesLabel.setColor(sf::Color::White);
 }
 
 void Player::addFramesToAnimation(float lengthOfOneFrame, int numOfFrames, thor::FrameAnimation & animation, sf::Vector2i & frameSize, std::string animationName, float lengthOfAnimation)
@@ -875,12 +964,9 @@ void Player::setCanJump(bool canJump)
 	m_canJump = canJump;
 }
 
-void Player::setRespawn(bool respawn)
+void Player::setDead(bool isDead)
 {
-	m_respawn = respawn;
-
-	if (m_respawn)
-		m_respawnClock.restart();
+	m_dead = isDead;
 }
 void Player::setClashed(bool clashed)
 {
@@ -912,6 +998,26 @@ void Player::setPickupWeapon()
 {
 	m_canPickupSword = true;
 }
+void Player::setSpawnPoint(sf::Vector2f & position, bool facingLeft)
+{
+	//Convert our spawn point into box2d coordinates
+	m_spawnPosition = b2Vec2(position.x / PPM, position.y / PPM);
+
+	m_lastSpawnPos = position;
+
+	//Set our facing boolean
+	m_isFacingLeft = facingLeft;
+
+	m_respawn = true;
+}
+void Player::setParameters(int killLimit)
+{
+	m_lives = killLimit;
+}
+void Player::increaseKills()
+{
+	m_kills++;
+}
 bool Player::getCanAttack()
 {
 	bool temp = m_canAttackTemp;
@@ -932,6 +1038,21 @@ bool Player::switchedWeaponPos()
 bool Player::facingLeft()
 {
 	return m_isFacingLeft;
+}
+
+bool & Player::dead()
+{
+	return m_dead;
+}
+
+sf::Vector2f Player::position()
+{
+	return sf::Vector2f(m_playerBody->GetPosition().x * PPM, m_playerBody->GetPosition().y * PPM);
+}
+
+sf::Vector2f & Player::lastSpawnPos()
+{
+	return m_lastSpawnPos;
 }
 
 sf::Sprite & Player::getLight()

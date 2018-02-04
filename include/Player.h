@@ -1,4 +1,5 @@
 #pragma once
+#include "Label.h"
 #include "Weapon.h"
 
 class JoystickController; //forward reference for our joystick class
@@ -30,7 +31,7 @@ public:
 	void pickupSword();
 	void handleJoystick(JoystickController& controller);
 	void invertPlayerJoint(bool facingLeft); //inverts the joints for our player, so we can swap where the weapon and arm is jointed to
-	void changeSwordStance(std::string direction); //changes teh position our sword is will be in the y position
+	void changeSwordStance(std::string direction); //changes the y position of our sword
 	void swordClashed(); //method is invoked when two swords clash with one another
 	void checkCanAttack(); //checks if we can attack again
 	void applyArmPushBack(); //aplies a force on our arm so we push it back into place
@@ -44,6 +45,7 @@ public:
 	void setSwordStance(float posChange); //change sthe y position of our arm local to the player, this will be used to switch the heights we hold our sword at
 	void rotateSword(float angle, float speed); //sets the limits of the rotation of our sword and then set the speed of the rotation
 	void parried();
+	void playIconAnimation();
 	void setUpAnimations(); //setups our animations for the player
 	void addFramesToAnimation(float lengthOfOneFrame, int numOfFrames, thor::FrameAnimation& animation, sf::Vector2i& frameSize, std::string animationName, float lengthOfAnimation); //adds a specified amount of frames to an animation
 	//we will use this to set the texture of our sprite so we can change between animations, we use the offset because the plaeyr will not always be in the center of the image on each animation
@@ -61,18 +63,24 @@ public:
 	bool holdingSword();
 	bool switchedWeaponPos();
 	bool facingLeft();
+	bool& dead();
+	sf::Vector2f position();
+	sf::Vector2f& lastSpawnPos();
 	sf::Sprite& getLight();
 	sf::Sprite& getSwordLight();
 
 	//Setters
 	void setCanJump(bool canJump);
-	void setRespawn(bool respawn);
+	void setDead(bool isDead);
 	void setClashed(bool clashed);
 	void setParried(bool parried);
 	void setCanMoveLeft(bool canMove);
 	void setCanMoveRight(bool canMove);
 	void setSwordThrown();
 	void setPickupWeapon();
+	void setSpawnPoint(sf::Vector2f& position, bool facingLeft);
+	void setParameters(int killLimit);
+	void increaseKills();
 
 private:
 	bool m_canMoveLeft, m_canMoveRight; //Booleans to hold wheter we can move left or right
@@ -80,6 +88,8 @@ private:
 	bool m_canAttack;
 	bool m_canAttackTemp;
 	bool m_canJump;
+	bool m_playIconIn, m_playIconOut, m_playIcon;
+	bool m_dead; //bool to show whether our player is dead or not
 	bool m_swordReachedPos; //bool to show if our sword has reached its max position from th eplayer when they attack
 	bool m_respawn; //bool to determine if we respawn our player or not
 	bool m_isAiming; //bool to show if the player is holding LT to aim their sword to throw it
@@ -93,6 +103,10 @@ private:
 	float m_gravityScale; //the scale of gravity on our bodies
 	sf::Clock m_respawnClock; //Our clock to respawn the player, we will use this clock to put a timer between spawns
 
+	//game specific parameters such as kill limit
+	int m_lives;
+	int m_kills;
+
 	std::string m_startingDirection; //temporary for now
 
 	int m_weaponPos;
@@ -105,8 +119,8 @@ private:
 	sf::Clock m_pickupClock;
 	bool m_playingPickup; //bool to show that we are playing the pickup animation
 
-	sf::Vector2f m_position;
-	b2Vec2 m_startPosition;
+	sf::Vector2f m_position, m_lastSpawnPos;
+	b2Vec2 m_spawnPosition;
 	sf::Vector2f m_armPosDest; //the destination of our arm position
 
 	//Our rectangles to draw our player and forearm
@@ -132,18 +146,23 @@ private:
 
 	//Sprite variables
 	sf::Sprite m_sprite;
+	sf::Sprite m_iconSprite;
 	sf::Sprite m_lightSprite;
 
 	//Animation variables
-	sf::Clock m_animationClock; //our animation clock, we will use this to update our animations
-	thor::FrameAnimation m_idleAnimation, m_attackAnimation, m_runAnimation, m_jumpAnimation, m_pickupAnimation;
+	sf::Clock m_animationClock, m_iconAnimationClock, m_iconLoopClock; //our animation clocks, we will use this to update our animations
+	thor::FrameAnimation m_idleAnimation, m_attackAnimation, m_runAnimation, m_jumpAnimation, m_pickupAnimation, m_iconAnimationIn, m_iconAnimationOut;
 	thor::AnimationMap<sf::Sprite, std::string> m_animationHolder;//our select and deselect animations
-	thor::Animator<sf::Sprite, std::string> m_animator;
+	thor::Animator<sf::Sprite, std::string> m_animator, m_iconAnimator;
 	float m_idleTime; //holds the amount of time gone since we last played our idle animation
 	float m_runTime; //holds the amount of time gone since we last played our run animation
 
 	//Shaders
 	sf::Shader m_recolourShader;
+
+	//Our icon labels
+	Label m_killLabel;
+	Label m_livesLabel;
 
 	//Const variables
 	float const RAD_TO_DEG;

@@ -29,6 +29,9 @@ void PlayScreen::start()
 
 void PlayScreen::end()
 {
+	//Clears our level
+	m_level.clearLevel();
+
 	m_active = false;
 }
 

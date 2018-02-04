@@ -41,6 +41,13 @@ void Label::setText(std::string text)
 	m_text.setPosition(m_position);
 }
 
+void Label::setText(std::string text, sf::Vector2f pos)
+{
+	m_text.setString(text);
+	m_text.setOrigin(m_text.getLocalBounds().left + m_text.getLocalBounds().width / 2.0f, m_text.getLocalBounds().top + m_text.getGlobalBounds().height / 2.0f);
+	m_text.setPosition(pos);
+}
+
 void Label::setText(std::string text, sf::Font & font, sf::Color color)
 {
 	m_text.setFont(font);
@@ -52,6 +59,12 @@ void Label::setText(std::string text, sf::Font & font, sf::Color color)
 void Label::setColor(sf::Color color)
 {
 	m_text.setFillColor(color);
+}
+
+void Label::setSize(int size)
+{
+	m_text.setCharacterSize(size);
+	m_text.setOrigin(m_text.getLocalBounds().left + m_text.getLocalBounds().width / 2.0f, m_text.getLocalBounds().top + m_text.getGlobalBounds().height / 2.0f);
 }
 
 sf::Text & Label:: getText()

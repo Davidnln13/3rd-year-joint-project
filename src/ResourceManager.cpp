@@ -26,6 +26,7 @@ ResourceManager::ResourceManager()
 		acquireResource("Map Icon", m_mapIcon);
 		acquireResource("Start Icon", m_startIcon);
 		acquireResource("Back Icon", m_backIcon);
+		acquireResource("Player Icons", m_playerIcons);
 
 		//Load level textures
 		acquireResource("castleBG", m_castleBg);

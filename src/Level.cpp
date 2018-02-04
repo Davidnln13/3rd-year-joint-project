@@ -30,9 +30,6 @@ void Level::update()
 	//If there is a time limit and the game is not over
 	if (m_hasTimeLimit && false == m_gameOver)
 	{
-		//Outputting the time left in the game
-		//std::cout << m_timeLimitClock.getElapsedTime().asSeconds() << std::endl;
-
 		//if the time gone since our clock was started (restart()) then set our game over to true
 		if (m_timeLimitClock.getElapsedTime().asSeconds() >= m_timeLimit)
 		{
@@ -66,6 +63,10 @@ void Level::update()
 	//update our players
 	m_player1.update();
 	m_player2.update();
+
+	//Checks if we need to respawn any players, and if so, respawn them as far away from the other player as possible
+	checkForRespawn(m_player1, m_player2);
+	checkForRespawn(m_player2, m_player1);
 }
 
 void Level::render(sf::RenderWindow & window)
@@ -73,7 +74,7 @@ void Level::render(sf::RenderWindow & window)
 	m_overlayTexture.clear(sf::Color(50, 50, 50, 255));
 	m_overlayTexture.display();
 
-	//Draw our player + sword lights and also our torches
+	//Draw our player + sword lights
 	m_overlayTexture.draw(m_player1.getLight());
 	m_overlayTexture.draw(m_player2.getLight());
 	m_overlayTexture.draw(m_player1.getSwordLight());
@@ -81,6 +82,7 @@ void Level::render(sf::RenderWindow & window)
 	//Drawing our torch lights onto our overlay
 	for each (auto& light in m_torchLightSprites)
 		m_overlayTexture.draw(light);
+
 	m_overlayTexture.display();
 
 	window.draw(m_bg); //draw the background
@@ -168,8 +170,45 @@ void Level::setUpLevel(std::string levelName)
 		m_windowSprites.push_back(window);
 	}
 
+	//Setup our spawn points for our chosen level
+	auto spawnData = m_levelLoader.data()[levelName]["Spawn Points"];
+
+	//Loop through our spawn points data
+	for (int i = 0; i < spawnData.size(); i++)
+	{
+		m_spawnPoints.push_back(sf::Vector2f(spawnData.at(i)["x"], spawnData.at(i)["y"]));
+	}
+
 	//Setup our torch animations
 	setupAnimations(levelName);
+}
+
+void Level::checkForRespawn(Player& deadPlayer, Player& otherPlayer)
+{
+	//If the first player is dead then respawn the player at the furthest spawn point from player 2
+	if (deadPlayer.dead())
+	{
+		sf::Vector2f selectedSpawn;
+		auto otherPlayerPos = otherPlayer.position(); //get the other players position
+		float maxDistance = 0; //max distance from our spawn points
+
+		//Loop through our spawn points
+		for (auto& pos : m_spawnPoints)
+		{
+			auto dist = distance(otherPlayerPos, pos); //get the distance between the other player and the spawn point
+			//if the distance bewteen the points is greater than our max distance
+			if (dist > maxDistance && pos != deadPlayer.lastSpawnPos())
+			{
+				selectedSpawn = pos; //Set our spawn point
+				maxDistance = dist; //set our max distance
+			}
+		}
+
+		//Using the ternary operator to determine wheter to spawn the player facing left or not
+		bool facingLeft = (selectedSpawn.x > otherPlayerPos.x) ? true : false;
+
+		deadPlayer.setSpawnPoint(selectedSpawn, facingLeft);
+	}
 }
 
 void Level::setupAnimations(std::string levelName)
@@ -249,4 +288,33 @@ void Level::setLevelParameters(int maxKills, int maxTime, int levelNumber, std::
 
 	//Setup our level and pass our level name to our method
 	setUpLevel(levelNames[m_levelNumber]);
+
+	m_player1.setParameters(m_killLimit);
+	m_player2.setParameters(m_killLimit);
+}
+
+//Distance between two points formula
+float Level::distance(sf::Vector2f a, sf::Vector2f b)
+{
+	auto xSq = powf(b.x - a.x, 2);
+	auto ySq = powf(b.y - a.y, 2);
+
+	//Return our distance
+	return sqrtf(xSq + ySq);
+}
+
+void Level::clearLevel()
+{
+	//Clearing our containers to avoid accumulation of data in our containers
+	m_spawnPoints.clear();
+	m_windowSprites.clear();
+	m_floorSprites.clear();
+	m_floors.clear();
+	m_torchAnimators.clear();
+	m_torchLightAnimators.clear();
+	m_torchSprites.clear();
+	m_torchLightSprites.clear();
+	m_torchAnimation = thor::FrameAnimation();
+	m_torchLightAnimation = thor::FrameAnimation();
+	m_animationHolder = thor::AnimationMap<sf::Sprite, std::string>();
 }

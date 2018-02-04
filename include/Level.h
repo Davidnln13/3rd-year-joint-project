@@ -22,10 +22,12 @@ public:
 	std::string handleInput(JoystickController& controller1, JoystickController& controller2);
 	void setUpLevel(std::string levelName);
 
+	void checkForRespawn(Player& deadPlayer, Player& otherPlayer);
 	void setupAnimations(std::string levelName);
-
 	void setLevelParameters(int maxKills, int maxTime, int levelNumber, std::map<int, std::string>& levelNames);
+	float distance(sf::Vector2f a, sf::Vector2f b);
 
+	void clearLevel();
 private:
 	//Variables for starting our match
 	bool m_gameOver;
@@ -61,6 +63,9 @@ private:
 
 	//Our window sprites
 	std::vector<sf::Sprite> m_windowSprites;
+
+	//Our spawn points
+	std::vector<sf::Vector2f> m_spawnPoints;
 
 	//Our contact listener, we will use this class to handle collisions with sensors
 	ContactListener m_contactListener;
