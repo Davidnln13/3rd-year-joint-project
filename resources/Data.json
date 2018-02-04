@@ -12,6 +12,18 @@
           "PosY":550,
           "TileAmount":5,
           "HasBody":true
+        },
+        {
+          "StartX":25,
+          "PosY":305,
+          "TileAmount":5,
+          "HasBody":true
+        },
+        {
+          "StartX":1055,
+          "PosY":305,
+          "TileAmount":5,
+          "HasBody":true
         }
       ],
       "Windows":[
