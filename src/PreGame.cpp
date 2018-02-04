@@ -6,6 +6,8 @@ int GameMode::levelNum = 0;
 int GameMode::gameModeNum = 0;
 int GameMode::maxGameModes = 2;
 int GameMode::maxLevels = 1;
+std::map<int, std::string> GameMode::levelNames;
+
 
 PreGameScreen::PreGameScreen(std::string name, Audio & audio) :
 	Screen(name),
@@ -40,7 +42,7 @@ PreGameScreen::PreGameScreen(std::string name, Audio & audio) :
 	//Change our text on our buttons
 	m_killLimitBtn.setText(std::to_string(GameMode::killLimit), resourceManager.getFontHolder()["arialFont"]);
 	m_timeLimitBtn.setText(std::to_string(GameMode::timeLimit) + ":00", resourceManager.getFontHolder()["arialFont"]);
-	m_mapBtn.setText(gameMode.levelName[GameMode::levelNum], resourceManager.getFontHolder()["oxinFont"]);
+	m_mapBtn.setText(gameMode.levelNames[GameMode::levelNum], resourceManager.getFontHolder()["oxinFont"]);
 	m_gameModeBtn.setText(gameMode.gameModes[GameMode::levelNum], resourceManager.getFontHolder()["oxinFont"]);
 
 	setIconSprite(m_startIcon, resourceManager.getTextureHolder()["Start Icon"], sf::Vector2f(914, 683));
@@ -227,7 +229,7 @@ std::string PreGameScreen::handleInput(JoystickController & controller1, Joystic
 			//Set the text for all of our butttons
 			setButtonText(m_killLimitBtn, GameMode::killLimit, "infinite", std::to_string(GameMode::killLimit), resourceManager.getFontHolder()["arialFont"], resourceManager.getFontHolder()["oxinFont"]);
 			setButtonText(m_timeLimitBtn, GameMode::timeLimit, "infinite", std::to_string(GameMode::timeLimit) + ":00", resourceManager.getFontHolder()["arialFont"], resourceManager.getFontHolder()["oxinFont"]);
-			setButtonText(m_mapBtn, GameMode::levelNum, gameMode.levelName[GameMode::levelNum], gameMode.levelName[GameMode::levelNum], resourceManager.getFontHolder()["oxinFont"], resourceManager.getFontHolder()["oxinFont"]);
+			setButtonText(m_mapBtn, GameMode::levelNum, gameMode.levelNames[GameMode::levelNum], gameMode.levelNames[GameMode::levelNum], resourceManager.getFontHolder()["oxinFont"], resourceManager.getFontHolder()["oxinFont"]);
 			setButtonText(m_gameModeBtn, GameMode::gameModeNum, gameMode.gameModes[GameMode::gameModeNum], gameMode.gameModes[GameMode::gameModeNum], resourceManager.getFontHolder()["oxinFont"], resourceManager.getFontHolder()["oxinFont"]);
 		}			
 
@@ -296,6 +298,6 @@ GameMode::GameMode() :
 	GameMode::gameModes[0] = "Deathmatch";
 	GameMode::gameModes[1] = "Sudden Death";
 	GameMode::gameModes[2] = "Capture the Flag";
-	GameMode::levelName[0] = "Castle";
-	GameMode::levelName[1] = "Test level";
+	GameMode::levelNames[0] = "Castle";
+	GameMode::levelNames[1] = "Test level";
 }

@@ -21,7 +21,7 @@ public:
 	//getters
 	std::string getName() override;
 
-	void setLevel(int maxKills, int maxTime, int levelNumber);
+	void setLevel(int maxKills, int maxTime, int levelNumber, std::map<int, std::string>& levelNames);
 private:
 	Level m_level;
 };

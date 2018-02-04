@@ -19,16 +19,10 @@ Level::Level(Audio& audio, int levelNum) :
 	m_bg.setTexture(resourceManager.getTextureHolder()["castleBG"]);
 	m_bg.setPosition(0, 0);
 
-	//Setup the floor of our level
-	setUpFloor();
-
 	//setting the parameters of our dark overlay, we will draw lights onto this render texture
 	m_overlayTexture.create(1280, 720);
 	m_overlaySprite.setTexture(m_overlayTexture.getTexture());
 	m_overlaySprite.setPosition(0,0);
-
-	//Setup our torch animations
-	setupAnimations();
 }
 
 void Level::update()
@@ -85,19 +79,24 @@ void Level::render(sf::RenderWindow & window)
 	m_overlayTexture.draw(m_player1.getSwordLight());
 	m_overlayTexture.draw(m_player2.getSwordLight());
 	//Drawing our torch lights onto our overlay
-	for each (auto light in m_torchLightSprites)
+	for each (auto& light in m_torchLightSprites)
 		m_overlayTexture.draw(light);
 	m_overlayTexture.display();
 
 	window.draw(m_bg); //draw the background
 
 	//Rendering our floor
-	for each (auto tile in m_floorSprites)
+	for each (auto& tile in m_floorSprites)
 		window.draw(tile);
 
+	//Rendering our windows
+	for each(auto& win in m_windowSprites)
+		window.draw(win);
+
 	//Rendering our torches
-	for each (auto torch in m_torchSprites)
+	for each (auto& torch in m_torchSprites)
 		window.draw(torch);
+
 
 	m_player1.render(window); //draw the first player	
 	m_player2.render(window); //draw the second player
@@ -127,9 +126,9 @@ std::string Level::handleInput(JoystickController & controller1, JoystickControl
 	}
 }
 
-void Level::setUpFloor()
+void Level::setUpLevel(std::string levelName)
 {
-	auto floorData = m_levelLoader.data()["Level " + std::to_string(m_levelNumber)]["Floors"];
+	auto floorData = m_levelLoader.data()[levelName]["Floors"];
 
 	for (int i = 0; i < floorData.size(); i++)
 	{
@@ -154,11 +153,28 @@ void Level::setUpFloor()
 			m_floors.push_back(Obstacle(sf::Vector2f((startX - 25) + (floorLength / 2.0f), floorData.at(i)["PosY"]), sf::Vector2f(floorLength, 50)));
 		}
 	}
+
+
+	//Setup our window sprites for our chosen level
+	auto windowData = m_levelLoader.data()[levelName]["Windows"];
+
+	//Loop through our window data
+	for (int i = 0; i < windowData.size(); i++)
+	{
+		sf::Sprite window;
+		window.setTexture(resourceManager.getTextureHolder()["windowTile"]);
+		window.setOrigin(window.getLocalBounds().left + window.getLocalBounds().width / 2.0f, window.getLocalBounds().top + window.getLocalBounds().height / 2.0f);
+		window.setPosition(windowData.at(i)["x"], windowData.at(i)["y"]);
+		m_windowSprites.push_back(window);
+	}
+
+	//Setup our torch animations
+	setupAnimations(levelName);
 }
 
-void Level::setupAnimations()
+void Level::setupAnimations(std::string levelName)
 {
-	auto torchData = m_levelLoader.data()["Level " + std::to_string(m_levelNumber)]["Torches"];
+	auto torchData = m_levelLoader.data()[levelName]["Torches"];
 
 	//the size of one frame
 	auto torchSourceSize = sf::Vector2i(14, 30);
@@ -209,7 +225,7 @@ void Level::setupAnimations()
 	m_animationHolder.addAnimation("torchLight", m_torchLightAnimation, sf::seconds(.4f));
 }
 
-void Level::setLevelParameters(int maxKills, int maxTime, int levelNumber)
+void Level::setLevelParameters(int maxKills, int maxTime, int levelNumber, std::map<int, std::string>& levelNames)
 {
 	std::cout << "Kill limit: " << maxKills << std::endl;
 	std::cout << "Time limit: " << maxTime << std::endl;
@@ -230,4 +246,7 @@ void Level::setLevelParameters(int maxKills, int maxTime, int levelNumber)
 	//If our kill limit is greater than 0 then set our bool to true
 	if (m_killLimit > 0)
 		m_hasKillLimit = true;
+
+	//Setup our level and pass our level name to our method
+	setUpLevel(levelNames[m_levelNumber]);
 }

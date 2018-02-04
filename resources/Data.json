@@ -1,5 +1,5 @@
 {
-   "Level 1":{
+   "Castle":{
       "Floors":[
         {
           "StartX":25,
@@ -14,7 +14,25 @@
           "HasBody":true
         }
       ],
+      "Windows":[
+        {
+          "x":130,
+          "y":155
+        },
+        {
+          "x":1150,
+          "y":155
+        }
+      ],
       "Torches":[
+        {
+          "PosX":131,
+          "PosY":234
+        },
+        {
+          "PosX":1151,
+          "PosY":234
+        },
         {
           "PosX":160,
           "PosY":695

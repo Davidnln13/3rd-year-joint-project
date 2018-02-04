@@ -54,6 +54,7 @@ private:
 	thor::ResourceLoader<sf::Texture> m_stoneTile = thor::Resources::fromFile<sf::Texture>("./resources/Textures/Stone Tile.png");
 	thor::ResourceLoader<sf::Texture> m_torch = thor::Resources::fromFile<sf::Texture>("./resources/Textures/Torch Spritesheet.png");
 	thor::ResourceLoader<sf::Texture> m_torchLight = thor::Resources::fromFile<sf::Texture>("./resources/Textures/Torch Light Spritesheet.png");
+	thor::ResourceLoader<sf::Texture> m_windowTile = thor::Resources::fromFile<sf::Texture>("./resources/Textures/Window.png");
 
 	//Our player related sprite sheets and textures
 	thor::ResourceLoader<sf::Texture> m_idlePlayer = thor::Resources::fromFile<sf::Texture>("./resources/Textures/Idle Spritesheet.png");

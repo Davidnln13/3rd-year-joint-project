@@ -29,6 +29,7 @@ ResourceManager::ResourceManager()
 
 		//Load level textures
 		acquireResource("castleBG", m_castleBg);
+		acquireResource("windowTile", m_windowTile);
 		acquireResource("stoneTile", m_stoneTile);
 		acquireResource("torch", m_torch);
 		acquireResource("torchLight", m_torchLight);

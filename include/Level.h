@@ -20,11 +20,11 @@ public:
 	void update();
 	void render(sf::RenderWindow& window);
 	std::string handleInput(JoystickController& controller1, JoystickController& controller2);
-	void setUpFloor();
+	void setUpLevel(std::string levelName);
 
-	void setupAnimations();
+	void setupAnimations(std::string levelName);
 
-	void setLevelParameters(int maxKills, int maxTime, int levelNumber);
+	void setLevelParameters(int maxKills, int maxTime, int levelNumber, std::map<int, std::string>& levelNames);
 
 private:
 	//Variables for starting our match
@@ -58,6 +58,9 @@ private:
 
 	//Our floors are made up of several tiles, therefore we need a collection to hold our tiles
 	std::vector<sf::Sprite> m_floorSprites;
+
+	//Our window sprites
+	std::vector<sf::Sprite> m_windowSprites;
 
 	//Our contact listener, we will use this class to handle collisions with sensors
 	ContactListener m_contactListener;

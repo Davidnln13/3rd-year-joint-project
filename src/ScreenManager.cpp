@@ -70,7 +70,7 @@ void ScreenManager::goToScreen(std::string screenName)
 		//Set our level parameters if we are switching to the game screen
 		if (m_currentScreen->getName() == "play game")
 		{
-			m_playScreen.setLevel(GameMode::killLimit, GameMode::timeLimit, GameMode::levelNum);
+			m_playScreen.setLevel(GameMode::killLimit, GameMode::timeLimit, GameMode::levelNum, GameMode::levelNames);
 		}
 		
 	}

@@ -51,7 +51,7 @@ std::string PlayScreen::getName()
 	return m_name;
 }
 
-void PlayScreen::setLevel(int maxKills, int maxTime, int levelNumber)
+void PlayScreen::setLevel(int maxKills, int maxTime, int levelNumber, std::map<int, std::string>& levelNames)
 {
-	m_level.setLevelParameters(maxKills, maxTime, levelNumber);
+	m_level.setLevelParameters(maxKills, maxTime, levelNumber, levelNames);
 }

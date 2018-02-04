@@ -18,7 +18,7 @@ public:
 
 	//Declaring our maps
 	std::map<int, std::string> gameModes;
-	std::map<int, std::string> levelName;
+	static std::map<int, std::string> levelNames;
 };
 
 /// <summary>
