@@ -8,6 +8,7 @@ Player::Player(sf::Vector2f position, std::string direction = "left") :
 	m_playIconIn(true),
 	m_playIconOut(false),
 	m_playIcon(true),
+	m_playScoreIcon(false),
 	m_canAttackTemp(true),
 	m_swordReachedPos(false),
 	m_respawn(false),
@@ -15,6 +16,7 @@ Player::Player(sf::Vector2f position, std::string direction = "left") :
 	m_holdingSword(true),
 	m_parried(false),
 	m_dead(false),
+	m_lostLife(false),
 	m_switchedSwordPos(false),
 	m_playingPickup(false),
 	m_canPickupSword(false),
@@ -34,6 +36,8 @@ Player::Player(sf::Vector2f position, std::string direction = "left") :
 	m_sword(position),
 	m_animator(m_animationHolder),
 	m_iconAnimator(m_animationHolder),
+	m_plusScoreAnimator(m_animationHolder),
+	m_minusScoreAnimator(m_animationHolder),
 	m_idleTime(.5f),
 	m_runTime(.7f),
 	m_killLabel("0", m_position, resourceManager.getFontHolder()["arialFont"]),
@@ -150,6 +154,9 @@ Player::Player(sf::Vector2f position, std::string direction = "left") :
 	setSpriteTexture(m_sprite, resourceManager.getTextureHolder()["playerIdle"], sf::Vector2i(42, 87), 24);
 	setSpriteTexture(m_lightSprite, resourceManager.getTextureHolder()["playerLight"], sf::Vector2i(300, 300), 150);
 	setSpriteTexture(m_iconSprite, resourceManager.getTextureHolder()["Player Icons"], sf::Vector2i(16, 38), 8);
+	setSpriteTexture(m_scorePlusSprite, resourceManager.getTextureHolder()["Plus Score Icon"], sf::Vector2i(15, 30), 0);
+	setSpriteTexture(m_scoreMinusSprite, resourceManager.getTextureHolder()["Minus Score Icon"], sf::Vector2i(15, 30), 0);
+
 	m_iconSprite.setPosition(m_position);
 
 	if (m_isFacingLeft)
@@ -230,14 +237,8 @@ void Player::update()
 
 	else
 	{
-		//Update our animations
-		m_animator.update(m_animationClock.restart());
-		m_animator.animate(m_sprite);
-		m_iconAnimator.update(m_iconAnimationClock.restart());
-		m_iconAnimator.animate(m_iconSprite);
-
 		//Play our icon animation
-		playIconAnimation();
+		playUIAnimations();
 
 		m_sword.update();
 
@@ -366,6 +367,10 @@ void Player::render(sf::RenderWindow & window)
 		m_killLabel.draw(window);
 		m_livesLabel.draw(window);
 	}
+
+	//Draw our score sprites
+	window.draw(m_scorePlusSprite);
+	window.draw(m_scoreMinusSprite);
 }
 
 void Player::moveRight()
@@ -656,6 +661,10 @@ void Player::respawn()
 	respawnBody(m_spawnPosition, m_rightSensorBody);
 	respawnBody(m_spawnPosition, m_sword.getBody());
 
+	//Reset our our minus lives clock for our animation
+	m_scoreMinusIconClock.restart();
+	m_minusScoreAnimator.play() << "lost life";
+
 	//Reset our booleans
 	m_playIconIn = true;
 	m_playIconOut = false;
@@ -668,6 +677,7 @@ void Player::respawn()
 	m_isAiming = false;
 	m_holdingSword = true;
 	m_dead = false;
+	m_lostLife = true; //Set this bool to treu to play our minus animation
 
 	//Reduce our lives if we have lives
 	if(m_lives > 0)
@@ -822,8 +832,18 @@ void Player::parried()
 	m_parried = false;
 }
 
-void Player::playIconAnimation()
+void Player::playUIAnimations()
 {
+	//Update our animations
+	m_animator.update(m_animationClock.restart());
+	m_animator.animate(m_sprite);
+	m_iconAnimator.update(m_iconAnimationClock.restart());
+	m_iconAnimator.animate(m_iconSprite);
+	m_plusScoreAnimator.update(m_scorePlusIconClock.restart());
+	m_plusScoreAnimator.animate(m_scorePlusSprite);
+	m_minusScoreAnimator.update(m_scoreMinusIconClock.restart());
+	m_minusScoreAnimator.animate(m_scoreMinusSprite);
+
 	if (m_playIcon)
 	{
 		if (m_playIconIn)
@@ -840,6 +860,13 @@ void Player::playIconAnimation()
 			m_iconAnimator.stop();
 			m_iconAnimator.play() << "hide icons";
 
+			if (m_playScoreIcon)
+			{
+				m_playScoreIcon = false;
+				m_plusScoreAnimator.stop();
+				m_plusScoreAnimator.play() << "gained kill out";
+			}
+
 			m_playIconOut = false;
 			m_playIcon = false;
 		}
@@ -854,6 +881,8 @@ void Player::playIconAnimation()
 	m_iconSprite.setPosition(m_playerBody->GetPosition().x * PPM, m_playerBody->GetPosition().y * PPM - 75);
 	m_killLabel.setText(std::to_string(m_kills), sf::Vector2f(m_playerBody->GetPosition().x * PPM + 22.5f, m_playerBody->GetPosition().y * PPM - 85));
 	m_livesLabel.setText(std::to_string(m_lives), sf::Vector2f(m_playerBody->GetPosition().x * PPM + 22.5, m_playerBody->GetPosition().y * PPM - 65));
+	m_scorePlusSprite.setPosition(m_playerBody->GetPosition().x * PPM - 7.5, m_playerBody->GetPosition().y * PPM - 95);
+	m_scoreMinusSprite.setPosition(m_playerBody->GetPosition().x * PPM - 7.5, m_playerBody->GetPosition().y * PPM - 70);
 }
 
 void Player::setUpAnimations()
@@ -868,6 +897,7 @@ void Player::setUpAnimations()
 	auto jumpFrameSize = sf::Vector2i(52, 87);
 	auto pickupFrameSize = sf::Vector2i(42, 87);
 	auto iconFrameSize = sf::Vector2i(16, 38);
+	auto scoreIconSize = sf::Vector2i(15, 30);
 
 	//Adding all of our animations to our animation holder
 	addFramesToAnimation(0.1f, 5, m_idleAnimation, idleFrameSize, "idle", .5f);
@@ -875,17 +905,11 @@ void Player::setUpAnimations()
 	addFramesToAnimation(0.1f, 20, m_runAnimation, runFrameSize, "run", .7f);
 	addFramesToAnimation(0.1f, 10, m_jumpAnimation, jumpFrameSize, "jump", .15f);
 	addFramesToAnimation(0.1f, 20, m_pickupAnimation, pickupFrameSize, "pickup", 0.25f);
-	addFramesToAnimation(0.1f, 10, m_iconAnimationIn, iconFrameSize, "show icons", 0.15f);
+	addFramesToAnimation(0.1f, 31, m_plusScoreAnimation, scoreIconSize, "gained kill", 1.25f);
+	addFramesToAnimation(0.1f, 31, m_minusScoreAnimation, scoreIconSize, "lost life", 1.25f);
 
-	//Creating our icon animation but backwards so it plays the animation in the opposite frames
-	for (int i = 0; i < 10; i++)
-	{
-		//add a frame to the animation each loop
-		auto frame = sf::IntRect(144 - (iconFrameSize.x * i), 0, iconFrameSize.x, iconFrameSize.y);
-		m_iconAnimationOut.addFrame(0.1f, frame);
-	}
-	//add the animation to our animation holder with the specified length and name
-	m_animationHolder.addAnimation("hide icons", m_iconAnimationOut, sf::seconds(0.15f));
+	//Add two animations to our animation holder at once
+	addFramesToAnimation(0.1f, 10, m_iconAnimationIn, m_iconAnimationOut, iconFrameSize, "show icons", "hide icons", 0.15f);
 
 	//Set the size and color of our labels
 	m_killLabel.setSize(17);
@@ -905,6 +929,27 @@ void Player::addFramesToAnimation(float lengthOfOneFrame, int numOfFrames, thor:
 	}
 	//add the animation to our animation holder with the specified length and name
 	m_animationHolder.addAnimation(animationName, animation, sf::seconds(lengthOfAnimation));
+}
+
+//This also adds an animation to our animation holder by creating two animations, one in the opposite direction
+void Player::addFramesToAnimation(float lengthOfOneFrame, int numOfFrames, thor::FrameAnimation & animation, thor::FrameAnimation & oppositeAnimation, sf::Vector2i & frameSize, std::string animationName, std::string oppositeAnimationName, float lengthOfAnimation)
+{
+	auto maxWidth = (numOfFrames - 1) * frameSize.x;
+
+	//loop for the amount of frames passed to the method
+	for (int i = 0; i < numOfFrames; i++)
+	{
+		//add a frame to the animation each loop
+		auto frame = sf::IntRect(0 + (frameSize.x * i), 0, frameSize.x, frameSize.y);
+		animation.addFrame(lengthOfOneFrame, frame);
+
+		auto oppositeFrame = sf::IntRect(maxWidth - (frameSize.x * i), 0, frameSize.x, frameSize.y);
+		oppositeAnimation.addFrame(lengthOfOneFrame, oppositeFrame);
+	}
+	//add the animation to our animation holder with the specified length and name
+	m_animationHolder.addAnimation(animationName, animation, sf::seconds(lengthOfAnimation));
+	//add the opposite animation to our animation holder with the specified length and name
+	m_animationHolder.addAnimation(oppositeAnimationName, oppositeAnimation, sf::seconds(lengthOfAnimation));
 }
 
 void Player::setSpriteTexture(sf::Sprite& sprite, sf::Texture & texture, sf::Vector2i frameSize, float xOffset)
@@ -1016,7 +1061,15 @@ void Player::setParameters(int killLimit)
 }
 void Player::increaseKills()
 {
-	m_kills++;
+	m_kills++; //increase our kills
+
+	m_plusScoreAnimator.play() << "gained kill"; //play our plus score icon
+
+	m_playIcon = true;
+	m_playIconIn = true;
+	m_playIconOut = false;
+
+	m_scorePlusIconClock.restart();// Restart our score animation clock
 }
 bool Player::getCanAttack()
 {

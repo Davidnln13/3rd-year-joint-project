@@ -27,6 +27,8 @@ ResourceManager::ResourceManager()
 		acquireResource("Start Icon", m_startIcon);
 		acquireResource("Back Icon", m_backIcon);
 		acquireResource("Player Icons", m_playerIcons);
+		acquireResource("Plus Score Icon", m_plusScoreIcon);
+		acquireResource("Minus Score Icon", m_minusScoreIcon);
 
 		//Load level textures
 		acquireResource("castleBG", m_castleBg);

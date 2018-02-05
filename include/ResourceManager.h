@@ -49,6 +49,8 @@ private:
 	thor::ResourceLoader<sf::Texture> m_crossedSwordIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/Crossed Sword Icon.png");
 	thor::ResourceLoader<sf::Texture> m_arrowIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/Arrow Icon.png");
 	thor::ResourceLoader<sf::Texture> m_playerIcons = thor::Resources::fromFile<sf::Texture>("./resources/GUI/Player Icons.png");
+	thor::ResourceLoader<sf::Texture> m_plusScoreIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/Add score Icon.png");
+	thor::ResourceLoader<sf::Texture> m_minusScoreIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/Minus Score Icon.png");
 
 	//Our Level tiles
 	thor::ResourceLoader<sf::Texture> m_castleBg = thor::Resources::fromFile<sf::Texture>("./resources/Textures/Castle BG.png");

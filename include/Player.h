@@ -45,9 +45,10 @@ public:
 	void setSwordStance(float posChange); //change sthe y position of our arm local to the player, this will be used to switch the heights we hold our sword at
 	void rotateSword(float angle, float speed); //sets the limits of the rotation of our sword and then set the speed of the rotation
 	void parried();
-	void playIconAnimation();
+	void playUIAnimations();
 	void setUpAnimations(); //setups our animations for the player
 	void addFramesToAnimation(float lengthOfOneFrame, int numOfFrames, thor::FrameAnimation& animation, sf::Vector2i& frameSize, std::string animationName, float lengthOfAnimation); //adds a specified amount of frames to an animation
+	void addFramesToAnimation(float lengthOfOneFrame, int numOfFrames, thor::FrameAnimation & animation, thor::FrameAnimation & oppositeAnimation, sf::Vector2i & frameSize, std::string animationName, std::string oppositeAnimationName, float lengthOfAnimation);
 	//we will use this to set the texture of our sprite so we can change between animations, we use the offset because the plaeyr will not always be in the center of the image on each animation
 	void setSpriteTexture(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2i frameSize, float xOffset); 
 	void setColour(sf::Color color); //set sthe colour of the player
@@ -88,7 +89,8 @@ private:
 	bool m_canAttack;
 	bool m_canAttackTemp;
 	bool m_canJump;
-	bool m_playIconIn, m_playIconOut, m_playIcon;
+	bool m_lostLife; //Bool to hold wheter the playe rhas lost a life or not
+	bool m_playIconIn, m_playIconOut, m_playIcon, m_playScoreIcon;
 	bool m_dead; //bool to show whether our player is dead or not
 	bool m_swordReachedPos; //bool to show if our sword has reached its max position from th eplayer when they attack
 	bool m_respawn; //bool to determine if we respawn our player or not
@@ -147,13 +149,16 @@ private:
 	//Sprite variables
 	sf::Sprite m_sprite;
 	sf::Sprite m_iconSprite;
+	sf::Sprite m_scorePlusSprite;
+	sf::Sprite m_scoreMinusSprite;
 	sf::Sprite m_lightSprite;
 
 	//Animation variables
-	sf::Clock m_animationClock, m_iconAnimationClock, m_iconLoopClock; //our animation clocks, we will use this to update our animations
+	sf::Clock m_animationClock, m_iconAnimationClock, m_iconLoopClock, m_scorePlusIconClock, m_scoreMinusIconClock; //our animation clocks, we will use this to update our animations
 	thor::FrameAnimation m_idleAnimation, m_attackAnimation, m_runAnimation, m_jumpAnimation, m_pickupAnimation, m_iconAnimationIn, m_iconAnimationOut;
+	thor::FrameAnimation m_plusScoreAnimation, m_minusScoreAnimation;
 	thor::AnimationMap<sf::Sprite, std::string> m_animationHolder;//our select and deselect animations
-	thor::Animator<sf::Sprite, std::string> m_animator, m_iconAnimator;
+	thor::Animator<sf::Sprite, std::string> m_animator, m_iconAnimator, m_plusScoreAnimator, m_minusScoreAnimator;
 	float m_idleTime; //holds the amount of time gone since we last played our idle animation
 	float m_runTime; //holds the amount of time gone since we last played our run animation
 
