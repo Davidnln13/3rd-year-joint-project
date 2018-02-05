@@ -65,6 +65,7 @@ public:
 	bool switchedWeaponPos();
 	bool facingLeft();
 	bool& dead();
+	int& lives();
 	sf::Vector2f position();
 	sf::Vector2f& lastSpawnPos();
 	sf::Sprite& getLight();

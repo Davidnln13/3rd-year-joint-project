@@ -22,16 +22,24 @@ Level::Level(Audio& audio, int levelNum) :
 	//setting the parameters of our dark overlay, we will draw lights onto this render texture
 	m_overlayTexture.create(1280, 720);
 	m_overlaySprite.setTexture(m_overlayTexture.getTexture());
-	m_overlaySprite.setPosition(0,0);
+	m_overlaySprite.setPosition(0, 0);
 }
 
 void Level::update()
 {
+	if (m_gameOver)
+	{
+		// do something
+	}
+
 	//If there is a time limit and the game is not over
-	if (m_hasTimeLimit && false == m_gameOver)
+	if (false == m_gameOver)
 	{
 		//if the time gone since our clock was started (restart()) then set our game over to true
-		if (m_timeLimitClock.getElapsedTime().asSeconds() >= m_timeLimit)
+		if (m_hasTimeLimit && m_timeLimitClock.getElapsedTime().asSeconds() >= m_timeLimit)
+			m_gameOver = true;
+		//if there is a kill limit on the game and either player has reached 0 then end the game
+		if (m_hasKillLimit && m_player1.lives() == 0 || m_hasKillLimit && m_player2.lives() == 0)
 		{
 			m_gameOver = true;
 		}
@@ -317,4 +325,12 @@ void Level::clearLevel()
 	m_torchAnimation = thor::FrameAnimation();
 	m_torchLightAnimation = thor::FrameAnimation();
 	m_animationHolder = thor::AnimationMap<sf::Sprite, std::string>();
+}
+
+sf::Vector2f Level::lerp(sf::Vector2f a, sf::Vector2f b, float t)
+{
+	float x = (1 - t) * a.x + t*b.x;
+	float y = (1 - t) * a.y + t*b.y;
+
+	return sf::Vector2f(x, y);
 }

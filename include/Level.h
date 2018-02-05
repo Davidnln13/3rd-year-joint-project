@@ -28,6 +28,9 @@ public:
 	float distance(sf::Vector2f a, sf::Vector2f b);
 
 	void clearLevel();
+
+	//helper function
+	sf::Vector2f lerp(sf::Vector2f a, sf::Vector2f b, float t);
 private:
 	//Variables for starting our match
 	bool m_gameOver;

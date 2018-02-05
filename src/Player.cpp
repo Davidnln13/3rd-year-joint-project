@@ -353,11 +353,11 @@ void Player::render(sf::RenderWindow & window)
 	m_sword.render(window);
 	//window.draw(m_playerRect);
 	window.draw(m_forearmRect);
-	window.draw(m_jumpRect);
+	//window.draw(m_jumpRect);
 
 	/*------> TEMPORARY <------*/
-	window.draw(m_rightWallSensorRect);
-	window.draw(m_leftWallSensorRect);
+	//window.draw(m_rightWallSensorRect);
+	//window.draw(m_leftWallSensorRect);
 	/*------> TEMPORARY <------*/
 
 	window.draw(m_iconSprite);
@@ -1096,6 +1096,11 @@ bool Player::facingLeft()
 bool & Player::dead()
 {
 	return m_dead;
+}
+
+int & Player::lives()
+{
+	return m_lives;
 }
 
 sf::Vector2f Player::position()
