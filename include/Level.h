@@ -19,6 +19,8 @@ public:
 
 	void update();
 	void render(sf::RenderWindow& window);
+
+
 	std::string handleInput(JoystickController& controller1, JoystickController& controller2);
 	void setUpLevel(std::string levelName);
 

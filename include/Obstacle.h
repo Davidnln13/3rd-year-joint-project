@@ -13,6 +13,7 @@ class Obstacle
 public:
 	Obstacle(sf::Vector2f position, sf::Vector2f size);
 
+	b2Body* body();
 private:
 	b2Body* m_body;
 };

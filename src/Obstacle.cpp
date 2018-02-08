@@ -20,3 +20,8 @@ Obstacle::Obstacle(sf::Vector2f position, sf::Vector2f size)
 	m_body->CreateFixture(&boxFixDef);
 
 }
+
+b2Body* Obstacle::body()
+{
+	return m_body;
+}

@@ -317,7 +317,6 @@ void Level::clearLevel()
 	m_spawnPoints.clear();
 	m_windowSprites.clear();
 	m_floorSprites.clear();
-	m_floors.clear();
 	m_torchAnimators.clear();
 	m_torchLightAnimators.clear();
 	m_torchSprites.clear();
@@ -325,6 +324,12 @@ void Level::clearLevel()
 	m_torchAnimation = thor::FrameAnimation();
 	m_torchLightAnimation = thor::FrameAnimation();
 	m_animationHolder = thor::AnimationMap<sf::Sprite, std::string>();
+
+	//Remove all our box 2d bodies from our obstacles and clear our floor vector
+	for (auto floor : m_floors)
+		world.DestroyBody(floor.body()); //Destroy all the obstacle bodies
+
+	m_floors.clear(); //Clear all of the floors
 }
 
 sf::Vector2f Level::lerp(sf::Vector2f a, sf::Vector2f b, float t)
