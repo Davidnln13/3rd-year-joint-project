@@ -17,5 +17,15 @@ void main()
 	//get the coordinate of the texel
 	vec2 coord = gl_TexCoord[0].xy;
 	vec4 pixel_color = texture2D(currentTexture, coord);
-    gl_FragColor = pixel_color * newColor; //our new texel colour
+	vec4 white = vec4(1,1,1,1);
+
+	if(pixel_color == white)
+	{
+			gl_FragColor = pixel_color * newColor; //our new texel colour
+	}
+	else
+	{
+	  gl_FragColor = pixel_color; //our new texel colour
+	}
+
 }
