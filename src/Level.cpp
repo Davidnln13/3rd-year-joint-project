@@ -139,6 +139,12 @@ std::string Level::handleInput(JoystickController & controller1, JoystickControl
 void Level::setUpLevel(std::string levelName)
 {
 	auto floorData = m_levelLoader.data()[levelName]["Floors"];
+	auto startPoints = m_levelLoader.data()[levelName]["Start Points"];
+
+	//set our players spawn point
+	m_player1.spawnPlayer(startPoints.at(0)["x"], startPoints.at(0)["y"], startPoints.at(0)["facingLeft"]);
+	m_player2.spawnPlayer(startPoints.at(1)["x"], startPoints.at(1)["y"], startPoints.at(1)["facingLeft"]);
+
 
 	for (int i = 0; i < floorData.size(); i++)
 	{

@@ -974,6 +974,44 @@ void Player::setColour(sf::Color color)
 	m_recolourShader.setUniform("newA", newA);
 }
 
+void Player::spawnPlayer(float x, float y, bool facingLeft)
+{
+	m_isFacingLeft = facingLeft;
+
+	//Convert our spawn point into box2d coordinates
+	b2Vec2 spawnPos = b2Vec2(x / PPM, y / PPM);
+
+	//Set all of our bodies to our start position and reset their velocities
+	respawnBody(spawnPos, m_playerBody);
+	respawnBody(spawnPos, m_forearmBody);
+	respawnBody(spawnPos, m_jumpBody);
+	respawnBody(spawnPos, m_leftSensorBody);
+	respawnBody(spawnPos, m_rightSensorBody);
+	respawnBody(spawnPos, m_sword.getBody());
+
+	//Set the y position of our weapon to the middle of our player
+	m_weaponPos = 1;
+
+	//Reset our sword
+	m_sword.respawn();
+
+	//Setting our isFacing boolean annd also our sword joint
+	if (m_isFacingLeft)
+	{
+		m_sprite.setScale(-1, 1);
+		setPlayerToArmJoint(-2.5f, 0, b2Vec2(15 / PPM, 18 / PPM));
+		setArmToSwordJoint(0, 15, b2Vec2(28.5f / PPM, 0));
+		m_sword.setSwordDirection("Left");
+	}
+	else
+	{
+		m_sprite.setScale(1, 1);
+		setPlayerToArmJoint(0, 02.5f, b2Vec2(-15 / PPM, 18 / PPM));
+		setArmToSwordJoint(-15, 0, b2Vec2(-28.5f / PPM, 0));
+		m_sword.setSwordDirection("Right");
+	}
+}
+
 b2Body * Player::getJumpBody()
 {
 	return m_jumpBody;

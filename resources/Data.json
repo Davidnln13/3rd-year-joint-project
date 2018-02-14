@@ -87,6 +87,18 @@
           "x":640,
           "y":625
         }
+      ],
+      "Start Points":[
+        {
+          "x":125,
+          "y":540,
+          "facingLeft": false
+        },
+        {
+          "x": 1155,
+          "y": 540,
+          "facingLeft": true
+        }
       ]
    }
 }

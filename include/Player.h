@@ -52,6 +52,7 @@ public:
 	//we will use this to set the texture of our sprite so we can change between animations, we use the offset because the plaeyr will not always be in the center of the image on each animation
 	void setSpriteTexture(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2i frameSize, float xOffset); 
 	void setColour(sf::Color color); //set sthe colour of the player
+	void spawnPlayer(float x, float y, bool facingLeft);
 
 	//Getters
 	b2Body* getJumpBody();
