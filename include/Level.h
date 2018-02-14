@@ -4,7 +4,6 @@
 #include "Obstacle.h"
 #include "ContactListener.h"
 #include "Audio.h"
-#include "ParticleSystem.h" //***TEMPORARY***\\
 
 /// <summary>
 /// Author: Daryl Keogh
@@ -35,9 +34,6 @@ public:
 	//helper function
 	sf::Vector2f lerp(sf::Vector2f a, sf::Vector2f b, float t);
 private:
-	ParticleSystem* m_particleSys;
-
-
 	//Variables for starting our match
 	bool m_gameOver;
 	bool m_hasTimeLimit;

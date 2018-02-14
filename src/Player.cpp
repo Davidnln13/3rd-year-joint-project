@@ -1012,6 +1012,14 @@ void Player::spawnPlayer(float x, float y, bool facingLeft)
 	}
 }
 
+Weapon * Player::getWeapon()
+{
+	if(m_holdingSword)
+		return &m_sword;
+
+	return nullptr;
+}
+
 b2Body * Player::getJumpBody()
 {
 	return m_jumpBody;

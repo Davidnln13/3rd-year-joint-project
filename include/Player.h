@@ -55,6 +55,7 @@ public:
 	void spawnPlayer(float x, float y, bool facingLeft);
 
 	//Getters
+	Weapon* getWeapon();
 	b2Body* getJumpBody();
 	b2Body* getArmBody();
 	b2Body* getPlayerBody();

@@ -1,4 +1,5 @@
 #pragma once
+#include "ParticleSystem.h" //So we can spawn particle effects dependign on contacts
 #include "Box2D\Box2D.h"
 #include <iostream>
 
@@ -16,6 +17,11 @@ class Weapon;
 class ContactListener : public b2ContactListener
 {
 public:
+	ContactListener();
+
+	void update();
+	void draw(sf::RenderWindow& window);
+
 	void BeginContact(b2Contact* contact) override;
 	void EndContact(b2Contact* contact) override;
 
@@ -32,6 +38,11 @@ private:
 	//we hold a pointer to our players so we can invoke methods if their sensor have collided/not collided
 	Player* m_player1;
 	Player* m_player2;
+
+	sf::Vector2f m_partcleSpawnPos;
+	bool m_spawnParticle;
+	//Our particle system holder
+	std::vector<std::unique_ptr<ParticleSystem>> m_particleSystems;
 };
 
 

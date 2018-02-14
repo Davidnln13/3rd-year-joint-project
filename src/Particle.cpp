@@ -27,7 +27,8 @@ void Particle::update()
 	m_position += m_velocity;
 
 	m_sprite.setPosition(m_position);
-	m_sprite.setColor(sf::Color(m_sprite.getColor().r, m_sprite.getColor().g, m_sprite.getColor().b, m_alpha));
+	//Changes the color of the particle from pure red to yellow the longer it lives
+	m_sprite.setColor(sf::Color(255, 255 * (m_timeAlive / m_ttl), 0, m_alpha));
 	m_clock.restart();
 }
 

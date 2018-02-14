@@ -1,5 +1,43 @@
 #include "ContactListener.h"
 
+ContactListener::ContactListener():
+	m_spawnParticle(false)
+{
+}
+
+void ContactListener::update()
+{
+	if (m_spawnParticle)
+	{
+
+		auto pos = m_player1->getWeapon()->getPosition();
+
+		if(m_player1->facingLeft())
+			pos.x -= 35 / 2.0f;
+		else
+			pos.x += 35 / 2.0f;
+		
+
+		//Add a new particle system to our vector
+		m_particleSystems.push_back(std::unique_ptr<ParticleSystem>(new ParticleSystem(0, 50, pos)));
+
+		m_spawnParticle = false;
+	}
+
+	//Update all of our particle systems
+	for (auto& pSystem : m_particleSystems)
+		pSystem->update();
+}
+
+void ContactListener::draw(sf::RenderWindow & window)
+{
+
+	//Draw all of our particle systems
+	for (auto& pSystem : m_particleSystems)
+		pSystem->draw(window);
+
+}
+
 void ContactListener::BeginContact(b2Contact * contact)
 {
 	auto fixA = contact->GetFixtureA();
@@ -41,6 +79,14 @@ void ContactListener::BeginContact(b2Contact * contact)
 		//Checks if a player is moving into a wall, if so set the players can move boolean to false
 		checkCanPlayerMove(m_player1, *fixA, *fixB, false);
 		checkCanPlayerMove(m_player2, *fixA, *fixB, false);
+	}
+
+	if (m_spawnParticle)
+	{
+		b2WorldManifold worldManifold;
+		contact->GetWorldManifold(&worldManifold);
+
+		m_partcleSpawnPos = sf::Vector2f(worldManifold.points[0].x, worldManifold.points[0].y);
 	}
 }
 
@@ -120,7 +166,10 @@ void ContactListener::haveTwoSwordsCollided(Player * player1, Player* player2, b
 		else if (player1->switchedWeaponPos())
 			player2->setParried(true);
 		else
+		{
 			player1->setClashed(true);
+			m_spawnParticle = true;
+		}
 	}
 }
 

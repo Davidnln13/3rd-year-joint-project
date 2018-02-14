@@ -23,13 +23,11 @@ Level::Level(Audio& audio, int levelNum) :
 	m_overlayTexture.create(1280, 720);
 	m_overlaySprite.setTexture(m_overlayTexture.getTexture());
 	m_overlaySprite.setPosition(0, 0);
-
-	m_particleSys = new ParticleSystem(0, 50, sf::Vector2f(640, 360));
 }
 
 void Level::update()
 {
-	m_particleSys->update();
+	m_contactListener.update(); //Update our contact listener
 
 	if (m_gameOver)
 	{
@@ -115,13 +113,10 @@ void Level::render(sf::RenderWindow & window)
 	m_player1.render(window); //draw the first player	
 	m_player2.render(window); //draw the second player
 
-	m_particleSys->draw(window);
+	m_contactListener.draw(window); //Draw our contact listener
 
 	//Blend our lights into our overlay
 	window.draw(m_overlaySprite, sf::BlendMultiply);
-
-
-
 }
 
 std::string Level::handleInput(JoystickController & controller1, JoystickController & controller2)
@@ -136,9 +131,6 @@ std::string Level::handleInput(JoystickController & controller1, JoystickControl
 		{
 			m_audioRef.m_soundMap["SwordSwing"].play();
 		}
-
-		if(controller1.isButtonPressed("RightThumbClick"))
-			m_particleSys = new ParticleSystem(0, 75, sf::Vector2f(640, 360));
 
 		return "play game";
 	}
