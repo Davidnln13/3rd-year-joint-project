@@ -64,6 +64,12 @@
     <ClCompile Include="src\OptionButton.cpp">
       <Filter>Source Files\Widget Source</Filter>
     </ClCompile>
+    <ClCompile Include="src\Particle.cpp">
+      <Filter>Source Files\Particle Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ParticleSystem.cpp">
+      <Filter>Source Files\Particle Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Audio.h">
@@ -132,6 +138,12 @@
     <ClInclude Include="include\OptionButton.h">
       <Filter>Header Files\Widget Headers</Filter>
     </ClInclude>
+    <ClInclude Include="include\Particle.h">
+      <Filter>Header Files\Particle Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ParticleSystem.h">
+      <Filter>Header Files\Particle Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
@@ -151,6 +163,12 @@
     </Filter>
     <Filter Include="Source Files\Widget Source">
       <UniqueIdentifier>{ef05f61b-0238-44ac-a032-e21e050eb026}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Particle Headers">
+      <UniqueIdentifier>{02944f06-e8c7-45a3-8932-8d22555b20c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Particle Source">
+      <UniqueIdentifier>{1149c946-8a99-420a-b375-6570e0340546}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

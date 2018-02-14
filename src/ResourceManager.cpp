@@ -30,6 +30,9 @@ ResourceManager::ResourceManager()
 		acquireResource("Plus Score Icon", m_plusScoreIcon);
 		acquireResource("Minus Score Icon", m_minusScoreIcon);
 
+		//Load particle
+		acquireResource("Particle", m_particle);
+
 		//Load level textures
 		acquireResource("castleBG", m_castleBg);
 		acquireResource("windowTile", m_windowTile);

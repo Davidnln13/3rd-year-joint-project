@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -142,6 +142,8 @@
     <ClCompile Include="src\MainMenu.cpp" />
     <ClCompile Include="src\OptionButton.cpp" />
     <ClCompile Include="src\Options.cpp" />
+    <ClCompile Include="src\Particle.cpp" />
+    <ClCompile Include="src\ParticleSystem.cpp" />
     <ClCompile Include="src\PauseScreen.cpp" />
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\PlayScreen.cpp" />
@@ -164,6 +166,8 @@
     <ClInclude Include="include\MainMenu.h" />
     <ClInclude Include="include\OptionButton.h" />
     <ClInclude Include="include\Options.h" />
+    <ClInclude Include="include\Particle.h" />
+    <ClInclude Include="include\ParticleSystem.h" />
     <ClInclude Include="include\PauseScreen.h" />
     <ClInclude Include="include\Player.h" />
     <ClInclude Include="include\PlayScreen.h" />
