@@ -27,6 +27,8 @@ public:
 	void parried();
 	void negateSword();
 
+	void setColor(sf::Color color); //Sets the color of our sprite
+
 	//getters
 	b2Body* getBody();
 	sf::Sprite& getLight();
@@ -47,4 +49,7 @@ private:
 	sf::RectangleShape m_rect;
 	b2RevoluteJoint* m_pivotJoint;
 	sf::Sprite m_lightSprite;
+
+	//Shaders
+	sf::Shader m_recolourShader;
 };

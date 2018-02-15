@@ -5,6 +5,9 @@ Weapon::Weapon(sf::Vector2f position) :
 	m_swordThrown(false),
 	m_setSensor(false)
 {
+	//Load our shader
+	m_recolourShader.loadFromFile(resourceManager.getShaderHolder()["recolourShader"], sf::Shader::Fragment);
+
 	//creating our Box2d body and fixture for the player
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;
@@ -70,7 +73,7 @@ void Weapon::render(sf::RenderWindow & window)
 	m_sprite.setPosition(m_body->GetPosition().x * PPM, m_body->GetPosition().y * PPM);
 	m_sprite.setRotation(m_body->GetAngle() * (180.f / thor::Pi));
 
-	window.draw(m_sprite);
+	window.draw(m_sprite, &m_recolourShader);
 	//window.draw(m_rect);
 }
 
@@ -186,4 +189,19 @@ void Weapon::setSwordDirection(std::string direction)
 void Weapon::negateSword()
 {
 		m_sprite.setScale(m_sprite.getScale().x * -1,1);
+}
+
+void Weapon::setColor(sf::Color color)
+{
+	//Calculate our new colours, needs to be a number between 0 and 1 so we divide each paractmeter by 255
+	float newR = color.r / 255.0f;
+	float newG = color.g / 255.0f;
+	float newB = color.b / 255.0f;
+	float newA = color.a / 255.0f;
+
+	//Set our shade runiform variables to our new calculated colour
+	m_recolourShader.setUniform("newR", newR);
+	m_recolourShader.setUniform("newG", newG);
+	m_recolourShader.setUniform("newB", newB);
+	m_recolourShader.setUniform("newA", newA);
 }

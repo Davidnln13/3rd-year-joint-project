@@ -171,11 +171,13 @@ Player::Player(sf::Vector2f position, std::string direction = "left") :
 	if (m_isFacingLeft)
 	{
 		setColour(sf::Color(244, 241, 66, 255));
+		m_sword.setColor(sf::Color(244, 241, 66, 255));
 		m_forearmRect.setFillColor(sf::Color(244, 241, 66, 255));
 	}
 	else
 	{
 		setColour(sf::Color(65, 244, 232));
+		m_sword.setColor(sf::Color(65, 244, 232));
 		m_forearmRect.setFillColor(sf::Color(65, 244, 232));
 	}
 }
