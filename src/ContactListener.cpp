@@ -19,7 +19,7 @@ void ContactListener::update()
 		
 
 		//Add a new particle system to our vector
-		m_particleSystems.push_back(std::unique_ptr<ParticleSystem>(new ParticleSystem(0, 50, pos)));
+		m_particleSystems.push_back(std::unique_ptr<ParticleSystem>(new ParticleSystem(0, 35, pos)));
 
 		m_spawnParticle = false;
 	}
