@@ -154,6 +154,11 @@ bool PlayScreen::paused()
 	return m_paused;
 }
 
+bool PlayScreen::gameOver()
+{
+	return m_level.gameOver();
+}
+
 void PlayScreen::setLevel(int maxKills, int maxTime, int levelNumber, bool ctf, std::map<int, std::string>& levelNames)
 {
 	m_level.setLevelParameters(maxKills, maxTime, levelNumber, ctf, levelNames);

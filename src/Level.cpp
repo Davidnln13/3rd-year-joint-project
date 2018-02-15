@@ -9,8 +9,15 @@ Level::Level(Audio& audio, int levelNum) :
 	m_hasTimeLimit(false),
 	m_hasKillLimit(false),
 	m_gameOver(false),
+	m_setWinner(false),
+	m_hasWinner(false),
+	m_playGameOverIndicator(true),
 	m_timeLabel("Time Left", sf::Vector2f(595, 40), resourceManager.getFontHolder()["oxinFont"]),
-	m_timeLabelValue(": 0", sf::Vector2f(670, 22.5f), resourceManager.getFontHolder()["arialFont"])
+	m_timeLabelValue(": 0", sf::Vector2f(670, 22.5f), resourceManager.getFontHolder()["arialFont"]),
+	m_draw1Animator(m_animationHolder),
+	m_draw2Animator(m_animationHolder),
+	m_winAnimator(m_animationHolder),
+	m_loseAnimator(m_animationHolder)
 {
 	auto text = m_timeLabelValue.getText();
 	m_timeLabelValue.setOrigin(sf::Vector2f(text.getLocalBounds().left, text.getLocalBounds().top));
@@ -21,7 +28,7 @@ Level::Level(Audio& audio, int levelNum) :
 
 	//ste teh color of our labesl to white
 	for (auto& label : m_labels)
-		label->setColor(sf::Color(255,255,255, 125));
+		label->setColor(sf::Color(255,255,255, 255));
 
 	//Set up the contact listener for box2d
 	world.SetContactListener(&m_contactListener);
@@ -36,6 +43,8 @@ Level::Level(Audio& audio, int levelNum) :
 	m_overlayTexture.create(1280, 720);
 	m_overlaySprite.setTexture(m_overlayTexture.getTexture());
 	m_overlaySprite.setPosition(0, 0);
+
+	setUpAnimation();
 }
 
 void Level::update()
@@ -44,7 +53,39 @@ void Level::update()
 
 	if (m_gameOver)
 	{
-		// do something
+		//If our bool is false
+		if (m_setWinner == false)
+		{
+			auto p1Pos = m_player1.position();
+			auto p2Pos = m_player2.position();
+
+			if (m_hasKillLimit || m_hasTimeLimit) //If there was a kill or time limit
+			{
+				//if player 1 had more kills
+				if (m_player1.kills() > m_player2.kills())
+				{
+					m_winSprite.setPosition(p1Pos.x, p1Pos.y - 75);
+					m_loseSprite.setPosition(p2Pos.x, p2Pos.y - 75);
+					m_hasWinner = true;
+				}
+				//if player 2 had more kills
+				else if(m_player2.kills() > m_player1.kills())
+				{
+					m_winSprite.setPosition(p2Pos.x, p2Pos.y - 75);
+					m_loseSprite.setPosition(p1Pos.x, p1Pos.y - 75);
+					m_hasWinner = true;
+				}
+				else //Else if the players had the same amount of kills
+				{
+					m_draw1Sprite.setPosition(p2Pos.x, p2Pos.y - 75);
+					m_draw2Sprite.setPosition(p1Pos.x, p1Pos.y - 75);
+				}
+			}
+
+			m_setWinner = true;
+		}
+
+		playAnimation(); //Play our animation
 	}
 
 	//If there is a time limit and the game is not over
@@ -67,9 +108,9 @@ void Level::update()
 		if (timeLeft <= 0)
 			timeLeft = 0;
 
-		m_timeLabelValue.setText(std::string(": " + std::to_string(timeLeft)), resourceManager.getFontHolder()["arialFont"], sf::Color::White, sf::Vector2f(0,0));
+		m_timeLabelValue.setText(std::string(": " + std::to_string(timeLeft)), resourceManager.getFontHolder()["arialFont"], sf::Color::White, sf::Vector2f(0, 0));
 	}
-	
+
 	//Update and animate our torch and torch lights
 	for (auto i = 0; i < m_torchAnimators.size(); i++)
 	{
@@ -143,9 +184,86 @@ void Level::render(sf::RenderWindow & window)
 
 	m_contactListener.draw(window); //Draw our contact listener
 
+
+	//Draw our game over sprites
+	if (m_hasWinner)
+	{
+		window.draw(m_winSprite);
+		window.draw(m_loseSprite);
+	}
+	else
+	{
+		window.draw(m_draw1Sprite);
+		window.draw(m_draw2Sprite);
+	}
+
 	//Blend our lights into our overlay
 	window.draw(m_overlaySprite, sf::BlendMultiply);
 
+
+}
+
+void Level::playAnimation()
+{
+	//Animate & Update our sprites
+	m_loseAnimator.update(m_loseAnimationClock.restart());
+	m_loseAnimator.animate(m_loseSprite);
+	m_winAnimator.update(m_winAnimationClock.restart());
+	m_winAnimator.animate(m_winSprite);
+	m_draw1Animator.update(m_draw1AnimationClock.restart());
+	m_draw1Animator.animate(m_draw1Sprite);
+	m_draw2Animator.update(m_draw2AnimationClock.restart());
+	m_draw2Animator.animate(m_draw2Sprite);
+
+	if (m_playGameOverIndicator)
+	{
+		m_loseAnimator.play() << "loseAnimation";
+		m_winAnimator.play() << "winAnimation";
+		m_draw1Animator.play() << "drawAnimation";
+		m_draw2Animator.play() << "drawAnimation";
+
+		m_playGameOverIndicator = false;
+	}
+}
+
+void Level::setUpAnimation()
+{
+	auto frameSize = sf::Vector2f(100, 50);
+
+	m_winSprite.setTextureRect(sf::IntRect(0, 0, frameSize.x, frameSize.y)); //the first frame in our spritesheet
+	m_loseSprite.setTextureRect(sf::IntRect(0, 0, frameSize.x, frameSize.y)); //the first frame in our spritesheet
+	m_draw1Sprite.setTextureRect(sf::IntRect(0, 0, frameSize.x, frameSize.y)); //the first frame in our spritesheet
+	m_draw2Sprite.setTextureRect(sf::IntRect(0, 0, frameSize.x, frameSize.y)); //the first frame in our spritesheet
+
+	//Loop for 11 frames
+	for (int i = 0; i < 11; i++)
+	{
+		//add a frame to the animation each loop
+		auto frame = sf::IntRect(0 + (frameSize.x * i), 0, frameSize.x, frameSize.y);
+		m_drawAnimation.addFrame(0.1f, frame);
+		m_winAnimation.addFrame(0.1f, frame);
+		m_loseAnimation.addFrame(0.1f, frame);
+	}
+
+	//add the animation to our animation holder with the specified length and name
+	m_animationHolder.addAnimation("winAnimation", m_winAnimation, sf::seconds(.5f));
+	m_animationHolder.addAnimation("loseAnimation", m_loseAnimation, sf::seconds(.5f));
+	m_animationHolder.addAnimation("drawAnimation", m_drawAnimation, sf::seconds(.5f));
+
+	//Setting the origin and etxtures of our sprites
+	m_winSprite.setTexture(resourceManager.getTextureHolder()["Win Indicator"]);
+	m_winSprite.setOrigin(50, 25);
+	m_loseSprite.setTexture(resourceManager.getTextureHolder()["Lose Indicator"]);
+	m_loseSprite.setOrigin(50, 25);
+	m_draw1Sprite.setTexture(resourceManager.getTextureHolder()["Draw Indicator"]);
+	m_draw1Sprite.setOrigin(50, 25);
+	m_draw2Sprite.setTexture(resourceManager.getTextureHolder()["Draw Indicator"]);
+	m_draw2Sprite.setOrigin(50, 25);
+
+	m_winAnimationClock.restart();
+	m_loseAnimationClock.restart();
+	m_draw1AnimationClock.restart();
+	m_draw2AnimationClock.restart();
 }
 
 b2Body* Level::createKillBox(float x, float y, float w, float h)
@@ -350,6 +468,10 @@ void Level::setLevelParameters(int maxKills, int maxTime, int levelNumber, bool 
 	m_isCtf = ctf;
 	m_hasKillLimit = false;
 	m_hasTimeLimit = false;
+	m_gameOver = false; //resetting our variable
+	m_playGameOverIndicator = true;
+	m_setWinner = false;
+	m_hasWinner = false;
 
 	std::cout << "Kill limit: " << maxKills << std::endl;
 	std::cout << "Time limit: " << maxTime << std::endl;
@@ -415,6 +537,11 @@ void Level::clearLevel()
 
 	m_player1.resetPlayerParameters();
 	m_player2.resetPlayerParameters();
+}
+
+bool Level::gameOver()
+{
+	return m_gameOver;
 }
 
 sf::Vector2f Level::lerp(sf::Vector2f a, sf::Vector2f b, float t)

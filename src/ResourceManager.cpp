@@ -29,6 +29,9 @@ ResourceManager::ResourceManager()
 		acquireResource("Player Icons", m_playerIcons);
 		acquireResource("Plus Score Icon", m_plusScoreIcon);
 		acquireResource("Minus Score Icon", m_minusScoreIcon);
+		acquireResource("Draw Indicator", m_drawIndicator);
+		acquireResource("Win Indicator", m_winIndicator);
+		acquireResource("Lose Indicator", m_loseIndicator);
 
 		//Load particle
 		acquireResource("Particle", m_particle);
