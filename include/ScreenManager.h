@@ -22,13 +22,13 @@ public:
 
 	//Getters
 	std::string getCurrentScreenName();
+	PlayScreen& playScreen();
 
 private:
 	//Declare our different screens here
 	Options m_optionsScreen;
 	PlayScreen m_playScreen;
 	PreGameScreen m_preGameScreen;
-	PauseScreen m_pauseScreen;
 	MainMenu m_mainScreen;
 	Help m_helpScreen;
 	Audio m_audio;

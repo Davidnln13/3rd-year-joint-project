@@ -1014,6 +1014,19 @@ void Player::spawnPlayer(float x, float y, bool facingLeft)
 	}
 }
 
+void Player::resetPlayerParameters()
+{
+	m_lives = 0;
+	m_kills = 0;
+	m_dead = false;
+
+	//if we are not holding our sword, pick it up
+	if (m_holdingSword == false)
+	{
+		pickUpWeapon();
+	}
+}
+
 Weapon * Player::getWeapon()
 {
 	if(m_holdingSword)

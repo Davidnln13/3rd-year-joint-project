@@ -38,8 +38,9 @@ void Game::run()
 		dt = clock.restart();
 		lag += dt.asMilliseconds();
 
-		//if we are on the play screen then simiulate the box2d world physics
-		if (m_screenManager.getCurrentScreenName() == "play game")
+		//if we are on the play screen and the game isnt paused then simiulate the box2d world physics
+		if (m_screenManager.getCurrentScreenName() == "play game"
+			&& m_screenManager.playScreen().paused() == false)
 			world.Step(1 / 60.0f, 8, 3); //simulates the world
 
 
@@ -65,37 +66,24 @@ void Game::processEvents()
 		//if the veent is a close event then close out window
 		if (event.type == sf::Event::Closed)
 			m_window.close();
-
-		//else if a joystick pressed or axis moved event has occured, handle input from the first controller as long as we are not in the play screen
-		 else if (event.type == sf::Event::JoystickButtonPressed && m_screenManager.getCurrentScreenName() != "play game"
-			|| event.type == sf::Event::JoystickMoved && m_screenManager.getCurrentScreenName() != "play game")
-		{
-			m_controller1.update();
-			m_controller1.handleInput();
-			//pass over the joysticks to the screen manager
-			m_screenManager.handleJoystick(m_controller1, m_controller2);
-		}
-
 	}
 }
 
 void Game::update()
 {
 	if (m_screenManager.getCurrentScreenName() == "play game")
-	{
-		
-		//Update our controllers
-		m_controller1.update();
+	{	
+		//Update our second player controller
 		m_controller2.update();
 
-		//check what buttons are pressed on each controller
-		m_controller1.handleInput();
+		//check what buttons are pressed 
 		m_controller2.handleInput();
-
-		//pass over the joysticks to the screen manager
-		m_screenManager.handleJoystick(m_controller1, m_controller2);
 	}
 
+	m_controller1.update(); //update the first controller
+	m_controller1.handleInput(); //get input from the first controller
+	//pass over the joysticks to the screen manager
+	m_screenManager.handleJoystick(m_controller1, m_controller2);
 
 	m_screenManager.update();
 }

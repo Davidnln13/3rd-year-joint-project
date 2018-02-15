@@ -20,13 +20,15 @@ public:
 	void update();
 	void render(sf::RenderWindow& window);
 
+	b2Body* createKillBox(float x, float y, float w, float h);
+
 
 	std::string handleInput(JoystickController& controller1, JoystickController& controller2);
 	void setUpLevel(std::string levelName);
 
 	void checkForRespawn(Player& deadPlayer, Player& otherPlayer);
 	void setupAnimations(std::string levelName);
-	void setLevelParameters(int maxKills, int maxTime, int levelNumber, std::map<int, std::string>& levelNames);
+	void setLevelParameters(int maxKills, int maxTime, int levelNumber, bool ctf, std::map<int, std::string>& levelNames);
 	float distance(sf::Vector2f a, sf::Vector2f b);
 
 	void clearLevel();
@@ -35,6 +37,7 @@ public:
 	sf::Vector2f lerp(sf::Vector2f a, sf::Vector2f b, float t);
 private:
 	//Variables for starting our match
+	bool m_isCtf; //Bool to hold wheter the game mod eis capture the flag or not
 	bool m_gameOver;
 	bool m_hasTimeLimit;
 	bool m_hasKillLimit;
@@ -58,13 +61,12 @@ private:
 
 	//Obstacle variables
 	std::vector<Obstacle> m_floors;
+	//Our floors are made up of several tiles, therefore we need a collection to hold our tiles
+	std::vector<sf::Sprite> m_floorSprites;
 
 	//Our player objects
 	Player m_player1;
 	Player m_player2;
-
-	//Our floors are made up of several tiles, therefore we need a collection to hold our tiles
-	std::vector<sf::Sprite> m_floorSprites;
 
 	//Our window sprites
 	std::vector<sf::Sprite> m_windowSprites;
@@ -80,4 +82,9 @@ private:
 
 	//Our level loader 
 	LevelLoader m_levelLoader;
+
+	std::vector<b2Body*> m_killBoxes;
+
+	std::vector<Label*> m_labels;
+	Label m_timeLabel, m_timeLabelValue;
 };

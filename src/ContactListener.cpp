@@ -95,6 +95,13 @@ void ContactListener::EndContact(b2Contact * contact)
 	auto fixA = contact->GetFixtureA();
 	auto fixB = contact->GetFixtureB();
 
+	//Kill our players if they leave the kill box
+	if (payerLeftKillBox(m_player1, *fixA, *fixB))
+		m_player1->setDead(true);
+	if (payerLeftKillBox(m_player2, *fixA, *fixB))
+		m_player2->setDead(true);
+
+
 	//invoking our canPlayerJump method to check if each player is not making contact with an invalid surface that they can jump on such as a sword
 	if (canPlayerJump(m_player1, m_player2, *fixA, *fixB))
 		m_player1->setCanJump(false);
@@ -163,8 +170,12 @@ void ContactListener::haveTwoSwordsCollided(Player * player1, Player* player2, b
 	{ 
 		if (player1->holdingSword() == false) //so if we are not holding a sword
 			player1->setSwordThrown();
+
 		else if (player1->switchedWeaponPos())
+		{
+			m_spawnParticle = true;
 			player2->setParried(true);
+		}
 		else
 		{
 			player1->setClashed(true);
@@ -185,6 +196,20 @@ void ContactListener::checkCanPlayerMove(Player * player, b2Fixture & fixA, b2Fi
 	{
 		player->setCanMoveRight(canMove);
 	}
+}
+
+bool ContactListener::payerLeftKillBox(Player * player, b2Fixture & fixA, b2Fixture & fixB)
+{
+	if (fixA.GetBody()->GetUserData() == "Kill Box" && fixB.GetBody() == player->getPlayerBody())
+	{
+		return true;
+	}
+	else if (fixB.GetBody()->GetUserData() == "Kill Box" && fixA.GetBody() == player->getPlayerBody())
+	{
+		return true;
+	}
+
+	return false;
 }
 
 void ContactListener::setPlayers(Player & player1, Player & player2)

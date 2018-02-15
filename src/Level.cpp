@@ -8,8 +8,21 @@ Level::Level(Audio& audio, int levelNum) :
 	m_levelLoader(),
 	m_hasTimeLimit(false),
 	m_hasKillLimit(false),
-	m_gameOver(false)
+	m_gameOver(false),
+	m_timeLabel("Time Left", sf::Vector2f(595, 40), resourceManager.getFontHolder()["oxinFont"]),
+	m_timeLabelValue(": 0", sf::Vector2f(670, 22.5f), resourceManager.getFontHolder()["arialFont"])
 {
+	auto text = m_timeLabelValue.getText();
+	m_timeLabelValue.setOrigin(sf::Vector2f(text.getLocalBounds().left, text.getLocalBounds().top));
+
+	//Put all of our labels into our label vector
+	m_labels.push_back(&m_timeLabel);
+	m_labels.push_back(&m_timeLabelValue);
+
+	//ste teh color of our labesl to white
+	for (auto& label : m_labels)
+		label->setColor(sf::Color(255,255,255, 125));
+
 	//Set up the contact listener for box2d
 	world.SetContactListener(&m_contactListener);
 	//Set pointers to our player objects in our contact listener
@@ -39,12 +52,22 @@ void Level::update()
 	{
 		//if the time gone since our clock was started (restart()) then set our game over to true
 		if (m_hasTimeLimit && m_timeLimitClock.getElapsedTime().asSeconds() >= m_timeLimit)
+		{
 			m_gameOver = true;
+		}
+
 		//if there is a kill limit on the game and either player has reached 0 then end the game
 		if (m_hasKillLimit && m_player1.lives() == 0 || m_hasKillLimit && m_player2.lives() == 0)
 		{
 			m_gameOver = true;
 		}
+
+		int timeLeft = m_timeLimit - m_timeLimitClock.getElapsedTime().asSeconds();
+
+		if (timeLeft <= 0)
+			timeLeft = 0;
+
+		m_timeLabelValue.setText(std::string(": " + std::to_string(timeLeft)), resourceManager.getFontHolder()["arialFont"], sf::Color::White, sf::Vector2f(0,0));
 	}
 	
 	//Update and animate our torch and torch lights
@@ -89,6 +112,7 @@ void Level::render(sf::RenderWindow & window)
 	m_overlayTexture.draw(m_player2.getLight());
 	m_overlayTexture.draw(m_player1.getSwordLight());
 	m_overlayTexture.draw(m_player2.getSwordLight());
+
 	//Drawing our torch lights onto our overlay
 	for each (auto& light in m_torchLightSprites)
 		m_overlayTexture.draw(light);
@@ -105,6 +129,10 @@ void Level::render(sf::RenderWindow & window)
 	for each(auto& win in m_windowSprites)
 		window.draw(win);
 
+	//Draw our timer label
+	for (auto& label : m_labels)
+		label->draw(window);
+
 	//Rendering our torches
 	for each (auto& torch in m_torchSprites)
 		window.draw(torch);
@@ -117,6 +145,31 @@ void Level::render(sf::RenderWindow & window)
 
 	//Blend our lights into our overlay
 	window.draw(m_overlaySprite, sf::BlendMultiply);
+
+}
+
+b2Body* Level::createKillBox(float x, float y, float w, float h)
+{
+	b2Body* body;//the killbox body
+
+	//Setting the killbox properties
+	b2BodyDef bd;
+	bd.type = b2_staticBody;
+	bd.position.Set(x / PPM, y / PPM);
+	body = world.CreateBody(&bd);
+
+	//Setting the size of our kill box
+	b2PolygonShape boxShape;
+	boxShape.SetAsBox(w / 2.0f / PPM, h / 2.0f / PPM);
+
+	//Setting the killbox as a sensor
+	b2FixtureDef fd;
+	fd.shape = &boxShape;
+	fd.isSensor = true;
+	body->CreateFixture(&fd);
+	body->SetUserData("Kill Box");
+
+	return body;
 }
 
 std::string Level::handleInput(JoystickController & controller1, JoystickController & controller2)
@@ -143,13 +196,14 @@ std::string Level::handleInput(JoystickController & controller1, JoystickControl
 void Level::setUpLevel(std::string levelName)
 {
 	auto floorData = m_levelLoader.data()[levelName]["Floors"];
+	auto wallData = m_levelLoader.data()[levelName]["Walls"];
 	auto startPoints = m_levelLoader.data()[levelName]["Start Points"];
 
 	//set our players spawn point
 	m_player1.spawnPlayer(startPoints.at(0)["x"], startPoints.at(0)["y"], startPoints.at(0)["facingLeft"]);
 	m_player2.spawnPlayer(startPoints.at(1)["x"], startPoints.at(1)["y"], startPoints.at(1)["facingLeft"]);
 
-
+	//Steup our floors
 	for (int i = 0; i < floorData.size(); i++)
 	{
 		bool createFloor = false;
@@ -172,6 +226,14 @@ void Level::setUpLevel(std::string levelName)
 			//We create an obstacle (a box2d object) with the specified position and size and push it to our floor vector
 			m_floors.push_back(Obstacle(sf::Vector2f((startX - 25) + (floorLength / 2.0f), floorData.at(i)["PosY"]), sf::Vector2f(floorLength, 50)));
 		}
+	}
+
+	//Setup our killboxes
+	auto killBoxData = m_levelLoader.data()[levelName]["Kill Box"];
+
+	for (int i = 0; i < killBoxData.size(); i++)
+	{	
+		m_killBoxes.push_back(createKillBox(killBoxData.at(i)["PosX"], killBoxData.at(i)["PosY"], killBoxData.at(i)["Width"], killBoxData.at(i)["Height"]));
 	}
 
 
@@ -282,8 +344,13 @@ void Level::setupAnimations(std::string levelName)
 	m_animationHolder.addAnimation("torchLight", m_torchLightAnimation, sf::seconds(.4f));
 }
 
-void Level::setLevelParameters(int maxKills, int maxTime, int levelNumber, std::map<int, std::string>& levelNames)
+void Level::setLevelParameters(int maxKills, int maxTime, int levelNumber, bool ctf,  std::map<int, std::string>& levelNames)
 {
+	//Reset our time, isCtf and kill limit booleans
+	m_isCtf = ctf;
+	m_hasKillLimit = false;
+	m_hasTimeLimit = false;
+
 	std::cout << "Kill limit: " << maxKills << std::endl;
 	std::cout << "Time limit: " << maxTime << std::endl;
 	std::cout << "Level: " << levelNumber << std::endl;
@@ -336,10 +403,18 @@ void Level::clearLevel()
 	m_animationHolder = thor::AnimationMap<sf::Sprite, std::string>();
 
 	//Remove all our box 2d bodies from our obstacles and clear our floor vector
-	for (auto floor : m_floors)
+	for (auto& floor : m_floors)
 		world.DestroyBody(floor.body()); //Destroy all the obstacle bodies
 
+	//Remove all of our killboxes
+	for (auto& killBox : m_killBoxes)
+		world.DestroyBody(killBox);
+
+	m_killBoxes.clear(); //Clear our killboxes vector
 	m_floors.clear(); //Clear all of the floors
+
+	m_player1.resetPlayerParameters();
+	m_player2.resetPlayerParameters();
 }
 
 sf::Vector2f Level::lerp(sf::Vector2f a, sf::Vector2f b, float t)

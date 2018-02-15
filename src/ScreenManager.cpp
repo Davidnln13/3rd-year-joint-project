@@ -2,7 +2,6 @@
 
 ScreenManager::ScreenManager() :
 	m_playScreen("play game", m_audio),
-	m_pauseScreen("pause", m_audio, m_playScreen),
 	m_mainScreen("main menu", m_audio),
 	m_helpScreen("help", m_audio),
 	m_optionsScreen("options",m_audio),
@@ -10,7 +9,6 @@ ScreenManager::ScreenManager() :
 	m_closeWindow(false)
 {
 	//asigning our screens to our map 
-	screens[m_pauseScreen.getName()] = &m_pauseScreen;
 	screens[m_playScreen.getName()] = &m_playScreen;
 	screens[m_mainScreen.getName()] = &m_mainScreen;
 	screens[m_helpScreen.getName()] = &m_helpScreen;
@@ -70,7 +68,7 @@ void ScreenManager::goToScreen(std::string screenName)
 		//Set our level parameters if we are switching to the game screen
 		if (m_currentScreen->getName() == "play game")
 		{
-			m_playScreen.setLevel(GameMode::killLimit, GameMode::timeLimit, GameMode::levelNum, GameMode::levelNames);
+			m_playScreen.setLevel(GameMode::killLimit, GameMode::timeLimit, GameMode::levelNum, GameMode::isCtf, GameMode::levelNames);
 		}
 		
 	}
@@ -93,4 +91,9 @@ void ScreenManager::handleJoystick(JoystickController& controller1, JoystickCont
 std::string ScreenManager::getCurrentScreenName()
 {
 	return m_currentScreen->m_name;
+}
+
+PlayScreen & ScreenManager::playScreen()
+{
+	return m_playScreen;
 }

@@ -53,6 +53,7 @@ public:
 	void setSpriteTexture(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2i frameSize, float xOffset); 
 	void setColour(sf::Color color); //set the colour of the player
 	void spawnPlayer(float x, float y, bool facingLeft);
+	void resetPlayerParameters(); //Resets our players parameters, Lives/kills
 
 	//Getters
 	Weapon* getWeapon();

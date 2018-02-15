@@ -1,5 +1,13 @@
 {
    "Castle":{
+      "Kill Box":[
+        {
+          "PosX": 640,
+          "PosY": 360,
+          "Width": 1385,
+          "Height": 820
+        }
+      ],
       "Floors":[
         {
           "StartX":25,
@@ -37,6 +45,14 @@
         }
       ],
       "Torches":[
+        {
+          "PosX":550,
+          "PosY":75
+        },
+        {
+          "PosX":750,
+          "PosY":75
+        },
         {
           "PosX":131,
           "PosY":234

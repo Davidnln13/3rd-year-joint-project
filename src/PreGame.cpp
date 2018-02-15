@@ -1,5 +1,6 @@
 #include "PreGame.h"
 
+bool GameMode::isCtf = false;
 int GameMode::killLimit = 5;
 int GameMode::timeLimit = 1;
 int GameMode::levelNum = 0;
@@ -181,6 +182,8 @@ std::string PreGameScreen::handleInput(JoystickController & controller1, Joystic
 		//if we have navigated through the menu then changed buttons
 		if (navigated)
 		{
+			GameMode::isCtf = false; //Reset the bool
+
 			//Checking our options bounds
 			if (currentOptionValue < 0)
 			{
@@ -188,7 +191,13 @@ std::string PreGameScreen::handleInput(JoystickController & controller1, Joystic
 				if (m_currentButton->getName() == "level name")
 					currentOptionValue = GameMode::maxLevels;
 				else if (m_currentButton->getName() == "game mode")
+				{
 					currentOptionValue = GameMode::maxGameModes;
+					//if the gamemode choesn is CTF then ste our boolean
+					if (currentOptionValue == 2)
+						GameMode::isCtf = true;
+				}
+
 				else //else set our value to 0
 					currentOptionValue = 0;
 			}
@@ -299,5 +308,5 @@ GameMode::GameMode() :
 	GameMode::gameModes[1] = "Sudden Death";
 	GameMode::gameModes[2] = "Capture the Flag";
 	GameMode::levelNames[0] = "Castle";
-	GameMode::levelNames[1] = "Test level";
+	GameMode::levelNames[1] = "Test Level";
 }

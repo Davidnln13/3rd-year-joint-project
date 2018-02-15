@@ -16,12 +16,16 @@ public:
 	//Setters
 	void setText(std::string text);
 	void setText(std::string text, sf::Vector2f pos);
+	void setText(std::string text, sf::Font& font, sf::Color color, sf::Vector2f origin);
 	void setText(std::string text, sf::Font& font, sf::Color color = sf::Color::Black);
+	void setOrigin(sf::Vector2f origin);
+	void setPosition(sf::Vector2f pos);
 	void setColor(sf::Color color);
 	void setSize(int size);
 
 	//Getters
 	sf::Text& getText();
+	sf::Vector2f getPos();
 
 private:
 	sf::Text m_text;

@@ -15,6 +15,7 @@ public:
 	static int timeLimit;
 	static int maxLevels;
 	static int maxGameModes;
+	static bool isCtf; //Boolean to determine wheter the gameode is ctf or not
 
 	//Declaring our maps
 	std::map<int, std::string> gameModes;

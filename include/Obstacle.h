@@ -11,7 +11,7 @@ extern ResourceManager resourceManager;
 class Obstacle
 {
 public:
-	Obstacle(sf::Vector2f position, sf::Vector2f size);
+	Obstacle(sf::Vector2f position, sf::Vector2f size, std::string userData = "");
 
 	b2Body* body();
 private:
