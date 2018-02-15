@@ -43,9 +43,6 @@
     <ClCompile Include="src\PlayScreen.cpp">
       <Filter>Source Files\Screen Source</Filter>
     </ClCompile>
-    <ClCompile Include="src\PauseScreen.cpp">
-      <Filter>Source Files\Screen Source</Filter>
-    </ClCompile>
     <ClCompile Include="src\MainMenu.cpp">
       <Filter>Source Files\Screen Source</Filter>
     </ClCompile>
@@ -112,9 +109,6 @@
       <Filter>Header Files\Screen Headers</Filter>
     </ClInclude>
     <ClInclude Include="include\MainMenu.h">
-      <Filter>Header Files\Screen Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\PauseScreen.h">
       <Filter>Header Files\Screen Headers</Filter>
     </ClInclude>
     <ClInclude Include="include\Button.h">

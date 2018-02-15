@@ -144,7 +144,6 @@
     <ClCompile Include="src\Options.cpp" />
     <ClCompile Include="src\Particle.cpp" />
     <ClCompile Include="src\ParticleSystem.cpp" />
-    <ClCompile Include="src\PauseScreen.cpp" />
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\PlayScreen.cpp" />
     <ClCompile Include="src\PreGame.cpp" />
@@ -168,7 +167,6 @@
     <ClInclude Include="include\Options.h" />
     <ClInclude Include="include\Particle.h" />
     <ClInclude Include="include\ParticleSystem.h" />
-    <ClInclude Include="include\PauseScreen.h" />
     <ClInclude Include="include\Player.h" />
     <ClInclude Include="include\PlayScreen.h" />
     <ClInclude Include="include\PreGame.h" />
