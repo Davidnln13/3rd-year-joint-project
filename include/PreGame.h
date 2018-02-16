@@ -37,7 +37,6 @@ public:
 	void start() override;
 	void end() override;
 	std::string handleInput(JoystickController& controller1, JoystickController& controller2) override;
-	float lerpValue(float a, float b, float t);
 
 	void selectButton(int newIndex);
 

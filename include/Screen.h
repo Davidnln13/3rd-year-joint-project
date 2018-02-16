@@ -37,4 +37,27 @@ public:
 	//these member variable should be available from the derived class
 	bool m_active;
 	std::string m_name;
+
+	//Our static methods, we declare them here so that any screens that use similar methods can invoke this
+	static float lerpValue(float a, float b, float t)
+	{
+		//If our values are not the same
+		if (a != b)
+		{
+			if (a > b)
+			{
+				a -= t; //Reduce A by T
+				if (a < b) //If A is now less than B, set A to equal to B
+					a = b;
+			}
+			else if (a < b)
+			{
+				a += t; //Increase A by T
+				if (a > b) //If A is now greater than B, set A to equal to B
+					a = b;
+			}
+		}
+
+		return a;
+	};
 };

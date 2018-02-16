@@ -269,28 +269,6 @@ std::string PreGameScreen::handleInput(JoystickController & controller1, Joystic
 	return currentScreen;
 }
 
-float PreGameScreen::lerpValue(float a, float b, float t)
-{
-	//If our values are not the same
-	if (a != b)
-	{
-		if (a > b)
-		{
-			a -= t; //Reduce A by T
-			if (a < b) //If A is now less than B, set A to equal to B
-				a = b;
-		}
-		else if (a < b)
-		{
-			a += t; //Increase A by T
-			if (a > b) //If A is now greater than B, set A to equal to B
-				a = b;
-		}
-	}
-
-	return a;
-}
-
 void PreGameScreen::selectButton(int newIndex)
 {
 	//if our new index is out of range then output an error message
