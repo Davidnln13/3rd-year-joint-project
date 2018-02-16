@@ -20,8 +20,13 @@ PreGameScreen::PreGameScreen(std::string name, Audio & audio) :
 	m_buttonPressed(false),
 	m_currentOption(&gameMode.gameModeNum),
 	m_startLabel("start", sf::Vector2f(960, 683), resourceManager.getFontHolder()["oxinFont"]),
-	m_backLabel("back", sf::Vector2f(1180, 683), resourceManager.getFontHolder()["oxinFont"])
+	m_backLabel("back", sf::Vector2f(1180, 683), resourceManager.getFontHolder()["oxinFont"]),
+	m_transitionCol(255, 255, 255, 255),
+	m_transitionRect(sf::Vector2f(1280, 720))
 {
+	//Set the position of the rectangle
+	m_transitionRect.setPosition(0, 0);
+
 	//adding our buttons to our buttons map
 	m_buttons[m_gameModeBtn.getName()] = &m_gameModeBtn;
 	m_buttons[m_mapBtn.getName()] = &m_mapBtn;
@@ -55,6 +60,14 @@ void PreGameScreen::update()
 	//loop through our buttons map and update each one
 	for (auto btn : m_buttons)
 		btn.second->update();
+
+	if (m_alpha != 0)
+	{
+		m_alpha = lerpValue(m_alpha, 0, 1.0f);
+		m_transitionCol.a = m_alpha;
+
+		m_transitionRect.setFillColor(m_transitionCol);
+	}
 }
 
 void PreGameScreen::render(sf::RenderWindow & window)
@@ -69,11 +82,18 @@ void PreGameScreen::render(sf::RenderWindow & window)
 	window.draw(m_backIcon);
 	m_backLabel.draw(window);
 	m_startLabel.draw(window);
+
+	window.draw(m_transitionRect); //Draw our transition rectangle
 }
 
 void PreGameScreen::start()
 {
 	m_active = true;
+
+	//Resetting our transition variables
+	m_alpha = 255;
+	m_transitionCol.a = m_alpha;
+	m_transitionRect.setFillColor(m_transitionCol);
 
 	bool btnAlreadySelected = false;
 	for (auto& btn : m_btnList)
@@ -116,7 +136,9 @@ std::string PreGameScreen::handleInput(JoystickController & controller1, Joystic
 	}
 
 	if (controller1.isButtonPressed("Start"))
+	{
 		currentScreen = "play game";
+	}
 
 	if (controller1.isButtonPressed("A"))
 	{
@@ -240,11 +262,33 @@ std::string PreGameScreen::handleInput(JoystickController & controller1, Joystic
 			setButtonText(m_timeLimitBtn, GameMode::timeLimit, "infinite", std::to_string(GameMode::timeLimit) + ":00", resourceManager.getFontHolder()["arialFont"], resourceManager.getFontHolder()["oxinFont"]);
 			setButtonText(m_mapBtn, GameMode::levelNum, gameMode.levelNames[GameMode::levelNum], gameMode.levelNames[GameMode::levelNum], resourceManager.getFontHolder()["oxinFont"], resourceManager.getFontHolder()["oxinFont"]);
 			setButtonText(m_gameModeBtn, GameMode::gameModeNum, gameMode.gameModes[GameMode::gameModeNum], gameMode.gameModes[GameMode::gameModeNum], resourceManager.getFontHolder()["oxinFont"], resourceManager.getFontHolder()["oxinFont"]);
-		}			
+		}
 
 	}
 
 	return currentScreen;
+}
+
+float PreGameScreen::lerpValue(float a, float b, float t)
+{
+	//If our values are not the same
+	if (a != b)
+	{
+		if (a > b)
+		{
+			a -= t; //Reduce A by T
+			if (a < b) //If A is now less than B, set A to equal to B
+				a = b;
+		}
+		else if (a < b)
+		{
+			a += t; //Increase A by T
+			if (a > b) //If A is now greater than B, set A to equal to B
+				a = b;
+		}
+	}
+
+	return a;
 }
 
 void PreGameScreen::selectButton(int newIndex)

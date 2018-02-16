@@ -37,6 +37,7 @@ public:
 	void start() override;
 	void end() override;
 	std::string handleInput(JoystickController& controller1, JoystickController& controller2) override;
+	float lerpValue(float a, float b, float t);
 
 	void selectButton(int newIndex);
 
@@ -53,6 +54,11 @@ public:
 private:
 	int* m_currentOption;
 	std::map<OptionButton*, int*> m_optionMapper; //this allows us to change the options on our pre game screen by mapping options to certain buttons
+
+	//Transition Variables
+	float m_alpha;
+	sf::Color m_transitionCol;
+	sf::RectangleShape m_transitionRect;
 
 	//Our buttons
 	OptionButton* m_currentButton;
