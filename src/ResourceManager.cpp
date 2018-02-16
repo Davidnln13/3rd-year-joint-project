@@ -14,7 +14,6 @@ ResourceManager::ResourceManager()
 		//load GUI
 		acquireResource("Button Spritesheet", m_buttonLayout);
 		acquireResource("Button Selected", m_buttonSelected);
-		acquireResource("Controller", m_controllerPic);
 		acquireResource("Options Icon", m_optionsIcon);
 		acquireResource("Exit Icon", m_exitIcon);
 		acquireResource("Main Menu Icon", m_mainMenuIcon);
@@ -24,11 +23,18 @@ ResourceManager::ResourceManager()
 		acquireResource("Timer Icon", m_timerIcon);
 		acquireResource("Kill Icon", m_killIcon);
 		acquireResource("Map Icon", m_mapIcon);
-		acquireResource("Start Icon", m_startIcon);
-		acquireResource("Back Icon", m_backIcon);
 		acquireResource("Player Icons", m_playerIcons);
 		acquireResource("Plus Score Icon", m_plusScoreIcon);
 		acquireResource("Minus Score Icon", m_minusScoreIcon);
+		//controller icons
+		acquireResource("Start Icon", m_startIcon);
+		acquireResource("B Icon", m_bIcon);
+		acquireResource("A Icon", m_aIcon);
+		acquireResource("Y Icon", m_yIcon);
+		acquireResource("X Icon", m_xIcon);
+		acquireResource("LT Icon", m_ltIcon);
+		acquireResource("Dpad Icon", m_dpadIcon);
+		acquireResource("Lanalog Icon", m_lanalogIcon);
 
 		//Load particle
 		acquireResource("Particle", m_particle);

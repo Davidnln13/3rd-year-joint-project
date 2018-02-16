@@ -42,17 +42,22 @@ private:
 	thor::ResourceLoader<sf::Texture> m_timerIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/Timer Icon.png");
 	thor::ResourceLoader<sf::Texture> m_killIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/Kill Icon.png");
 	thor::ResourceLoader<sf::Texture> m_mapIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/Map Icon.png");
-	thor::ResourceLoader<sf::Texture> m_startIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/Start Icon.png");
-	thor::ResourceLoader<sf::Texture> m_backIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/Back Icon.png");
 	thor::ResourceLoader<sf::Texture> m_mainMenuIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/main menu icon.png");
-	thor::ResourceLoader<sf::Texture> m_controllerPic = thor::Resources::fromFile<sf::Texture>("./resources/GUI/controller.png");
 	thor::ResourceLoader<sf::Texture> m_crossedSwordIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/Crossed Sword Icon.png");
 	thor::ResourceLoader<sf::Texture> m_arrowIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/Arrow Icon.png");
 	thor::ResourceLoader<sf::Texture> m_playerIcons = thor::Resources::fromFile<sf::Texture>("./resources/GUI/Player Icons.png");
 	thor::ResourceLoader<sf::Texture> m_plusScoreIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/Add score Icon.png");
 	thor::ResourceLoader<sf::Texture> m_minusScoreIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/Minus Score Icon.png");
 	thor::ResourceLoader<sf::Texture> m_particle = thor::Resources::fromFile<sf::Texture>("./resources/Textures/particle.png");
-
+	//controller icons 
+	thor::ResourceLoader<sf::Texture> m_startIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/Controller Icons/Start Icon.png");
+	thor::ResourceLoader<sf::Texture> m_bIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI//Controller Icons/B Icon.png");
+	thor::ResourceLoader<sf::Texture> m_aIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI//Controller Icons/A Icon.png");
+	thor::ResourceLoader<sf::Texture> m_yIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI//Controller Icons/Y Icon.png");
+	thor::ResourceLoader<sf::Texture> m_xIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI//Controller Icons/X Icon.png");
+	thor::ResourceLoader<sf::Texture> m_ltIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI//Controller Icons/LT Icon.png");
+	thor::ResourceLoader<sf::Texture> m_dpadIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI//Controller Icons/Dpad Icon.png");
+	thor::ResourceLoader<sf::Texture> m_lanalogIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI//Controller Icons/Lanalog Icon.png");
 	//Our Level tiles
 	thor::ResourceLoader<sf::Texture> m_castleBg = thor::Resources::fromFile<sf::Texture>("./resources/Textures/Castle BG.png");
 	thor::ResourceLoader<sf::Texture> m_stoneTile = thor::Resources::fromFile<sf::Texture>("./resources/Textures/Stone Tile.png");

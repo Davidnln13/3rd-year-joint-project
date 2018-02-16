@@ -47,7 +47,7 @@ PreGameScreen::PreGameScreen(std::string name, Audio & audio) :
 	m_gameModeBtn.setText(gameMode.gameModes[GameMode::levelNum], resourceManager.getFontHolder()["oxinFont"]);
 
 	setIconSprite(m_startIcon, resourceManager.getTextureHolder()["Start Icon"], sf::Vector2f(914, 683));
-	setIconSprite(m_backIcon, resourceManager.getTextureHolder()["Back Icon"], sf::Vector2f(1141, 683));
+	setIconSprite(m_bIcon, resourceManager.getTextureHolder()["B Icon"], sf::Vector2f(1141, 683));
 }
 
 void PreGameScreen::update()
@@ -66,7 +66,7 @@ void PreGameScreen::render(sf::RenderWindow & window)
 		btn.second->render(window);
 
 	window.draw(m_startIcon);
-	window.draw(m_backIcon);
+	window.draw(m_bIcon);
 	m_backLabel.draw(window);
 	m_startLabel.draw(window);
 }

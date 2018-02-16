@@ -67,6 +67,9 @@
     <ClCompile Include="src\ParticleSystem.cpp">
       <Filter>Source Files\Particle Source</Filter>
     </ClCompile>
+    <ClCompile Include="Slider.cpp">
+      <Filter>Source Files\Widget Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Audio.h">
@@ -137,6 +140,9 @@
     </ClInclude>
     <ClInclude Include="include\ParticleSystem.h">
       <Filter>Header Files\Particle Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Slider.h">
+      <Filter>Header Files\Widget Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

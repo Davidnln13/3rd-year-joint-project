@@ -66,7 +66,7 @@ private:
 	bool m_buttonPressed; //bool to hold wheter we have pressed on a button or not
 
 	//Our navigation icons
-	sf::Sprite m_backIcon;
+	sf::Sprite m_bIcon;
 	sf::Sprite m_startIcon;
 	Label m_backLabel;
 	Label m_startLabel;

@@ -30,4 +30,6 @@ private:
 	std::vector<Button*> m_btnList; //select buttons
 	int m_btnIndex; //button index
 	std::string m_previousScreen;
+	Label m_soundVolumeLabel;
+	Label m_musicVolumeLabel;
 };

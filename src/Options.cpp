@@ -4,7 +4,9 @@ Options::Options(std::string name, Audio& audio) :
 	Screen(name),
 	m_back(sf::Vector2f(640, 676), "Back", "Arrow Icon"),
 	m_btnIndex(0),
-	m_previousScreen(name)
+	m_previousScreen(name),
+	m_soundVolumeLabel("Sound", sf::Vector2f(640,200), resourceManager.getFontHolder()["oxinFont"]),
+	m_musicVolumeLabel("Music", sf::Vector2f(640, 400), resourceManager.getFontHolder()["oxinFont"])
 {
 	//adding our buttons to our buttons map
 	m_buttons[m_back.getName()] = &m_back;
@@ -24,7 +26,8 @@ void Options::render(sf::RenderWindow& window)
 	//loop through our buttons map and render each one
 	for (auto key : m_buttons)
 		key.second->render(window);
-
+	m_soundVolumeLabel.draw(window);
+	m_musicVolumeLabel.draw(window);
 }
 
 void Options::start()
