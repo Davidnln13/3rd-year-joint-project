@@ -312,6 +312,8 @@ b2Body* Level::createKillBox(float x, float y, float w, float h)
 
 std::string Level::handleInput(JoystickController & controller1, JoystickController & controller2)
 {
+	auto currentScreen = "play game";
+
 	if (false == m_gameOver)
 	{
 		m_player1.handleJoystick(controller1);
@@ -323,11 +325,16 @@ std::string Level::handleInput(JoystickController & controller1, JoystickControl
 			m_audioRef.m_soundMap["SwordSwing"].play();
 		}
 
-		return "play game";
+		return currentScreen;
 	}
 	else
 	{
-		return "play game"; //Change this to end game screen afterwards
+		if (m_transitionAlpha == 255) //If our white transition alpha is 255 then go to the pre game screen
+		{
+			currentScreen = "pre game";
+		}
+
+		return currentScreen; //Change this to end game screen afterwards
 	}
 }
 
