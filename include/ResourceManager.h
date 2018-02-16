@@ -58,6 +58,10 @@ private:
 	thor::ResourceLoader<sf::Texture> m_ltIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI//Controller Icons/LT Icon.png");
 	thor::ResourceLoader<sf::Texture> m_dpadIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI//Controller Icons/Dpad Icon.png");
 	thor::ResourceLoader<sf::Texture> m_lanalogIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI//Controller Icons/Lanalog Icon.png");
+	thor::ResourceLoader<sf::Texture> m_winIndicator = thor::Resources::fromFile<sf::Texture>("./resources/GUI/win indicator.png");
+	thor::ResourceLoader<sf::Texture> m_loseIndicator = thor::Resources::fromFile<sf::Texture>("./resources/GUI/lose indicator.png");
+	thor::ResourceLoader<sf::Texture> m_drawIndicator = thor::Resources::fromFile<sf::Texture>("./resources/GUI/draw indicator.png");
+
 	//Our Level tiles
 	thor::ResourceLoader<sf::Texture> m_castleBg = thor::Resources::fromFile<sf::Texture>("./resources/Textures/Castle BG.png");
 	thor::ResourceLoader<sf::Texture> m_stoneTile = thor::Resources::fromFile<sf::Texture>("./resources/Textures/Stone Tile.png");

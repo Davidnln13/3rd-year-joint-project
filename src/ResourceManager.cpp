@@ -35,6 +35,11 @@ ResourceManager::ResourceManager()
 		acquireResource("LT Icon", m_ltIcon);
 		acquireResource("Dpad Icon", m_dpadIcon);
 		acquireResource("Lanalog Icon", m_lanalogIcon);
+		//
+		acquireResource("Draw Indicator", m_drawIndicator);
+		acquireResource("Win Indicator", m_winIndicator);
+		acquireResource("Lose Indicator", m_loseIndicator);
+
 
 		//Load particle
 		acquireResource("Particle", m_particle);

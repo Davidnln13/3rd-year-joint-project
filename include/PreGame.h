@@ -54,6 +54,11 @@ private:
 	int* m_currentOption;
 	std::map<OptionButton*, int*> m_optionMapper; //this allows us to change the options on our pre game screen by mapping options to certain buttons
 
+	//Transition Variables
+	float m_alpha;
+	sf::Color m_transitionCol;
+	sf::RectangleShape m_transitionRect;
+
 	//Our buttons
 	OptionButton* m_currentButton;
 	OptionButton m_gameModeBtn;

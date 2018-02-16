@@ -25,6 +25,7 @@ Player::Player(sf::Vector2f position, std::string direction = "left") :
 	m_weaponPos(1), //the centre of our player
 	m_attackRate(0.50f),
 	m_kills(0),
+	m_ctfCaptures(0),
 	m_position(position),
 	m_lastSpawnPos(position),
 	m_spawnPosition(position.x / PPM, position.y / PPM),
@@ -1162,6 +1163,16 @@ bool & Player::dead()
 int & Player::lives()
 {
 	return m_lives;
+}
+
+int & Player::kills()
+{
+	return m_kills;
+}
+
+int & Player::captures()
+{
+	return m_ctfCaptures;
 }
 
 sf::Vector2f Player::position()

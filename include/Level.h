@@ -19,19 +19,22 @@ public:
 
 	void update();
 	void render(sf::RenderWindow& window);
+	void playAnimation();
+	void setUpAnimation();
 
 	b2Body* createKillBox(float x, float y, float w, float h);
-
-
 	std::string handleInput(JoystickController& controller1, JoystickController& controller2);
 	void setUpLevel(std::string levelName);
-
 	void checkForRespawn(Player& deadPlayer, Player& otherPlayer);
 	void setupAnimations(std::string levelName);
 	void setLevelParameters(int maxKills, int maxTime, int levelNumber, bool ctf, std::map<int, std::string>& levelNames);
 	float distance(sf::Vector2f a, sf::Vector2f b);
+	float lerpValue(float a, float b, float t);
 
 	void clearLevel();
+
+	//Getters
+	bool gameOver();
 
 	//helper function
 	sf::Vector2f lerp(sf::Vector2f a, sf::Vector2f b, float t);
@@ -41,15 +44,27 @@ private:
 	bool m_gameOver;
 	bool m_hasTimeLimit;
 	bool m_hasKillLimit;
+	bool m_playGameOverIndicator;
+	bool m_setWinner;
+	bool m_hasWinner;
 	int m_levelNumber;
 	int m_killLimit;
 	int m_timeLimit;
-	sf::Clock m_timeLimitClock;
+	float m_transitionAlpha;
+	sf::Clock m_timeLimitClock, m_gameOverClock, m_transitionClock;
+	sf::RectangleShape m_transitionRect;
+	sf::Color m_transitionCol;
 
 	//Our level background sprite
 	sf::Sprite m_bg;
 	sf::Sprite m_overlaySprite;
 	sf::RenderTexture m_overlayTexture;
+
+	//Animation variables
+	sf::Clock m_winAnimationClock, m_loseAnimationClock, m_draw1AnimationClock, m_draw2AnimationClock;
+	thor::FrameAnimation m_winAnimation, m_loseAnimation, m_drawAnimation;
+	thor::Animator<sf::Sprite, std::string> m_winAnimator, m_loseAnimator, m_draw1Animator, m_draw2Animator;
+	sf::Sprite m_winSprite, m_loseSprite, m_draw1Sprite, m_draw2Sprite;
 
 	//Torch variables
 	std::vector<sf::Sprite> m_torchSprites, m_torchLightSprites;

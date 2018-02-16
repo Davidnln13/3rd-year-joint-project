@@ -69,6 +69,8 @@ public:
 	bool facingLeft();
 	bool& dead();
 	int& lives();
+	int& kills();
+	int& captures();
 	sf::Vector2f position();
 	sf::Vector2f& lastSpawnPos();
 	sf::Sprite& getLight();
@@ -112,6 +114,7 @@ private:
 	//game specific parameters such as kill limit
 	int m_lives;
 	int m_kills;
+	int m_ctfCaptures;
 
 	std::string m_startingDirection; //temporary for now
 
