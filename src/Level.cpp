@@ -450,6 +450,7 @@ void Level::checkForRespawn(Player& deadPlayer, Player& otherPlayer)
 	//If the first player is dead then respawn the player at the furthest spawn point from player 2
 	if (deadPlayer.dead())
 	{
+		m_audioRef.m_soundMap["Death"].play();
 		sf::Vector2f selectedSpawn;
 		auto otherPlayerPos = otherPlayer.position(); //get the other players position
 		float maxDistance = 0; //max distance from our spawn points
