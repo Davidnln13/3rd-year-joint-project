@@ -223,6 +223,10 @@ void Level::render(sf::RenderWindow & window)
 		for each (auto& tile in m_floorSprites)
 			window.draw(tile);
 
+		//Render our walls
+		for each (auto& tile in m_wallSprites)
+			window.draw(tile);
+
 		//Rendering our windows
 		for each(auto& win in m_windowSprites)
 			window.draw(win);
@@ -385,7 +389,7 @@ void Level::setUpLevel(std::string levelName)
 	m_player1.spawnPlayer(startPoints.at(0)["x"], startPoints.at(0)["y"], startPoints.at(0)["facingLeft"]);
 	m_player2.spawnPlayer(startPoints.at(1)["x"], startPoints.at(1)["y"], startPoints.at(1)["facingLeft"]);
 
-	//Steup our floors
+	//Setup our floors
 	for (int i = 0; i < floorData.size(); i++)
 	{
 		bool createFloor = false;
@@ -439,6 +443,31 @@ void Level::setUpLevel(std::string levelName)
 	for (int i = 0; i < spawnData.size(); i++)
 	{
 		m_spawnPoints.push_back(sf::Vector2f(spawnData.at(i)["x"], spawnData.at(i)["y"]));
+	}
+
+	//Create our walls
+	for (int i = 0; i < wallData.size(); i++)
+	{
+		bool createFloor = false;
+		int startY = wallData.at(i)["StartY"]; // Store the Y value here due to weird references in JSON
+
+		for (int j = 0; j < wallData.at(i)["TileAmount"]; j++)
+		{
+			sf::Sprite tile;
+			tile.setTexture(resourceManager.getTextureHolder()["stoneTile"]);
+			tile.setOrigin(tile.getLocalBounds().left + tile.getLocalBounds().width / 2.0f, tile.getLocalBounds().top + tile.getLocalBounds().height / 2.0f);
+			tile.setPosition(wallData.at(i)["x"], startY + (50 * j));
+			m_wallSprites.push_back(tile);
+			createFloor = true; //set our bool to true
+		}
+		//If our bool has changed and our floor has a body then create our floor
+		if (createFloor && wallData.at(i)["HasBody"])
+		{
+			//Get the length of the created floor
+			int wallHeight = 50 * wallData.at(i)["TileAmount"];
+			//We create an obstacle (a box2d object) with the specified position and size and push it to our floor vector
+			m_walls.push_back(Obstacle(sf::Vector2f(wallData.at(i)["x"], (startY - 25) + (wallHeight / 2.0f)), sf::Vector2f(50, wallHeight), "Wall"));
+		}
 	}
 
 	//Setup our torch animations
@@ -613,6 +642,7 @@ void Level::clearLevel()
 	m_spawnPoints.clear();
 	m_windowSprites.clear();
 	m_floorSprites.clear();
+	m_wallSprites.clear();
 	m_torchAnimators.clear();
 	m_torchLightAnimators.clear();
 	m_torchSprites.clear();
@@ -625,12 +655,17 @@ void Level::clearLevel()
 	for (auto& floor : m_floors)
 		world.DestroyBody(floor.body()); //Destroy all the obstacle bodies
 
+	//Remove all of our wall bodies
+	for (auto& wall : m_walls)
+		world.DestroyBody(wall.body()); //Destroy all the obstacle bodies
+
 	//Remove all of our killboxes
 	for (auto& killBox : m_killBoxes)
 		world.DestroyBody(killBox);
 
 	m_killBoxes.clear(); //Clear our killboxes vector
 	m_floors.clear(); //Clear all of the floors
+	m_walls.clear(); //Clear all of our walls
 
 	m_player1.resetPlayerParameters();
 	m_player2.resetPlayerParameters();

@@ -94,6 +94,10 @@ private:
 	//Our spawn points
 	std::vector<sf::Vector2f> m_spawnPoints;
 
+	//Our walls
+	std::vector<sf::Sprite> m_wallSprites;
+	std::vector<Obstacle> m_walls;
+
 	//Our contact listener, we will use this class to handle collisions with sensors
 	ContactListener m_contactListener;
 

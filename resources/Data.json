@@ -28,9 +28,23 @@
           "HasBody":true
         },
         {
-          "StartX":1005,
+          "StartX":980,
           "PosY":405,
           "TileAmount":7,
+          "HasBody":true
+        }
+      ],
+      "Walls":[
+        {
+          "x":-25,
+          "StartY":25,
+          "TileAmount":15,
+          "HasBody":true
+        },
+        {
+          "x":1305,
+          "StartY":25,
+          "TileAmount":15,
           "HasBody":true
         }
       ],
@@ -119,7 +133,7 @@
    },
    "Castle CTF":{
       "Kill Box":[
-        
+
       ],
       "Floors":[
         {
