@@ -21,6 +21,11 @@ Level::Level(Audio& audio, int levelNum) :
 	m_transitionAlpha(0),
 	m_transitionCol(255,255,255, m_transitionAlpha) //Make our transition color white with 0 alpha
 {
+	m_players.push_back(&m_player2);
+	m_players.push_back(&m_player1);
+	m_viewVector.push_back(&m_bottomView);
+	m_viewVector.push_back(&m_topView);
+
 	auto text = m_timeLabelValue.getText();
 	m_timeLabelValue.setOrigin(sf::Vector2f(text.getLocalBounds().left, text.getLocalBounds().top));
 
@@ -52,6 +57,15 @@ Level::Level(Audio& audio, int levelNum) :
 	m_transitionRect.setFillColor(m_transitionCol);
 
 	setUpAnimation();
+
+	m_originalView.setCenter(640, 360);
+	m_originalView.setSize(1280, 720);
+	m_bottomView.setSize(1280, 360);
+	m_bottomView.setViewport(sf::FloatRect(0, .5f, 1.0, .5f));
+	m_bottomView.zoom(1.25f);
+	m_topView.setSize(1280, 360);
+	m_topView.setViewport(sf::FloatRect(0, 0, 1.0, .5f));
+	m_topView.zoom(1.25f);
 }
 
 void Level::update()
@@ -168,62 +182,85 @@ void Level::update()
 
 void Level::render(sf::RenderWindow & window)
 {
-	m_overlayTexture.clear(sf::Color(50, 50, 50, 255));
-	m_overlayTexture.display();
+	int drawIters = 1;
 
-	//Draw our player + sword lights
-	m_overlayTexture.draw(m_player1.getLight());
-	m_overlayTexture.draw(m_player2.getLight());
-	m_overlayTexture.draw(m_player1.getSwordLight());
-	m_overlayTexture.draw(m_player2.getSwordLight());
-
-	//Drawing our torch lights onto our overlay
-	for each (auto& light in m_torchLightSprites)
-		m_overlayTexture.draw(light);
-
-	m_overlayTexture.display();
-
-	window.draw(m_bg); //draw the background
-
-	//Rendering our floor
-	for each (auto& tile in m_floorSprites)
-		window.draw(tile);
-
-	//Rendering our windows
-	for each(auto& win in m_windowSprites)
-		window.draw(win);
-
-	//Draw our timer label
-	for (auto& label : m_labels)
-		label->draw(window);
-
-	//Rendering our torches
-	for each (auto& torch in m_torchSprites)
-		window.draw(torch);
-
-	m_player1.render(window); //draw the first player	
-	m_player2.render(window); //draw the second player
-
-	m_contactListener.draw(window); //Draw our contact listener
-
-
-	//Draw our game over sprites
-	if (m_hasWinner && m_gameOver)
+	if (m_isCtf)
 	{
-		window.draw(m_winSprite);
-		window.draw(m_loseSprite);
-	}
-	else if(m_gameOver)
-	{
-		window.draw(m_draw1Sprite);
-		window.draw(m_draw2Sprite);
+		drawIters = 2;
 	}
 
-	//Blend our lights into our overlay
-	window.draw(m_overlaySprite, sf::BlendMultiply);
 
-	//Draw our transition rectangle
-	window.draw(m_transitionRect);
+
+
+	for (int i = 0; i < drawIters; i++)
+	{
+		//if the gameode is CTF draw to our two views
+		if (m_isCtf)
+		{
+			m_viewVector.at(i)->setCenter(m_players.at(i)->position());
+			window.setView(*m_viewVector.at(i));
+		}
+
+
+		m_overlayTexture.clear(sf::Color(50, 50, 50, 255));
+		m_overlayTexture.display();
+
+		//Draw our player + sword lights
+		m_overlayTexture.draw(m_player1.getLight());
+		m_overlayTexture.draw(m_player2.getLight());
+		m_overlayTexture.draw(m_player1.getSwordLight());
+		m_overlayTexture.draw(m_player2.getSwordLight());
+
+		//Drawing our torch lights onto our overlay
+		for each (auto& light in m_torchLightSprites)
+			m_overlayTexture.draw(light);
+
+		m_overlayTexture.display();
+
+		window.draw(m_bg); //draw the background
+
+		//Rendering our floor
+		for each (auto& tile in m_floorSprites)
+			window.draw(tile);
+
+		//Rendering our windows
+		for each(auto& win in m_windowSprites)
+			window.draw(win);
+
+		//Draw our timer label
+		for (auto& label : m_labels)
+			label->draw(window);
+
+		//Rendering our torches
+		for each (auto& torch in m_torchSprites)
+			window.draw(torch);
+
+		m_player1.render(window); //draw the first player	
+		m_player2.render(window); //draw the second player
+
+		m_contactListener.draw(window); //Draw our contact listener
+
+
+		//Draw our game over sprites
+		if (m_hasWinner && m_gameOver)
+		{
+			window.draw(m_winSprite);
+			window.draw(m_loseSprite);
+		}
+		else if (m_gameOver)
+		{
+			window.draw(m_draw1Sprite);
+			window.draw(m_draw2Sprite);
+		}
+
+		//Blend our lights into our overlay
+		//window.draw(m_overlaySprite, sf::BlendMultiply);
+
+		//Draw our transition rectangle
+		window.draw(m_transitionRect);
+	}
+
+	window.setView(m_originalView);
 }
 
 void Level::playAnimation()

@@ -116,5 +116,123 @@
           "facingLeft": true
         }
       ]
+   },
+   "Castle CTF":{
+      "Kill Box":[
+        {
+          "PosX": 640,
+          "PosY": 360,
+          "Width": 1385,
+          "Height": 820
+        }
+      ],
+      "Floors":[
+        {
+          "StartX":25,
+          "PosY":695,
+          "TileAmount":26,
+          "HasBody":true
+        },
+        {
+          "StartX":500,
+          "PosY":550,
+          "TileAmount":7,
+          "HasBody":true
+        },
+        {
+          "StartX":25,
+          "PosY":405,
+          "TileAmount":7,
+          "HasBody":true
+        },
+        {
+          "StartX":1005,
+          "PosY":405,
+          "TileAmount":7,
+          "HasBody":true
+        }
+      ],
+      "Windows":[
+        {
+          "x":130,
+          "y":155
+        },
+        {
+          "x":1150,
+          "y":155
+        }
+      ],
+      "Torches":[
+        {
+          "PosX":550,
+          "PosY":75
+        },
+        {
+          "PosX":750,
+          "PosY":75
+        },
+        {
+          "PosX":131,
+          "PosY":234
+        },
+        {
+          "PosX":1151,
+          "PosY":234
+        },
+        {
+          "PosX":160,
+          "PosY":695
+        },
+        {
+          "PosX":480,
+          "PosY":695
+        },
+        {
+          "PosX":800,
+          "PosY":695
+        },
+        {
+          "PosX":1120,
+          "PosY":695
+        },
+        {
+          "PosX":650,
+          "PosY":550
+        }
+      ],
+      "Spawn Points":[
+        {
+          "x":125,
+          "y":335
+        },
+        {
+          "x":1155,
+          "y":335
+        },
+        {
+          "x":1155,
+          "y":540
+        },
+        {
+          "x":125,
+          "y":540
+        },
+        {
+          "x":640,
+          "y":625
+        }
+      ],
+      "Start Points":[
+        {
+          "x":125,
+          "y":540,
+          "facingLeft": false
+        },
+        {
+          "x": 1155,
+          "y": 540,
+          "facingLeft": true
+        }
+      ]
    }
 }

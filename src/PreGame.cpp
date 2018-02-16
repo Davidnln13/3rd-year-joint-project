@@ -204,7 +204,6 @@ std::string PreGameScreen::handleInput(JoystickController & controller1, Joystic
 		//if we have navigated through the menu then changed buttons
 		if (navigated)
 		{
-			GameMode::isCtf = false; //Reset the bool
 
 			//Checking our options bounds
 			if (currentOptionValue < 0)
@@ -214,6 +213,7 @@ std::string PreGameScreen::handleInput(JoystickController & controller1, Joystic
 					currentOptionValue = GameMode::maxLevels;
 				else if (m_currentButton->getName() == "game mode")
 				{
+					GameMode::isCtf = false;
 					currentOptionValue = GameMode::maxGameModes;
 					//if the gamemode choesn is CTF then ste our boolean
 					if (currentOptionValue == 2)
@@ -236,18 +236,21 @@ std::string PreGameScreen::handleInput(JoystickController & controller1, Joystic
 				//If our game mode is Capture the flag, set the parameters of our game mode
 				if (currentOptionValue == 2)
 				{
+					GameMode::isCtf = true;
 					GameMode::killLimit = 0; //set kill limit to infinite
 					GameMode::timeLimit = 3; //set time limit to 3 minutes
 				}
 				//else If our game mode is Sudden death, set the parameters of our game mode
 				else if (currentOptionValue == 1)
 				{
+					GameMode::isCtf = false;
 					GameMode::killLimit = 1; //set kill limit to 1
 					GameMode::timeLimit = 0; //set time limit to infinite
 				}
 				//else if our current game mode is death match, set our parameters for a deathmatch
 				else if (currentOptionValue == 0)
 				{
+					GameMode::isCtf = false;
 					GameMode::killLimit = 5; //set kill limit to 5
 					GameMode::timeLimit = 1; //set time limit to 1 minute
 				}
@@ -330,5 +333,5 @@ GameMode::GameMode() :
 	GameMode::gameModes[1] = "Sudden Death";
 	GameMode::gameModes[2] = "Capture the Flag";
 	GameMode::levelNames[0] = "Castle";
-	GameMode::levelNames[1] = "Test Level";
+	GameMode::levelNames[1] = "Castle CTF";
 }

@@ -41,6 +41,7 @@ public:
 private:
 	//Variables for starting our match
 	bool m_isCtf; //Bool to hold wheter the game mod eis capture the flag or not
+	bool m_setView = false;
 	bool m_gameOver;
 	bool m_hasTimeLimit;
 	bool m_hasKillLimit;
@@ -54,6 +55,9 @@ private:
 	sf::Clock m_timeLimitClock, m_gameOverClock, m_transitionClock;
 	sf::RectangleShape m_transitionRect;
 	sf::Color m_transitionCol;
+
+	sf::View m_originalView, m_bottomView, m_topView;
+	std::vector<sf::View*> m_viewVector;
 
 	//Our level background sprite
 	sf::Sprite m_bg;
@@ -82,6 +86,7 @@ private:
 	//Our player objects
 	Player m_player1;
 	Player m_player2;
+	std::vector<Player*> m_players;
 
 	//Our window sprites
 	std::vector<sf::Sprite> m_windowSprites;
