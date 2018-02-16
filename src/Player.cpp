@@ -66,8 +66,8 @@ Player::Player(sf::Vector2f position, std::string direction = "left") :
 	m_rightSensorBody = &createBody(m_rightSensorBody, b2_dynamicBody, b2Vec2((m_position.x + m_playerRect.getSize().x / 2.0f) / PPM, m_position.y / PPM), true, true, m_gravityScale);
 
 	//Creating our fixtures for each of our bodies
-	createFixture(m_playerBody, m_playerRect.getSize().x, m_playerRect.getSize().y, false, 1.5f, 0.0f, 0.1f);
-	createFixture(m_forearmBody, m_forearmRect.getSize().x, m_forearmRect.getSize().y, true, .25f, 0.0f, .1f);
+	createFixture(m_playerBody, m_playerRect.getSize().x, m_playerRect.getSize().y, false, 1.5f, 0.0f, 0.0f);
+	createFixture(m_forearmBody, m_forearmRect.getSize().x, m_forearmRect.getSize().y, true, .25f, 0.0f, 0.0f);
 	createFixture(m_jumpBody, m_jumpRect.getSize().x, m_jumpRect.getSize().y, true, 0.0f, 0.0f, 0.1f);
 	createFixture(m_leftSensorBody, m_leftWallSensorRect.getSize().x, m_leftWallSensorRect.getSize().y, true, 0.0f, 0.0f, 0.1f);
 	createFixture(m_rightSensorBody, m_rightWallSensorRect.getSize().x, m_rightWallSensorRect.getSize().y, true, 0.0f, 0.0f, .1f);
