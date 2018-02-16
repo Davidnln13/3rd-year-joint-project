@@ -78,6 +78,12 @@ void Label::setPosition(sf::Vector2f pos)
 	m_text.setPosition(pos);
 }
 
+void Label::setOriginAndPosition(sf::Vector2f origin, sf::Vector2f pos)
+{
+	setOrigin(origin);
+	setPosition(pos);
+}
+
 void Label::setColor(sf::Color color)
 {
 	m_text.setFillColor(color);

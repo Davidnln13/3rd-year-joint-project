@@ -16,4 +16,5 @@ public:
 	std::string currentName = "Main";
 	bool startMusic = false;
 	void updateMusic(std::string name);
+	void setSounds(std::string name, std::string source);
 };

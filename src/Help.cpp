@@ -15,14 +15,21 @@ Help::Help(std::string name, Audio& audio) :
 	//adding our buttons to our buttons map
 	m_buttons[m_back.getName()] = &m_back;
 	m_btnList.push_back(&m_back);
-	setIconSprite(m_ltIcon, resourceManager.getTextureHolder()["LT Icon"], sf::Vector2f(600, 200));
 
-	//sf::Sprite m_ltIcon;
-	//sf::Sprite m_lAnalogIcon;
-	//sf::Sprite m_dpadIcon;
-	//sf::Sprite m_yIcon;
-	//sf::Sprite m_xIcon;
-	//sf::Sprite m_aIcon;
+	setIconSprite(m_ltIcon, resourceManager.getTextureHolder()["LT Icon"], sf::Vector2f(450, 70));
+	setIconSprite(m_lAnalogIcon, resourceManager.getTextureHolder()["Lanalog Icon"], sf::Vector2f(450, 170));
+	setIconSprite(m_dpadIcon, resourceManager.getTextureHolder()["Dpad Icon"], sf::Vector2f(450, 270));
+	setIconSprite(m_yIcon, resourceManager.getTextureHolder()["Y Icon"], sf::Vector2f(450, 470));
+	setIconSprite(m_aIcon, resourceManager.getTextureHolder()["A Icon"], sf::Vector2f(450, 370));
+	setIconSprite(m_xIcon, resourceManager.getTextureHolder()["X Icon"], sf::Vector2f(450, 570));
+	
+	m_ltLabel.setOriginAndPosition(sf::Vector2f(0, 0), sf::Vector2f(500, 50));
+	m_lAnalogLabel.setOriginAndPosition(sf::Vector2f(0, 0), sf::Vector2f(500, 150));
+	m_dpadLabel.setOriginAndPosition(sf::Vector2f(0, 0), sf::Vector2f(500, 250));
+	m_aLabel.setOriginAndPosition(sf::Vector2f(0, 0), sf::Vector2f(500, 350));
+	m_yLabel.setOriginAndPosition(sf::Vector2f(0, 0), sf::Vector2f(500, 450));
+	m_xLabel.setOriginAndPosition(sf::Vector2f(0, 0), sf::Vector2f(500, 550));
+	
 }
 
 void Help::update()
@@ -44,7 +51,14 @@ void Help::render(sf::RenderWindow& window)
 	//loop through our buttons map and render each one
 	for (auto key : m_buttons)
 		key.second->render(window);
+
 	window.draw(m_ltIcon);
+	window.draw(m_lAnalogIcon);
+	window.draw(m_dpadIcon);
+	window.draw(m_aIcon);
+	window.draw(m_yIcon);
+	window.draw(m_xIcon);
+
 	m_ltLabel.draw(window);
 	m_lAnalogLabel.draw(window);
 	m_dpadLabel.draw(window);

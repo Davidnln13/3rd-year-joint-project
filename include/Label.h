@@ -20,6 +20,7 @@
 		void setText(std::string text, sf::Font& font, sf::Color color = sf::Color::Black);
 		void setOrigin(sf::Vector2f origin);
 		void setPosition(sf::Vector2f pos);
+		void setOriginAndPosition(sf::Vector2f origin, sf::Vector2f pos);
 		void setColor(sf::Color color);
 		void setSize(int size);
 

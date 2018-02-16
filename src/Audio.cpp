@@ -7,45 +7,15 @@ Audio::Audio()
 	//music
 	m_musicMap["TitleMusic"].openFromFile("./resources/Audio/TitleMusic.ogg");
 	m_musicMap["GameMusic"].openFromFile("./resources/Audio/GameMusic.ogg");
-	//loading sounds into sound buffer
-	if (!m_soundBufferMap["CTFSound"].loadFromFile("./resources/Audio/CTFSound.wav"))
-	{
-		std::cout << "Cant find file" << std::endl;
-	}
-	if (!m_soundBufferMap["Death"].loadFromFile("./resources/Audio/Death.wav"))
-	{
-		std::cout << "Cant find file" << std::endl;
-	}
-	if (!m_soundBufferMap["MoveMenu"].loadFromFile("./resources/Audio/MoveMenu.wav"))
-	{
-		std::cout << "Cant find file" << std::endl;
-	}
-	if (!m_soundBufferMap["SelectMenuItem"].loadFromFile("./resources/Audio/SelectMenuItem.wav"))
-	{
-		std::cout << "Cant find file" << std::endl;
-	}
-	if (!m_soundBufferMap["SwordCollide"].loadFromFile("./resources/Audio/SwordCollide.wav"))
-	{
-		std::cout << "Cant find file" << std::endl;
-	}
-	if (!m_soundBufferMap["SwordSwing"].loadFromFile("./resources/Audio/SwordSwing.wav"))
-	{
-		std::cout << "Cant find file" << std::endl;
-	}
-	if (!m_soundBufferMap["ThrowSword"].loadFromFile("./resources/Audio/ThrowSword.wav"))
-	{
-		std::cout << "Cant find file" << std::endl;
-	}
-
-	//load into soundmap
-	m_soundMap["SwordSwing"].setBuffer(m_soundBufferMap["SwordSwing"]);
-	m_soundMap["CTFSound"].setBuffer(m_soundBufferMap["CTFSound"]);
-	m_soundMap["Death"].setBuffer(m_soundBufferMap["Death"]);
-	m_soundMap["MoveMenu"].setBuffer(m_soundBufferMap["MoveMenu"]);
-	m_soundMap["SelectMenuItem"].setBuffer(m_soundBufferMap["SelectMenuItem"]);
-	m_soundMap["SwordCollide"].setBuffer(m_soundBufferMap["SwordCollide"]);
-	m_soundMap["ThrowSword"].setBuffer(m_soundBufferMap["ThrowSword"]);
-	
+	//loading sounds
+	setSounds("CTFSound", "./resources/Audio/CTFSound.wav");
+	setSounds("Death", "./resources/Audio/Death.wav");
+	setSounds("MoveMenu", "./resources/Audio/MoveMenu.wav");
+	setSounds("SelectMenuItem", "./resources/Audio/SelectMenuItem.wav");
+	setSounds("SwordCollide", "./resources/Audio/SwordCollide.wav");
+	setSounds("SwordSwing", "./resources/Audio/SwordSwing.wav");
+	setSounds("ThrowSword", "./resources/Audio/ThrowSword.wav");
+ 
 	for (auto& key : m_soundMap)
 	{
 		m_soundMap[key.first].setVolume(100);
@@ -79,4 +49,14 @@ void Audio::updateMusic(std::string name)
 		m_musicMap["GameMusic"].play();
 		currentName = "Game";
 	}
+}
+
+void Audio::setSounds(std::string name, std::string source)
+{
+	//load into soundbuffer
+	if (!m_soundBufferMap[name].loadFromFile(source))
+	{
+		std::cout << "Cant find file" << std::endl;
+	}
+	m_soundMap[name].setBuffer(m_soundBufferMap[name]);
 }
