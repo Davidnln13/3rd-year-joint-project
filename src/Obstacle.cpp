@@ -10,7 +10,7 @@ Obstacle::Obstacle(sf::Vector2f position, sf::Vector2f size, std::string userDat
 	if(userData == "")
 		m_body->SetUserData("Boundary");
 	else
-		m_body->SetUserData(&userData);
+		m_body->SetUserData("Wall");
 
 	b2PolygonShape boxShape;
 	boxShape.SetAsBox((size.x / 2.f) / PPM, (size.y / 2.f) / PPM);

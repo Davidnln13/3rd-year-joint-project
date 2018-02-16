@@ -32,6 +32,7 @@ public:
 	void haveTwoSwordsCollided(Player* player1, Player* player2, b2Fixture& fixA, b2Fixture& fixB);
 	void checkCanPlayerMove(Player* player, b2Fixture& fixA, b2Fixture& fixB, bool canMove);
 	bool payerLeftKillBox(Player* player, b2Fixture& fixA, b2Fixture& fixB);
+	void checkIfSwordHitWall(Player& player, b2Fixture& fixA, b2Fixture& fixB);
 
 	//Setters
 	void setPlayers(Player& player1, Player& player2);
@@ -39,6 +40,8 @@ private:
 	//we hold a pointer to our players so we can invoke methods if their sensor have collided/not collided
 	Player* m_player1;
 	Player* m_player2;
+	Weapon* m_p1Sword;
+	Weapon* m_p2Sword;
 
 	sf::Vector2f m_partcleSpawnPos;
 	bool m_spawnParticle;

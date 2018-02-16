@@ -10,7 +10,7 @@ void ContactListener::update()
 	if (m_spawnParticle)
 	{
 
-		auto pos = m_player1->getWeapon()->getPosition();
+		auto pos = m_p1Sword->getPosition();
 
 		if(m_player1->facingLeft())
 			pos.x -= 35 / 2.0f;
@@ -42,6 +42,9 @@ void ContactListener::BeginContact(b2Contact * contact)
 {
 	auto fixA = contact->GetFixtureA();
 	auto fixB = contact->GetFixtureB();
+
+	checkIfSwordHitWall(*m_player1, *fixA, *fixB);
+	checkIfSwordHitWall(*m_player2, *fixA, *fixB);
 
 	//invoking our canPlayerJump method to check if each player is not making contact with an invalid surface that they can jump on such as a sword
 	if(canPlayerJump(m_player1, m_player2, *fixA, *fixB))
@@ -170,17 +173,18 @@ void ContactListener::haveTwoSwordsCollided(Player * player1, Player* player2, b
 	{ 
 		if (player1->holdingSword() == false) //so if we are not holding a sword
 			player1->setSwordThrown();
+		if(player2->holdingSword() == false) //if the the other player is also not holding a sword
+			player2->setSwordThrown();
 
 		else if (player1->switchedWeaponPos())
 		{
-			m_spawnParticle = true;
 			player2->setParried(true);
 		}
 		else
 		{
 			player1->setClashed(true);
-			m_spawnParticle = true;
 		}
+		m_spawnParticle = true;
 	}
 }
 
@@ -212,8 +216,22 @@ bool ContactListener::payerLeftKillBox(Player * player, b2Fixture & fixA, b2Fixt
 	return false;
 }
 
+void ContactListener::checkIfSwordHitWall(Player& player, b2Fixture & fixA, b2Fixture & fixB)
+{
+	//If the sword has hit a wall
+	if (fixA.GetBody() == player.getSwordBody() && fixB.GetBody()->GetUserData() == "Wall"
+		|| fixB.GetBody() == player.getSwordBody() && fixA.GetBody()->GetUserData() == "Wall")
+	{
+		//if the player is not holding the sword
+		if(player.holdingSword() == false)
+			player.setSwordThrown(); //Invoke set thrown so gravity and physics apply to the sword again
+	}
+}
+
 void ContactListener::setPlayers(Player & player1, Player & player2)
 {
 	m_player1 = &player1;
 	m_player2 = &player2;
+	m_p1Sword = player1.getWeapon();
+	m_p2Sword = player2.getWeapon();
 }
