@@ -19,6 +19,7 @@ public:
 
 	void update();
 	void render(sf::RenderWindow& window);
+	void drawToOverlay(sf::Sprite sprite);
 	void playAnimation();
 	void setUpAnimation();
 
@@ -61,7 +62,7 @@ private:
 
 	//Our level background sprite
 	sf::Sprite m_bg;
-	sf::Sprite m_overlaySprite;
+	sf::Sprite m_overlay;
 	sf::RenderTexture m_overlayTexture;
 
 	//Animation variables

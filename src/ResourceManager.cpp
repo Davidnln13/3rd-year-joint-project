@@ -26,6 +26,7 @@ ResourceManager::ResourceManager()
 		acquireResource("Player Icons", m_playerIcons);
 		acquireResource("Plus Score Icon", m_plusScoreIcon);
 		acquireResource("Minus Score Icon", m_minusScoreIcon);
+
 		//controller icons
 		acquireResource("Start Icon", m_startIcon);
 		acquireResource("B Icon", m_bIcon);
@@ -35,17 +36,16 @@ ResourceManager::ResourceManager()
 		acquireResource("LT Icon", m_ltIcon);
 		acquireResource("Dpad Icon", m_dpadIcon);
 		acquireResource("Lanalog Icon", m_lanalogIcon);
-		//
 		acquireResource("Draw Indicator", m_drawIndicator);
 		acquireResource("Win Indicator", m_winIndicator);
 		acquireResource("Lose Indicator", m_loseIndicator);
-
 
 		//Load particle
 		acquireResource("Particle", m_particle);
 
 		//Load level textures
-		acquireResource("castleBG", m_castleBg);
+		acquireResource("Castle BG", m_castleBg);
+		acquireResource("Castle CTF BG", m_castleCtfBg);
 		acquireResource("windowTile", m_windowTile);
 		acquireResource("stoneTile", m_stoneTile);
 		acquireResource("torch", m_torch);

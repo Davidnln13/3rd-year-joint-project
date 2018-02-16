@@ -64,6 +64,7 @@ private:
 
 	//Our Level tiles
 	thor::ResourceLoader<sf::Texture> m_castleBg = thor::Resources::fromFile<sf::Texture>("./resources/Textures/Castle BG.png");
+	thor::ResourceLoader<sf::Texture> m_castleCtfBg = thor::Resources::fromFile<sf::Texture>("./resources/Textures/Castle CTF BG.png");
 	thor::ResourceLoader<sf::Texture> m_stoneTile = thor::Resources::fromFile<sf::Texture>("./resources/Textures/Stone Tile.png");
 	thor::ResourceLoader<sf::Texture> m_torch = thor::Resources::fromFile<sf::Texture>("./resources/Textures/Torch Spritesheet.png");
 	thor::ResourceLoader<sf::Texture> m_torchLight = thor::Resources::fromFile<sf::Texture>("./resources/Textures/Torch Light Spritesheet.png");

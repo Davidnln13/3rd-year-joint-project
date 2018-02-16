@@ -41,14 +41,14 @@ Level::Level(Audio& audio, int levelNum) :
 	world.SetContactListener(&m_contactListener);
 	//Set pointers to our player objects in our contact listener
 	m_contactListener.setPlayers(m_player1, m_player2);
-	//Set the texture of our sprite and place it at 0,0
-	m_bg.setTexture(resourceManager.getTextureHolder()["castleBG"]);
-	m_bg.setPosition(0, 0);
 
 	//setting the parameters of our dark overlay, we will draw lights onto this render texture
-	m_overlayTexture.create(1280, 720);
-	m_overlaySprite.setTexture(m_overlayTexture.getTexture());
-	m_overlaySprite.setPosition(0, 0);
+	m_overlayTexture.create(3260, 1440);
+	m_overlayTexture.setSmooth(true);
+
+	m_overlay.setTexture(m_overlayTexture.getTexture());
+	m_overlay.setOrigin(m_overlay.getGlobalBounds().left + m_overlay.getGlobalBounds().width / 2.0f, m_overlay.getGlobalBounds().top + m_overlay.getGlobalBounds().height / 2.0f);
+	m_overlay.setPosition(640, 360);
 
 	//Create our white transition rectangle
 	m_transitionRect.setSize(sf::Vector2f(1280, 720));
@@ -181,14 +181,14 @@ void Level::update()
 
 void Level::render(sf::RenderWindow & window)
 {
+	window.clear(sf::Color::Black); //Clear the scree n with a black background
+
 	int drawIters = 1;
 
 	if (m_isCtf)
 	{
 		drawIters = 2;
 	}
-
-
 
 
 	for (int i = 0; i < drawIters; i++)
@@ -200,19 +200,19 @@ void Level::render(sf::RenderWindow & window)
 			window.setView(*m_viewVector.at(i));
 		}
 
-
+		//m_overlayTexture.setView(*m_viewVector.at(i));
 		m_overlayTexture.clear(sf::Color(50, 50, 50, 255));
 		m_overlayTexture.display();
 
 		//Draw our player + sword lights
-		m_overlayTexture.draw(m_player1.getLight());
-		m_overlayTexture.draw(m_player2.getLight());
-		m_overlayTexture.draw(m_player1.getSwordLight());
-		m_overlayTexture.draw(m_player2.getSwordLight());
+		drawToOverlay(m_player1.getLight());
+		drawToOverlay(m_player2.getLight());
+		drawToOverlay(m_player1.getSwordLight());
+		drawToOverlay(m_player2.getSwordLight());
 
 		//Drawing our torch lights onto our overlay
 		for each (auto& light in m_torchLightSprites)
-			m_overlayTexture.draw(light);
+			drawToOverlay(light);
 
 		m_overlayTexture.display();
 
@@ -257,13 +257,20 @@ void Level::render(sf::RenderWindow & window)
 		}
 
 		//Blend our lights into our overlay
-		//window.draw(m_overlaySprite, sf::BlendMultiply);
+		window.draw(m_overlay, sf::BlendMultiply);
 
 		//Draw our transition rectangle
 		window.draw(m_transitionRect);
 	}
 
 	window.setView(m_originalView);
+}
+
+void Level::drawToOverlay(sf::Sprite sprite)
+{
+	auto newSprite = sprite; //Get a copy of the original sprite
+	newSprite.setPosition(newSprite.getPosition().x + 990, newSprite.getPosition().y + 360); //Add an offset to it so our texture renders to the overlay at the correct position
+	m_overlayTexture.draw(newSprite, sf::BlendAdd); //Draw with the blend add render mode to our overlay texture
 }
 
 void Level::playAnimation()
@@ -468,6 +475,12 @@ void Level::setUpLevel(std::string levelName)
 			m_walls.push_back(Obstacle(sf::Vector2f(wallData.at(i)["x"], (startY - 25) + (wallHeight / 2.0f)), sf::Vector2f(50, wallHeight), "Wall"));
 		}
 	}
+
+	//Set our bg texture
+	m_bg = sf::Sprite();
+	m_bg.setTexture(resourceManager.getTextureHolder()[levelName + " BG"]);
+	m_bg.setOrigin(m_bg.getLocalBounds().width / 2.0f, m_bg.getLocalBounds().height / 2.0f);
+	m_bg.setPosition(640, 360);
 
 	//Setup our torch animations
 	setupAnimations(levelName);
