@@ -29,6 +29,7 @@ public:
 	void setupAnimations(std::string levelName);
 	void setLevelParameters(int maxKills, int maxTime, int levelNumber, bool ctf, std::map<int, std::string>& levelNames);
 	float distance(sf::Vector2f a, sf::Vector2f b);
+	float lerpValue(float a, float b, float t);
 
 	void clearLevel();
 
@@ -49,7 +50,10 @@ private:
 	int m_levelNumber;
 	int m_killLimit;
 	int m_timeLimit;
-	sf::Clock m_timeLimitClock;
+	float m_transitionAlpha;
+	sf::Clock m_timeLimitClock, m_gameOverClock, m_transitionClock;
+	sf::RectangleShape m_transitionRect;
+	sf::Color m_transitionCol;
 
 	//Our level background sprite
 	sf::Sprite m_bg;

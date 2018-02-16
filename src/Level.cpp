@@ -17,7 +17,9 @@ Level::Level(Audio& audio, int levelNum) :
 	m_draw1Animator(m_animationHolder),
 	m_draw2Animator(m_animationHolder),
 	m_winAnimator(m_animationHolder),
-	m_loseAnimator(m_animationHolder)
+	m_loseAnimator(m_animationHolder),
+	m_transitionAlpha(0),
+	m_transitionCol(255,255,255, m_transitionAlpha) //Make our transition color white with 0 alpha
 {
 	auto text = m_timeLabelValue.getText();
 	m_timeLabelValue.setOrigin(sf::Vector2f(text.getLocalBounds().left, text.getLocalBounds().top));
@@ -44,6 +46,11 @@ Level::Level(Audio& audio, int levelNum) :
 	m_overlaySprite.setTexture(m_overlayTexture.getTexture());
 	m_overlaySprite.setPosition(0, 0);
 
+	//Create our white transition rectangle
+	m_transitionRect.setSize(sf::Vector2f(1280, 720));
+	m_transitionRect.setPosition(0, 0);
+	m_transitionRect.setFillColor(m_transitionCol);
+
 	setUpAnimation();
 }
 
@@ -53,8 +60,8 @@ void Level::update()
 
 	if (m_gameOver)
 	{
-		//If our bool is false
-		if (m_setWinner == false)
+		//When 2.5 seconds has passed since the game has ended and our winner has not been selected, play our indicator animations
+		if (m_setWinner == false && m_gameOverClock.getElapsedTime().asSeconds() >= 2.0f)
 		{
 			auto p1Pos = m_player1.position();
 			auto p2Pos = m_player2.position();
@@ -81,11 +88,25 @@ void Level::update()
 					m_draw2Sprite.setPosition(p1Pos.x, p1Pos.y - 75);
 				}
 			}
-
 			m_setWinner = true;
+			m_transitionClock.restart();
+		}
+		else if(m_setWinner) //Else if a winner has been selected
+		{
+			playAnimation(); //Play our animation
+
+			if (m_transitionClock.getElapsedTime().asSeconds() >= 1.5f)
+			{
+				//Increase the alpha of our transition
+				m_transitionAlpha = lerpValue(m_transitionAlpha, 255, 0.75f);
+
+				//Set the alpha of our color
+				m_transitionCol.a = m_transitionAlpha;
+				//Set our rectangles color
+				m_transitionRect.setFillColor(m_transitionCol);
+			}
 		}
 
-		playAnimation(); //Play our animation
 	}
 
 	//If there is a time limit and the game is not over
@@ -95,12 +116,14 @@ void Level::update()
 		if (m_hasTimeLimit && m_timeLimitClock.getElapsedTime().asSeconds() >= m_timeLimit)
 		{
 			m_gameOver = true;
+			m_gameOverClock.restart();
 		}
 
 		//if there is a kill limit on the game and either player has reached 0 then end the game
 		if (m_hasKillLimit && m_player1.lives() == 0 || m_hasKillLimit && m_player2.lives() == 0)
 		{
 			m_gameOver = true;
+			m_gameOverClock.restart();
 		}
 
 		int timeLeft = m_timeLimit - m_timeLimitClock.getElapsedTime().asSeconds();
@@ -178,7 +201,6 @@ void Level::render(sf::RenderWindow & window)
 	for each (auto& torch in m_torchSprites)
 		window.draw(torch);
 
-
 	m_player1.render(window); //draw the first player	
 	m_player2.render(window); //draw the second player
 
@@ -186,12 +208,12 @@ void Level::render(sf::RenderWindow & window)
 
 
 	//Draw our game over sprites
-	if (m_hasWinner)
+	if (m_hasWinner && m_gameOver)
 	{
 		window.draw(m_winSprite);
 		window.draw(m_loseSprite);
 	}
-	else
+	else if(m_gameOver)
 	{
 		window.draw(m_draw1Sprite);
 		window.draw(m_draw2Sprite);
@@ -200,7 +222,8 @@ void Level::render(sf::RenderWindow & window)
 	//Blend our lights into our overlay
 	window.draw(m_overlaySprite, sf::BlendMultiply);
 
-
+	//Draw our transition rectangle
+	window.draw(m_transitionRect);
 }
 
 void Level::playAnimation()
@@ -215,8 +238,10 @@ void Level::playAnimation()
 	m_draw2Animator.update(m_draw2AnimationClock.restart());
 	m_draw2Animator.animate(m_draw2Sprite);
 
+	//If our bool is true
 	if (m_playGameOverIndicator)
 	{
+
 		m_loseAnimator.play() << "loseAnimation";
 		m_winAnimator.play() << "winAnimation";
 		m_draw1Animator.play() << "drawAnimation";
@@ -244,11 +269,6 @@ void Level::setUpAnimation()
 		m_winAnimation.addFrame(0.1f, frame);
 		m_loseAnimation.addFrame(0.1f, frame);
 	}
-
-	//add the animation to our animation holder with the specified length and name
-	m_animationHolder.addAnimation("winAnimation", m_winAnimation, sf::seconds(.5f));
-	m_animationHolder.addAnimation("loseAnimation", m_loseAnimation, sf::seconds(.5f));
-	m_animationHolder.addAnimation("drawAnimation", m_drawAnimation, sf::seconds(.5f));
 
 	//Setting the origin and etxtures of our sprites
 	m_winSprite.setTexture(resourceManager.getTextureHolder()["Win Indicator"]);
@@ -473,6 +493,11 @@ void Level::setLevelParameters(int maxKills, int maxTime, int levelNumber, bool 
 	m_setWinner = false;
 	m_hasWinner = false;
 
+	//Reset our transition
+	m_transitionAlpha = 0;
+	m_transitionCol.a = m_transitionAlpha;
+	m_transitionRect.setFillColor(m_transitionCol);
+
 	std::cout << "Kill limit: " << maxKills << std::endl;
 	std::cout << "Time limit: " << maxTime << std::endl;
 	std::cout << "Level: " << levelNumber << std::endl;
@@ -498,6 +523,11 @@ void Level::setLevelParameters(int maxKills, int maxTime, int levelNumber, bool 
 
 	m_player1.setParameters(m_killLimit);
 	m_player2.setParameters(m_killLimit);
+
+	//add the animation to our animation holder with the specified length and name
+	m_animationHolder.addAnimation("winAnimation", m_winAnimation, sf::seconds(.25f));
+	m_animationHolder.addAnimation("loseAnimation", m_loseAnimation, sf::seconds(.25f));
+	m_animationHolder.addAnimation("drawAnimation", m_drawAnimation, sf::seconds(.25f));
 }
 
 //Distance between two points formula
@@ -508,6 +538,28 @@ float Level::distance(sf::Vector2f a, sf::Vector2f b)
 
 	//Return our distance
 	return sqrtf(xSq + ySq);
+}
+
+float Level::lerpValue(float a, float b, float t)
+{
+	//If our values are not the same
+	if (a != b)
+	{
+		if (a > b)
+		{
+			a -= t; //Reduce A by T
+			if (a < b) //If A is now less than B, set A to equal to B
+				a = b;
+		}
+		else if (a < b)
+		{
+			a += t; //Increase A by T
+			if (a > b) //If A is now greater than B, set A to equal to B
+				a = b;
+		}
+	}
+
+	return a;
 }
 
 void Level::clearLevel()
