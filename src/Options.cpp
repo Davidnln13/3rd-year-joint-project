@@ -5,8 +5,9 @@ Options::Options(std::string name, Audio& audio) :
 	m_back(sf::Vector2f(640, 676), "Back", "Arrow Icon"),
 	m_btnIndex(0),
 	m_previousScreen(name),
-	m_soundVolumeLabel("Sound", sf::Vector2f(640,200), resourceManager.getFontHolder()["oxinFont"]),
-	m_musicVolumeLabel("Music", sf::Vector2f(640, 400), resourceManager.getFontHolder()["oxinFont"])
+	m_soundVolumeLabel("Sound", sf::Vector2f(640, 200), resourceManager.getFontHolder()["oxinFont"]),
+	m_musicVolumeLabel("Music", sf::Vector2f(640, 400), resourceManager.getFontHolder()["oxinFont"]),
+	m_audioRef(audio)
 {
 	//adding our buttons to our buttons map
 	m_buttons[m_back.getName()] = &m_back;
@@ -48,7 +49,10 @@ std::string Options::handleInput(JoystickController& controller1, JoystickContro
 	auto currentScreen = m_name; //the current screen we are on is m_name ie. "mainMenu"
 
 	if (controller1.isButtonPressed("A"))
+	{
 		currentScreen = m_previousScreen;
+		m_audioRef.m_soundMap["SelectMenuItem"].play();
+	}
 
 	return currentScreen;
 }

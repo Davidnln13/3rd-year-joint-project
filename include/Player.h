@@ -1,6 +1,7 @@
 #pragma once
 #include "Label.h"
 #include "Weapon.h"
+#include "Audio.h"
 
 class JoystickController; //forward reference for our joystick class
 
@@ -13,7 +14,7 @@ class JoystickController; //forward reference for our joystick class
 class Player
 {
 public:
-	Player(sf::Vector2f position, std::string direction);
+	Player(Audio& audio, sf::Vector2f position, std::string direction);
 	~Player(); //Any classes that have a box2d body should have that body deleted in here
 
 	//This method creates a box2d body using the passed over arguments
@@ -88,6 +89,8 @@ public:
 	void setSpawnPoint(sf::Vector2f& position, bool facingLeft);
 	void setParameters(int killLimit);
 	void increaseKills();
+	//play audio from contact listener
+	void playAudio();
 
 private:
 	bool m_canMoveLeft, m_canMoveRight; //Booleans to hold wheter we can move left or right
@@ -179,6 +182,9 @@ private:
 	//Const variables
 	float const RAD_TO_DEG;
 	float const DEG_TO_RAD;
+	
+	//A reference to our audio
+		Audio& m_audioRef;
 };
 
 #include "JoystickController.h"

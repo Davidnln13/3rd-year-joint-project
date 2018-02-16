@@ -10,7 +10,8 @@ Help::Help(std::string name, Audio& audio) :
 	m_dpadLabel("Change Sword Height", sf::Vector2f(640, 300), resourceManager.getFontHolder()["oxinFont"]),
 	m_aLabel("Jump", sf::Vector2f(640, 350), resourceManager.getFontHolder()["oxinFont"]),
 	m_yLabel("Pickup Sword", sf::Vector2f(640, 400), resourceManager.getFontHolder()["oxinFont"]),
-	m_xLabel("Attack", sf::Vector2f(640, 450), resourceManager.getFontHolder()["oxinFont"])
+	m_xLabel("Attack or Throw primed sword", sf::Vector2f(640, 450), resourceManager.getFontHolder()["oxinFont"]),
+	m_audioRef(audio)
 {
 	//adding our buttons to our buttons map
 	m_buttons[m_back.getName()] = &m_back;
@@ -86,7 +87,10 @@ std::string Help::handleInput(JoystickController& controller1, JoystickControlle
 	auto currentScreen = m_name; //the current screen we are on is m_name ie. "mainMenu"
 
 	if (controller1.isButtonPressed("A"))
+	{
 		currentScreen = m_previousScreen;
+		m_audioRef.m_soundMap["SelectMenuItem"].play();
+	}
 
 	return currentScreen;
 }

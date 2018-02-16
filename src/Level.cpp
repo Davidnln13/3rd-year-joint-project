@@ -1,8 +1,8 @@
 #include "Level.h"
 
 Level::Level(Audio& audio, int levelNum) :
-	m_player1(sf::Vector2f(1120.0f, 540.0f), "left"),
-	m_player2(sf::Vector2f(160.0f, 540.0f), "right"),
+	m_player1(audio, sf::Vector2f(1120.0f, 540.0f), "left"),
+	m_player2(audio, sf::Vector2f(160.0f, 540.0f), "right"),
 	m_audioRef(audio),
 	m_levelNumber(levelNum),
 	m_levelLoader(),
@@ -19,7 +19,7 @@ Level::Level(Audio& audio, int levelNum) :
 	m_winAnimator(m_animationHolder),
 	m_loseAnimator(m_animationHolder),
 	m_transitionAlpha(0),
-	m_transitionCol(255,255,255, m_transitionAlpha) //Make our transition color white with 0 alpha
+	m_transitionCol(255, 255, 255, m_transitionAlpha) //Make our transition color white with 0 alpha
 {
 	m_players.push_back(&m_player2);
 	m_players.push_back(&m_player1);
@@ -41,7 +41,6 @@ Level::Level(Audio& audio, int levelNum) :
 	world.SetContactListener(&m_contactListener);
 	//Set pointers to our player objects in our contact listener
 	m_contactListener.setPlayers(m_player1, m_player2);
-
 	//Set the texture of our sprite and place it at 0,0
 	m_bg.setTexture(resourceManager.getTextureHolder()["castleBG"]);
 	m_bg.setPosition(0, 0);

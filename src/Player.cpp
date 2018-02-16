@@ -1,6 +1,6 @@
 #include "Player.h"
 
-Player::Player(sf::Vector2f position, std::string direction = "left") :
+Player::Player(Audio& audio, sf::Vector2f position, std::string direction = "left") :
 	m_canAttack(true),
 	m_canMoveLeft(true),
 	m_canMoveRight(true),
@@ -44,7 +44,8 @@ Player::Player(sf::Vector2f position, std::string direction = "left") :
 	m_killLabel("0", m_position, resourceManager.getFontHolder()["arialFont"]),
 	m_livesLabel("0", m_position, resourceManager.getFontHolder()["arialFont"]),
 	RAD_TO_DEG(180.f / thor::Pi),
-	DEG_TO_RAD(thor::Pi / 180.f)
+	DEG_TO_RAD(thor::Pi / 180.f),
+	m_audioRef(audio)
 {
 	//Load our shader
 	m_recolourShader.loadFromFile(resourceManager.getShaderHolder()["recolourShader"], sf::Shader::Fragment);
@@ -488,7 +489,10 @@ void Player::handleJoystick(JoystickController & controller)
 
 	//If we are holding LT to aim and we have a sword then throw our sword
 	if (controller.isButtonPressed("X") && m_isAiming && m_holdingSword)
+	{
+		m_audioRef.m_soundMap["ThrowSword"].play();
 		throwSword();
+	}
 
 	if (controller.isButtonHeld("LeftThumbStickLeft") && m_canAttack)
 	{
@@ -1084,6 +1088,10 @@ void Player::setClashed(bool clashed)
 		m_forearmBody->SetLinearVelocity(b2Vec2(0, m_forearmBody->GetLinearVelocity().y));
 		m_sword.getBody()->SetLinearVelocity(b2Vec2(0, m_sword.getBody()->GetLinearVelocity().y));
 	}
+}
+void Player::playAudio()
+{
+	m_audioRef.m_soundMap["SwordCollide"].play();
 }
 void Player::setParried(bool parried)
 {

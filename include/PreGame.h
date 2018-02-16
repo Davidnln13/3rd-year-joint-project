@@ -69,7 +69,7 @@ private:
 	std::vector<OptionButton*> m_btnList; //we will use this to select/deselect buttons in our menu
 	int m_btnIndex; //the index of the button we are currently focused on
 	bool m_buttonPressed; //bool to hold wheter we have pressed on a button or not
-
+	Audio& m_audioRef;
 	//Our navigation icons
 	sf::Sprite m_bIcon;
 	sf::Sprite m_startIcon;

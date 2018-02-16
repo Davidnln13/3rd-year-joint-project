@@ -29,6 +29,7 @@ private:
 	std::map<std::string, Button*> m_buttons; //all buttons
 	std::vector<Button*> m_btnList; //select buttons
 	int m_btnIndex; //button index
+	Audio& m_audioRef;
 	std::string m_previousScreen;
 	Label m_soundVolumeLabel;
 	Label m_musicVolumeLabel;

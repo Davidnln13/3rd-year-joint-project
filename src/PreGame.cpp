@@ -22,7 +22,8 @@ PreGameScreen::PreGameScreen(std::string name, Audio & audio) :
 	m_startLabel("start", sf::Vector2f(960, 683), resourceManager.getFontHolder()["oxinFont"]),
 	m_backLabel("back", sf::Vector2f(1180, 683), resourceManager.getFontHolder()["oxinFont"]),
 	m_transitionCol(255, 255, 255, 255),
-	m_transitionRect(sf::Vector2f(1280, 720))
+	m_transitionRect(sf::Vector2f(1280, 720)),
+	m_audioRef(audio)
 {
 	//Set the position of the rectangle
 	m_transitionRect.setPosition(0, 0);
@@ -125,6 +126,7 @@ std::string PreGameScreen::handleInput(JoystickController & controller1, Joystic
 
 	if (controller1.isButtonPressed("B"))
 	{
+		m_audioRef.m_soundMap["SelectMenuItem"].play();
 		if (m_buttonPressed)
 		{
 			m_buttonPressed = false;
@@ -137,11 +139,13 @@ std::string PreGameScreen::handleInput(JoystickController & controller1, Joystic
 
 	if (controller1.isButtonPressed("Start"))
 	{
+		m_audioRef.m_soundMap["SelectMenuItem"].play();
 		currentScreen = "play game";
 	}
 
 	if (controller1.isButtonPressed("A"))
 	{
+		m_audioRef.m_soundMap["SelectMenuItem"].play();
 		if (m_buttonPressed)
 		{
 			m_buttonPressed = false;
@@ -164,11 +168,13 @@ std::string PreGameScreen::handleInput(JoystickController & controller1, Joystic
 
 		if (controller1.isButtonPressed("LeftThumbStickUp") || controller1.isButtonPressed("DpadUp"))
 		{
+			m_audioRef.m_soundMap["MoveMenu"].play();
 			navigated = true;
 			newIndex--;
 		}
 		if (controller1.isButtonPressed("LeftThumbStickDown") || controller1.isButtonPressed("DpadDown"))
 		{
+			m_audioRef.m_soundMap["MoveMenu"].play();
 			navigated = true;
 			newIndex++;
 		}
@@ -192,11 +198,13 @@ std::string PreGameScreen::handleInput(JoystickController & controller1, Joystic
 
 		if (controller1.isButtonPressed("LeftThumbStickUp") || controller1.isButtonPressed("DpadUp"))
 		{
+			m_audioRef.m_soundMap["MoveMenu"].play();
 			navigated = true;
 			currentOptionValue++;
 		}
 		if (controller1.isButtonPressed("LeftThumbStickDown") || controller1.isButtonPressed("DpadDown"))
 		{
+			m_audioRef.m_soundMap["MoveMenu"].play();
 			navigated = true;
 			currentOptionValue--;
 		}

@@ -3,6 +3,7 @@
 ContactListener::ContactListener():
 	m_spawnParticle(false)
 {
+
 }
 
 void ContactListener::update()
@@ -37,7 +38,6 @@ void ContactListener::draw(sf::RenderWindow & window)
 		pSystem->draw(window);
 
 }
-
 void ContactListener::BeginContact(b2Contact * contact)
 {
 	auto fixA = contact->GetFixtureA();
@@ -171,6 +171,7 @@ void ContactListener::haveTwoSwordsCollided(Player * player1, Player* player2, b
 	if (fixA.GetBody() == player1->getSwordBody() && fixB.GetBody() == m_player2->getSwordBody()
 		|| fixB.GetBody() == player1->getSwordBody() && fixA.GetBody() == m_player2->getSwordBody())
 	{ 
+		player1->playAudio();
 		if (player1->holdingSword() == false) //so if we are not holding a sword
 			player1->setSwordThrown();
 		if(player2->holdingSword() == false) //if the the other player is also not holding a sword

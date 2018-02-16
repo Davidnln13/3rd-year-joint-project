@@ -91,15 +91,19 @@ std::string MainMenu::handleInput(JoystickController& controller1, JoystickContr
 	auto currentScreen = m_name; //the current screen we are on is m_name ie. "mainMenu"
 
 	if (controller1.isButtonPressed("A"))
+	{
+		m_audioMainScreen.m_soundMap["SelectMenuItem"].play();
 		currentScreen = m_buttonNavigator.at(m_btnList.at(m_btnIndex)); //assign the current screen the value of the button navigator with the key of the button
-
+	}
 	if (controller1.isButtonPressed("LeftThumbStickUp") || controller1.isButtonPressed("DpadUp"))
 	{
+		m_audioMainScreen.m_soundMap["MoveMenu"].play();
 		navigated = true;
 		newIndex--;
 	}
 	if (controller1.isButtonPressed("LeftThumbStickDown") || controller1.isButtonPressed("DpadDown"))
 	{
+		m_audioMainScreen.m_soundMap["MoveMenu"].play();
 		navigated = true;
 		newIndex++;
 	}

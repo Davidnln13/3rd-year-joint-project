@@ -2,6 +2,7 @@
 #include "ParticleSystem.h" //So we can spawn particle effects dependign on contacts
 #include "Box2D\Box2D.h"
 #include <iostream>
+#include "Audio.h"
 
 //forward references for our player to avoid circular reference
 class Player;
@@ -42,7 +43,6 @@ private:
 	Player* m_player2;
 	Weapon* m_p1Sword;
 	Weapon* m_p2Sword;
-
 	sf::Vector2f m_partcleSpawnPos;
 	bool m_spawnParticle;
 	//Our particle system holder

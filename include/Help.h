@@ -32,6 +32,8 @@ private:
 	int m_btnIndex; //button index
 	std::string m_previousScreen;
 
+	Audio& m_audioRef;
+
 	sf::Sprite m_ltIcon;
 	sf::Sprite m_lAnalogIcon;
 	sf::Sprite m_dpadIcon;
