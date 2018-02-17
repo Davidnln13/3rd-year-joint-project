@@ -24,10 +24,20 @@ Level::Level(Audio& audio, int levelNum) :
 	m_yellowFlag(resourceManager.getTextureHolder()["Yellow Flag"]),
 	m_yellowBase(sf::Vector2f(100, 100)),
 	m_blueBase(sf::Vector2f(100, 100)),
-	m_p1CapLabel("Captures", sf::Vector2f(-360, 720), resourceManager.getFontHolder()["oxinFont"]),
-	m_p2CapLabel("Captures", sf::Vector2f(1280 + 360, 720), resourceManager.getFontHolder()["oxinFont"])
+	m_p1CapLabel("0", sf::Vector2f(-620, 690), resourceManager.getFontHolder()["arialFont"]),
+	m_p2CapLabel("0", sf::Vector2f(1280 + 360, 720), resourceManager.getFontHolder()["arialFont"])
 {
+	//Set our capture label for our first player
+	m_p1CapLabel.setSize(26);
+	m_p1CapLabel.setOrigin(sf::Vector2f(0,0));
+	m_p1CapLabel.setPosition(sf::Vector2f(-550, 675));
 	m_p1CapLabel.setColor(sf::Color::White);
+
+	//Set our capture label for our second player
+	m_p2CapLabel.setSize(26);
+	m_p2CapLabel.setOrigin(sf::Vector2f(0, 0));
+	m_p2CapLabel.setPosition(sf::Vector2f(1960, 675));
+	m_p2CapLabel.setColor(sf::Color::White);
 
 	m_players.push_back(&m_player2);
 	m_players.push_back(&m_player1);
@@ -89,6 +99,12 @@ Level::Level(Audio& audio, int levelNum) :
 	m_topView.setSize(1280, 360);
 	m_topView.setViewport(sf::FloatRect(0, 0, 1.0, .5f));
 	m_topView.zoom(1.25f);
+
+	//Setting our capture sprites
+	m_p1CaptureSprite.setTexture(resourceManager.getTextureHolder()["Capture Indicator"]);
+	m_p1CaptureSprite.setPosition(-680, 680);
+	m_p2CaptureSprite.setTexture(resourceManager.getTextureHolder()["Capture Indicator"]);
+	m_p2CaptureSprite.setPosition(1830, 680);
 
 	m_blueFlagClock.restart();
 }
@@ -305,6 +321,8 @@ void Level::render(sf::RenderWindow & window)
 
 		m_p1CapLabel.draw(window);
 		m_p2CapLabel.draw(window);
+		window.draw(m_p1CaptureSprite);
+		window.draw(m_p2CaptureSprite);
 
 		//Blend our lights into our overlay
 		window.draw(m_overlay, sf::BlendMultiply);
@@ -427,6 +445,12 @@ void Level::checkFlagCapture(Player & player, Flag & flag, sf::RectangleShape & 
 	{
 		player.setHasFlag(false); //Set has flag to flase so the flag does not stick to the playe raftyer it has been captured
 		player.captureFlag(); //Increase our capture count
+
+		if (player.getPlayerBody() == m_player1.getPlayerBody())
+			m_p1CapLabel.setText(std::to_string(player.captures()), resourceManager.getFontHolder()["arialFont"], sf::Color::White, sf::Vector2f(0, 0));
+		else if (player.getPlayerBody() == m_player2.getPlayerBody())
+			m_p2CapLabel.setText(std::to_string(player.captures()), resourceManager.getFontHolder()["arialFont"], sf::Color::White, sf::Vector2f(0, 0));
+
 		flag.reset(); //Reset the flag
 	}
 }
@@ -702,6 +726,8 @@ void Level::setLevelParameters(int maxKills, int maxTime, int levelNumber, bool 
 	m_playGameOverIndicator = true;
 	m_setWinner = false;
 	m_hasWinner = false;
+	m_p1CapLabel.setText(std::to_string(0), resourceManager.getFontHolder()["arialFont"], sf::Color::White, sf::Vector2f(0, 0));
+	m_p2CapLabel.setText(std::to_string(0), resourceManager.getFontHolder()["arialFont"], sf::Color::White, sf::Vector2f(0, 0));
 
 	//Reset our transition
 	m_transitionAlpha = 0;

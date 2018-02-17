@@ -73,6 +73,7 @@ private:
 	thor::ResourceLoader<sf::Texture> m_windowTile = thor::Resources::fromFile<sf::Texture>("./resources/Textures/Window.png");
 	thor::ResourceLoader<sf::Texture> m_blueFlag = thor::Resources::fromFile<sf::Texture>("./resources/Textures/blue flag.png");
 	thor::ResourceLoader<sf::Texture> m_yellowFlag = thor::Resources::fromFile<sf::Texture>("./resources/Textures/yellow flag.png");
+	thor::ResourceLoader<sf::Texture> m_captureIndicator = thor::Resources::fromFile<sf::Texture>("./resources/Textures/capture indicator.png");
 
 	//Our player related sprite sheets and textures
 	thor::ResourceLoader<sf::Texture> m_idlePlayer = thor::Resources::fromFile<sf::Texture>("./resources/Textures/Idle Spritesheet.png");

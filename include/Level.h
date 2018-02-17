@@ -120,7 +120,9 @@ private:
 
 	std::vector<b2Body*> m_killBoxes;
 
+	//Our label variables
 	std::vector<Label*> m_labels;
 	Label m_timeLabel, m_timeLabelValue;
 	Label m_p1CapLabel, m_p2CapLabel;
+	sf::Sprite m_p1CaptureSprite, m_p2CaptureSprite;
 };

@@ -22,6 +22,7 @@ Weapon::Weapon(sf::Vector2f position) :
 	m_bodyFixt.shape = &boxShape;
 	m_bodyFixt.density = .2f; //giving the sword a mass of .2
 	m_bodyFixt.isSensor = true;
+	m_bodyFixt.filter.categoryBits = 0x0002;
 	m_body->CreateFixture(&m_bodyFixt);
 	m_body->SetUserData(this);
 

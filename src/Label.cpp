@@ -75,6 +75,7 @@ void Label::setOrigin(sf::Vector2f origin)
 
 void Label::setPosition(sf::Vector2f pos)
 {
+	m_position = pos;
 	m_text.setPosition(pos);
 }
 
