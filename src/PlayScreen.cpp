@@ -65,14 +65,12 @@ void PlayScreen::end()
 {
 	//Clears our level
 	m_level.clearLevel();
-
 	m_active = false;
 }
 
 std::string PlayScreen::handleInput(JoystickController& controller1, JoystickController& controller2)
 {
 	auto currentScreen = m_name;
-
 	if (m_paused == false)
 	{
 		//Handle input in the level
