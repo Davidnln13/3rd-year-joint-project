@@ -70,6 +70,9 @@
     <ClCompile Include="Slider.cpp">
       <Filter>Source Files\Widget Source</Filter>
     </ClCompile>
+    <ClCompile Include="src\Flag.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Audio.h">
@@ -143,6 +146,9 @@
     </ClInclude>
     <ClInclude Include="Slider.h">
       <Filter>Header Files\Widget Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Flag.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -19,7 +19,9 @@ Level::Level(Audio& audio, int levelNum) :
 	m_winAnimator(m_animationHolder),
 	m_loseAnimator(m_animationHolder),
 	m_transitionAlpha(0),
-	m_transitionCol(255, 255, 255, m_transitionAlpha) //Make our transition color white with 0 alpha
+	m_transitionCol(255, 255, 255, m_transitionAlpha), //Make our transition color white with 0 alpha
+	m_blueFlag(resourceManager.getTextureHolder()["Blue Flag"]),
+	m_yellowFlag(resourceManager.getTextureHolder()["Yellow Flag"])
 {
 	m_players.push_back(&m_player2);
 	m_players.push_back(&m_player1);
@@ -55,16 +57,21 @@ Level::Level(Audio& audio, int levelNum) :
 	m_transitionRect.setPosition(0, 0);
 	m_transitionRect.setFillColor(m_transitionCol);
 
+	//Setup our animation for our win/lose icons
 	setUpAnimation();
 
-	m_originalView.setCenter(640, 360);
-	m_originalView.setSize(1280, 720);
+	//Setting up our split screen views
+	m_testView.setSize(1280, 720);
+	m_testView.zoom(2);
+	m_testView.setCenter(640, 360);
 	m_bottomView.setSize(1280, 360);
 	m_bottomView.setViewport(sf::FloatRect(0, .5f, 1.0, .5f));
 	m_bottomView.zoom(1.25f);
 	m_topView.setSize(1280, 360);
 	m_topView.setViewport(sf::FloatRect(0, 0, 1.0, .5f));
 	m_topView.zoom(1.25f);
+
+	m_blueFlagClock.restart();
 }
 
 void Level::update()
@@ -125,6 +132,45 @@ void Level::update()
 	//If there is a time limit and the game is not over
 	if (false == m_gameOver)
 	{
+		//If the gamemode is CTF
+		if (m_isCtf)
+		{
+
+			if (m_blueFlagClock.getElapsedTime().asSeconds() >= 1 && m_player1.hasFlag() == false)
+			{
+				auto p = m_player1.hitBox().getGlobalBounds();
+				auto f = m_blueFlag.hitBox().getGlobalBounds();
+
+				if(m_player1.hitBox().getGlobalBounds().intersects(m_blueFlag.hitBox().getGlobalBounds()))
+				{
+					m_blueFlag.setPickedUp(true);
+					m_player1.setHasFlag(true);
+					std::cout << "Picked up flag" << std::endl;
+				}
+			}
+
+
+			if (m_player1.hasFlag())
+			{
+				if (m_player1.facingLeft())
+				{
+					m_blueFlag.setPosition(m_player1.position().x + 10, m_player1.position().y - 35, 1);
+				}
+
+				else
+				{
+					m_blueFlag.setPosition(m_player1.position().x - 10, m_player1.position().y - 35, -1);
+
+				}
+
+			}
+
+			
+
+
+		}
+
+
 		//if the time gone since our clock was started (restart()) then set our game over to true
 		if (m_hasTimeLimit && m_timeLimitClock.getElapsedTime().asSeconds() >= m_timeLimit)
 		{
@@ -183,25 +229,21 @@ void Level::render(sf::RenderWindow & window)
 {
 	window.clear(sf::Color::Black); //Clear the scree n with a black background
 
-	int drawIters = 1;
-
-	if (m_isCtf)
-	{
-		drawIters = 2;
-	}
-
+	int drawIters = 1; //How many times to draw our level screen
 
 	for (int i = 0; i < drawIters; i++)
 	{
 		//if the gameode is CTF draw to our two views
 		if (m_isCtf)
 		{
+			drawIters = 2; //Make it draw our screen twice and set our view each time
 			m_viewVector.at(i)->setCenter(m_players.at(i)->position());
 			window.setView(*m_viewVector.at(i));
+			window.setView(m_testView); //TEMP!
 		}
 
 		//m_overlayTexture.setView(*m_viewVector.at(i));
-		m_overlayTexture.clear(sf::Color(50, 50, 50, 255));
+		m_overlayTexture.clear(sf::Color(50, 50, 50, 225));
 		m_overlayTexture.display();
 
 		//Draw our player + sword lights
@@ -238,6 +280,12 @@ void Level::render(sf::RenderWindow & window)
 		for each (auto& torch in m_torchSprites)
 			window.draw(torch);
 
+		//If the gameode is ctf draw our flags and flag bases
+		if (m_isCtf)
+		{
+			m_blueFlag.draw(window);
+		}
+
 		m_player1.render(window); //draw the first player	
 		m_player2.render(window); //draw the second player
 
@@ -263,7 +311,8 @@ void Level::render(sf::RenderWindow & window)
 		window.draw(m_transitionRect);
 	}
 
-	window.setView(m_originalView);
+	//Reset our windows view to the defualt view of the window(ie. the one giving to the window when it was created)
+	window.setView(window.getDefaultView());
 }
 
 void Level::drawToOverlay(sf::Sprite sprite)
@@ -394,6 +443,9 @@ void Level::setUpLevel(std::string levelName)
 	//set our players spawn point
 	m_player1.spawnPlayer(startPoints.at(0)["x"], startPoints.at(0)["y"], startPoints.at(0)["facingLeft"]);
 	m_player2.spawnPlayer(startPoints.at(1)["x"], startPoints.at(1)["y"], startPoints.at(1)["facingLeft"]);
+	//Set the players has flag bool to false
+	m_player1.setHasFlag(false);
+	m_player2.setHasFlag(false);
 
 	//Setup our floors
 	for (int i = 0; i < floorData.size(); i++)
@@ -510,7 +562,15 @@ void Level::checkForRespawn(Player& deadPlayer, Player& otherPlayer)
 
 		//Using the ternary operator to determine wheter to spawn the player facing left or not
 		bool facingLeft = (selectedSpawn.x > otherPlayerPos.x) ? true : false;
+		
+		if (deadPlayer.hasFlag())
+		{
+			if (deadPlayer.getPlayerBody() == m_player1.getPlayerBody())
+				m_blueFlag.setPickedUp(false);
 
+			m_blueFlagClock.restart();
+		}
+		deadPlayer.setHasFlag(false);
 		deadPlayer.setSpawnPoint(selectedSpawn, facingLeft);
 	}
 }

@@ -69,13 +69,16 @@ public:
 	bool switchedWeaponPos();
 	bool facingLeft();
 	bool& dead();
+	bool& hasFlag();
 	int& lives();
 	int& kills();
 	int& captures();
+	bool& respawning();
 	sf::Vector2f position();
 	sf::Vector2f& lastSpawnPos();
 	sf::Sprite& getLight();
 	sf::Sprite& getSwordLight();
+	sf::RectangleShape& hitBox();
 
 	//Setters
 	void setCanJump(bool canJump);
@@ -91,6 +94,7 @@ public:
 	void increaseKills();
 	//play audio from contact listener
 	void playAudio();
+	void setHasFlag(bool has);
 
 private:
 	bool m_canMoveLeft, m_canMoveRight; //Booleans to hold wheter we can move left or right
@@ -110,6 +114,7 @@ private:
 	bool m_canPickupSword; //bool to determine wheter we CAN pickup a sword or not
 	bool m_parried; //bool to determine if we have bene parried
 	bool m_switchedSwordPos; //bool to show if we have switched sword positions on the y axis
+	bool m_hasFlag;
 	float m_moveSpeed; //the speed at which our player move shorizontally
 	float m_gravityScale; //the scale of gravity on our bodies
 	sf::Clock m_respawnClock; //Our clock to respawn the player, we will use this clock to put a timer between spawns

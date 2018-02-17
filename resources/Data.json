@@ -121,12 +121,12 @@
       "Start Points":[
         {
           "x":125,
-          "y":540,
+          "y":610,
           "facingLeft": false
         },
         {
           "x": 1155,
-          "y": 540,
+          "y": 610,
           "facingLeft": true
         }
       ]
@@ -189,6 +189,14 @@
           "PosY":234
         },
         {
+          "PosX":-160,
+          "PosY":695
+        },
+        {
+          "PosX":-480,
+          "PosY":695
+        },
+        {
           "PosX":160,
           "PosY":695
         },
@@ -202,6 +210,14 @@
         },
         {
           "PosX":1120,
+          "PosY":695
+        },
+        {
+          "PosX":1440,
+          "PosY":695
+        },
+        {
+          "PosX":1760,
           "PosY":695
         },
         {
@@ -234,12 +250,12 @@
       "Start Points":[
         {
           "x":125,
-          "y":540,
+          "y":610,
           "facingLeft": false
         },
         {
           "x": 1155,
-          "y": 540,
+          "y": 610,
           "facingLeft": true
         }
       ]

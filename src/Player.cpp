@@ -130,7 +130,6 @@ Player::Player(Audio& audio, sf::Vector2f position, std::string direction = "lef
 	m_jumpSensorJointDef.localAnchorB.Set(0, 0);
 	m_jumpSensorJoint = (b2WeldJoint*)world.CreateJoint(&m_jumpSensorJointDef);
 
-	/*------> TEMPORARY <------*/
 	b2WeldJointDef leftWeld;
 	leftWeld.bodyA = m_leftSensorBody;
 	leftWeld.bodyB = m_playerBody;
@@ -146,9 +145,6 @@ Player::Player(Audio& audio, sf::Vector2f position, std::string direction = "lef
 	rightWeld.localAnchorA.Set(-(m_playerRect.getSize().x / 2.0f) / PPM, 0);
 	rightWeld.localAnchorB.Set(0, 0);
 	m_rightWallSensorJoint = (b2WeldJoint*)world.CreateJoint(&rightWeld);
-	/*------> TEMPORARY <------*/
-
-
 
 	m_attackClock.restart(); //start our clock when the player is created
 
@@ -178,7 +174,7 @@ Player::Player(Audio& audio, sf::Vector2f position, std::string direction = "lef
 	}
 	else
 	{
-		setColour(sf::Color(65, 244, 232));
+		setColour(sf::Color(65, 244, 232, 255));
 		m_sword.setColor(sf::Color(65, 244, 232));
 		m_forearmRect.setFillColor(sf::Color(65, 244, 232));
 	}
@@ -217,6 +213,7 @@ void Player::createFixture(b2Body * body, float width, float height, bool isSens
 	fixDef.density = density;
 	fixDef.restitution = restitution;
 	fixDef.friction = friction;
+	fixDef.filter.categoryBits = 0x0002; //Set the catgeory bits to this, this mean swe can make othe rbodies not collided with the player bodies
 	
 	body->CreateFixture(&fixDef); //Create the fixture for the passed ove rbody
 }
@@ -1093,6 +1090,10 @@ void Player::playAudio()
 {
 	m_audioRef.m_soundMap["SwordCollide"].play();
 }
+void Player::setHasFlag(bool has)
+{
+	m_hasFlag = has;
+}
 void Player::setParried(bool parried)
 {
 	m_parried = parried;
@@ -1168,6 +1169,11 @@ bool & Player::dead()
 	return m_dead;
 }
 
+bool & Player::hasFlag()
+{
+	return m_hasFlag;
+}
+
 int & Player::lives()
 {
 	return m_lives;
@@ -1181,6 +1187,11 @@ int & Player::kills()
 int & Player::captures()
 {
 	return m_ctfCaptures;
+}
+
+bool & Player::respawning()
+{
+	return m_respawn;
 }
 
 sf::Vector2f Player::position()
@@ -1201,4 +1212,9 @@ sf::Sprite & Player::getLight()
 sf::Sprite & Player::getSwordLight()
 {
 	return m_sword.getLight();
+}
+
+sf::RectangleShape & Player::hitBox()
+{
+	return m_playerRect;
 }

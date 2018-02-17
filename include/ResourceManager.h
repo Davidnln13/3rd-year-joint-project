@@ -50,6 +50,7 @@ private:
 	thor::ResourceLoader<sf::Texture> m_plusScoreIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/Add score Icon.png");
 	thor::ResourceLoader<sf::Texture> m_minusScoreIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/Minus Score Icon.png");
 	thor::ResourceLoader<sf::Texture> m_particle = thor::Resources::fromFile<sf::Texture>("./resources/Textures/particle.png");
+
 	//controller icons 
 	thor::ResourceLoader<sf::Texture> m_startIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/Controller Icons/Start Icon.png");
 	thor::ResourceLoader<sf::Texture> m_bIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI//Controller Icons/B Icon.png");
@@ -63,13 +64,15 @@ private:
 	thor::ResourceLoader<sf::Texture> m_loseIndicator = thor::Resources::fromFile<sf::Texture>("./resources/GUI/lose indicator.png");
 	thor::ResourceLoader<sf::Texture> m_drawIndicator = thor::Resources::fromFile<sf::Texture>("./resources/GUI/draw indicator.png");
 
-	//Our Level tiles
+	//Our Level Textures
 	thor::ResourceLoader<sf::Texture> m_castleBg = thor::Resources::fromFile<sf::Texture>("./resources/Textures/Castle BG.png");
 	thor::ResourceLoader<sf::Texture> m_castleCtfBg = thor::Resources::fromFile<sf::Texture>("./resources/Textures/Castle CTF BG.png");
 	thor::ResourceLoader<sf::Texture> m_stoneTile = thor::Resources::fromFile<sf::Texture>("./resources/Textures/Stone Tile.png");
 	thor::ResourceLoader<sf::Texture> m_torch = thor::Resources::fromFile<sf::Texture>("./resources/Textures/Torch Spritesheet.png");
 	thor::ResourceLoader<sf::Texture> m_torchLight = thor::Resources::fromFile<sf::Texture>("./resources/Textures/Torch Light Spritesheet.png");
 	thor::ResourceLoader<sf::Texture> m_windowTile = thor::Resources::fromFile<sf::Texture>("./resources/Textures/Window.png");
+	thor::ResourceLoader<sf::Texture> m_blueFlag = thor::Resources::fromFile<sf::Texture>("./resources/Textures/blue flag.png");
+	thor::ResourceLoader<sf::Texture> m_yellowFlag = thor::Resources::fromFile<sf::Texture>("./resources/Textures/yellow flag.png");
 
 	//Our player related sprite sheets and textures
 	thor::ResourceLoader<sf::Texture> m_idlePlayer = thor::Resources::fromFile<sf::Texture>("./resources/Textures/Idle Spritesheet.png");

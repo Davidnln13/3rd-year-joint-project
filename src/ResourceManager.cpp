@@ -51,6 +51,8 @@ ResourceManager::ResourceManager()
 		acquireResource("stoneTile", m_stoneTile);
 		acquireResource("torch", m_torch);
 		acquireResource("torchLight", m_torchLight);
+		acquireResource("Yellow Flag", m_yellowFlag);
+		acquireResource("Blue Flag", m_blueFlag);
 
 		//Load player textures
 		acquireResource("playerIdle", m_idlePlayer, false); //setting our animations to not smooth eliminates artefacts

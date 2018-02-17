@@ -3,6 +3,7 @@
 #include "Player.h"
 #include "Obstacle.h"
 #include "ContactListener.h"
+#include "Flag.h"
 #include "Audio.h"
 
 /// <summary>
@@ -57,7 +58,11 @@ private:
 	sf::RectangleShape m_transitionRect;
 	sf::Color m_transitionCol;
 
-	sf::View m_originalView, m_bottomView, m_topView;
+	//Ctf variables
+	Flag m_yellowFlag, m_blueFlag;
+	sf::Clock m_blueFlagClock, m_yellowFlagClock;
+
+	sf::View m_testView, m_bottomView, m_topView;
 	std::vector<sf::View*> m_viewVector;
 
 	//Our level background sprite
