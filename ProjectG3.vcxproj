@@ -138,7 +138,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Slider.cpp" />
     <ClCompile Include="src\Audio.cpp" />
     <ClCompile Include="src\LevelLoader.cpp" />
     <ClCompile Include="src\Obstacle.cpp" />
@@ -160,6 +159,7 @@
     <ClCompile Include="src\PreGame.cpp" />
     <ClCompile Include="src\ResourceManager.cpp" />
     <ClCompile Include="src\ScreenManager.cpp" />
+    <ClCompile Include="src\Slider.cpp" />
     <ClCompile Include="src\Weapon.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -184,9 +184,9 @@
     <ClInclude Include="include\ResourceManager.h" />
     <ClInclude Include="include\Screen.h" />
     <ClInclude Include="include\ScreenManager.h" />
+    <ClInclude Include="include\Slider.h" />
     <ClInclude Include="include\Vector2Helper.h" />
     <ClInclude Include="include\Weapon.h" />
-    <ClInclude Include="Slider.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

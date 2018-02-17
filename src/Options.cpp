@@ -8,8 +8,8 @@ Options::Options(std::string name, Audio& audio) :
 	m_soundVolumeLabel("Sound", sf::Vector2f(640, 200), resourceManager.getFontHolder()["oxinFont"]),
 	m_musicVolumeLabel("Music", sf::Vector2f(640, 400), resourceManager.getFontHolder()["oxinFont"]),
 	m_audioRef(audio),
-	m_soundVolumeButton(sf::Vector2f(640, 240), "", resourceManager.getFontHolder()["arialFont"], "Kill Icon", "Button Spritesheet Reversed"),
-	m_musicVolumeButton(sf::Vector2f(640, 440), "", resourceManager.getFontHolder()["arialFont"], "Kill Icon", "Button Spritesheet Reversed")
+	m_soundSlider("soundSlider", sf::Vector2f(440,240), sf::IntRect(0, 0, 357, 50)),
+	m_musicSlider("musicSlider", sf::Vector2f(440,440), sf::IntRect(0, 0, 357, 50))
 {
 	//adding our buttons to our buttons map
 	m_buttons[m_back.getName()] = &m_back;
@@ -18,9 +18,19 @@ Options::Options(std::string name, Audio& audio) :
 
 void Options::update()
 {
+	for (auto& key : m_audioRef.m_soundMap)
+	{
+		m_audioRef.m_soundMap[key.first].setVolume(m_soundSlider.getSliderLevel());
+	}
+	for (auto& key : m_audioRef.m_musicMap)
+	{
+		m_audioRef.m_musicMap[key.first].setVolume(m_musicSlider.getSliderLevel());
+	}
 	//loop through our buttons map and update each one
 	for (auto key : m_buttons)
 		key.second->update();
+	m_soundSlider.update();
+    m_musicSlider.update();
 }
 
 void Options::render(sf::RenderWindow& window)
@@ -31,6 +41,8 @@ void Options::render(sf::RenderWindow& window)
 		key.second->render(window);
 	m_soundVolumeLabel.draw(window);
 	m_musicVolumeLabel.draw(window);
+	m_soundSlider.draw(window);
+	m_musicSlider.draw(window);
 }
 
 void Options::start()
@@ -52,7 +64,14 @@ std::string Options::handleInput(JoystickController& controller1, JoystickContro
 
 	if (controller1.isButtonPressed("A"))
 	{
-		currentScreen = m_previousScreen;
+		m_soundSlider.moveDown();
+		//currentScreen = m_previousScreen;
+		m_audioRef.m_soundMap["SelectMenuItem"].play();
+	}
+	if (controller1.isButtonPressed("B"))
+	{
+		m_soundSlider.moveUp();
+		//currentScreen = m_previousScreen;
 		m_audioRef.m_soundMap["SelectMenuItem"].play();
 	}
 

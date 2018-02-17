@@ -6,6 +6,7 @@
 #include "ResourceManager.h"
 #include "Button.h"
 #include "OptionButton.h"
+#include "Slider.h"
 #include "JoystickController.h"
 
 //Creating a method that outputs a string to the console
