@@ -3,6 +3,9 @@
 Flag::Flag(sf::Texture& texture) :
 	m_hitBox(sf::Vector2f(25, 60))
 {
+	m_startPos = sf::Vector2f(-500, 650);
+
+
 	//Set the properties of our hitbox
 	m_hitBox.setOutlineColor(sf::Color(244, 241, 66, 255));
 	m_hitBox.setOutlineThickness(2);
@@ -38,11 +41,19 @@ Flag::Flag(sf::Texture& texture) :
 
 void Flag::draw(sf::RenderWindow & window)
 {
-
 	m_hitBox.setPosition(m_body->GetPosition().x * PPM, m_body->GetPosition().y * PPM);
 	m_sprite.setPosition(m_body->GetPosition().x * PPM, m_body->GetPosition().y * PPM);
 	window.draw(m_hitBox); //Draw our hitbox
 	window.draw(m_sprite); //Draw our sprite
+}
+
+void Flag::reset()
+{
+	m_hitBox.setScale(1, 1);
+	m_hitBox.setPosition(m_startPos.x, m_startPos.y);
+	m_sprite.setScale(-1, 1);
+	m_sprite.setPosition(m_startPos.x, m_startPos.y);
+	m_body->SetTransform(b2Vec2(m_startPos.x / PPM, m_startPos.y / PPM), 0);
 }
 
 sf::RectangleShape & Flag::hitBox()

@@ -62,6 +62,7 @@ private:
 	//Ctf variables
 	Flag m_yellowFlag, m_blueFlag;
 	sf::Clock m_blueFlagClock, m_yellowFlagClock;
+	sf::RectangleShape m_yellowBase, m_blueBase;
 
 	sf::View m_testView, m_bottomView, m_topView;
 	std::vector<sf::View*> m_viewVector;

@@ -21,7 +21,9 @@ Level::Level(Audio& audio, int levelNum) :
 	m_transitionAlpha(0),
 	m_transitionCol(255, 255, 255, m_transitionAlpha), //Make our transition color white with 0 alpha
 	m_blueFlag(resourceManager.getTextureHolder()["Blue Flag"]),
-	m_yellowFlag(resourceManager.getTextureHolder()["Yellow Flag"])
+	m_yellowFlag(resourceManager.getTextureHolder()["Yellow Flag"]),
+	m_yellowBase(sf::Vector2f(100, 100)),
+	m_blueBase(sf::Vector2f(100, 100))
 {
 	m_players.push_back(&m_player2);
 	m_players.push_back(&m_player1);
@@ -59,6 +61,18 @@ Level::Level(Audio& audio, int levelNum) :
 
 	//Setup our animation for our win/lose icons
 	setUpAnimation();
+
+	//Setting our base rectangles
+	m_yellowBase.setOrigin(50, 50);
+	m_yellowBase.setOutlineColor(sf::Color::Yellow);
+	m_yellowBase.setOutlineThickness(2);
+	m_yellowBase.setFillColor(sf::Color::Transparent);
+	m_yellowBase.setPosition(-500, 650);
+	m_blueBase.setOrigin(50, 50);
+	m_blueBase.setOutlineColor(sf::Color::Yellow);
+	m_blueBase.setOutlineThickness(2);
+	m_blueBase.setFillColor(sf::Color::Transparent);
+	m_blueBase.setPosition(1280 + 500, 650);
 
 	//Setting up our split screen views
 	m_testView.setSize(1280, 720);
@@ -138,6 +152,11 @@ void Level::update()
 			//Checks if the player has a flag, if so, set the flags position
 			checkFlagPickup(m_player1, m_blueFlag, m_blueFlagClock);	
 			checkFlagPickup(m_player2, m_yellowFlag, m_yellowFlagClock);
+
+			if (m_player1.hitBox().getGlobalBounds().intersects(m_yellowFlag.hitBox().getGlobalBounds()))
+			{
+				m_yellowFlag.reset();
+			}
 		}
 
 
@@ -255,6 +274,8 @@ void Level::render(sf::RenderWindow & window)
 		{
 			m_blueFlag.draw(window);
 			m_yellowFlag.draw(window);
+			window.draw(m_yellowBase);
+			window.draw(m_blueBase);
 		}
 
 		m_player1.render(window); //draw the first player	

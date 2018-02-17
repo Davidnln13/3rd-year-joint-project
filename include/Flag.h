@@ -15,6 +15,9 @@ public:
 
 	void draw(sf::RenderWindow& window);
 
+	//Resets our flag back to its original state and position
+	void reset();
+
 	//Getters
 	sf::RectangleShape& hitBox();
 
@@ -25,6 +28,7 @@ public:
 private:
 	b2Body* m_body;
 
+	sf::Vector2f m_startPos;
 	sf::RectangleShape m_hitBox;
 	sf::Sprite m_sprite;
 };
