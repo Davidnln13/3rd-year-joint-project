@@ -23,6 +23,7 @@ public:
 	void drawToOverlay(sf::Sprite sprite);
 	void playAnimation();
 	void setUpAnimation();
+	void checkFlagPickup(Player&  player, Flag& flag, sf::Clock& flagClock);
 
 	b2Body* createKillBox(float x, float y, float w, float h);
 	std::string handleInput(JoystickController& controller1, JoystickController& controller2);

@@ -135,39 +135,9 @@ void Level::update()
 		//If the gamemode is CTF
 		if (m_isCtf)
 		{
-
-			if (m_blueFlagClock.getElapsedTime().asSeconds() >= 1 && m_player1.hasFlag() == false)
-			{
-				auto p = m_player1.hitBox().getGlobalBounds();
-				auto f = m_blueFlag.hitBox().getGlobalBounds();
-
-				if(m_player1.hitBox().getGlobalBounds().intersects(m_blueFlag.hitBox().getGlobalBounds()))
-				{
-					m_blueFlag.setPickedUp(true);
-					m_player1.setHasFlag(true);
-					std::cout << "Picked up flag" << std::endl;
-				}
-			}
-
-
-			if (m_player1.hasFlag())
-			{
-				if (m_player1.facingLeft())
-				{
-					m_blueFlag.setPosition(m_player1.position().x + 10, m_player1.position().y - 35, 1);
-				}
-
-				else
-				{
-					m_blueFlag.setPosition(m_player1.position().x - 10, m_player1.position().y - 35, -1);
-
-				}
-
-			}
-
-			
-
-
+			//Checks if the player has a flag, if so, set the flags position
+			checkFlagPickup(m_player1, m_blueFlag, m_blueFlagClock);	
+			checkFlagPickup(m_player2, m_yellowFlag, m_yellowFlagClock);
 		}
 
 
@@ -284,6 +254,7 @@ void Level::render(sf::RenderWindow & window)
 		if (m_isCtf)
 		{
 			m_blueFlag.draw(window);
+			m_yellowFlag.draw(window);
 		}
 
 		m_player1.render(window); //draw the first player	
@@ -380,6 +351,29 @@ void Level::setUpAnimation()
 	m_loseAnimationClock.restart();
 	m_draw1AnimationClock.restart();
 	m_draw2AnimationClock.restart();
+}
+
+void Level::checkFlagPickup(Player & player, Flag & flag, sf::Clock & flagClock)
+{
+	//If the player isnt holding a flag
+	if (flagClock.getElapsedTime().asSeconds() >= 1 && player.hasFlag() == false)
+	{
+		if (player.hitBox().getGlobalBounds().intersects(flag.hitBox().getGlobalBounds()))
+		{
+			flag.setPickedUp(true);
+			player.setHasFlag(true);
+			std::cout << "Picked up flag" << std::endl;
+		}
+	}
+
+	else if (player.hasFlag())
+	{
+		if (player.facingLeft())
+			flag.setPosition(player.position().x + 10, player.position().y - 35, 1);
+
+		else
+			flag.setPosition(player.position().x - 10, player.position().y - 35, -1);
+	}
 }
 
 b2Body* Level::createKillBox(float x, float y, float w, float h)
@@ -566,9 +560,15 @@ void Level::checkForRespawn(Player& deadPlayer, Player& otherPlayer)
 		if (deadPlayer.hasFlag())
 		{
 			if (deadPlayer.getPlayerBody() == m_player1.getPlayerBody())
+			{
 				m_blueFlag.setPickedUp(false);
-
-			m_blueFlagClock.restart();
+				m_blueFlagClock.restart();
+			}
+			else if (deadPlayer.getPlayerBody() == m_player2.getPlayerBody())
+			{
+				m_yellowFlag.setPickedUp(false);
+				m_yellowFlagClock.restart();
+			}
 		}
 		deadPlayer.setHasFlag(false);
 		deadPlayer.setSpawnPoint(selectedSpawn, facingLeft);
