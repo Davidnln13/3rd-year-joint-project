@@ -12,6 +12,7 @@ ResourceManager::ResourceManager()
 	try 
 	{
 		//load GUI
+		acquireResource("Button Spritesheet Reversed", m_buttonLayoutReversed);
 		acquireResource("Button Spritesheet", m_buttonLayout);
 		acquireResource("Button Selected", m_buttonSelected);
 		acquireResource("Options Icon", m_optionsIcon);

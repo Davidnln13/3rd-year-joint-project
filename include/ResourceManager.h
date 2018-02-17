@@ -35,6 +35,7 @@ private:
 
 	//Our GUI Resources
 	thor::ResourceLoader<sf::Texture> m_buttonLayout = thor::Resources::fromFile<sf::Texture>("./resources/GUI/Button Spritesheet.png");
+	thor::ResourceLoader<sf::Texture> m_buttonLayoutReversed = thor::Resources::fromFile<sf::Texture>("./resources/GUI/Button Spritesheet Reversed.png");
 	thor::ResourceLoader<sf::Texture> m_buttonSelected = thor::Resources::fromFile<sf::Texture>("./resources/GUI/Selected Button Spritesheet.png");
 	thor::ResourceLoader<sf::Texture> m_optionsIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/settings icon.png");	
 	thor::ResourceLoader<sf::Texture> m_helpIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/help icon.png");

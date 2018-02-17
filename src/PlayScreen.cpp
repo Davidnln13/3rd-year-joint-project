@@ -56,16 +56,22 @@ void PlayScreen::render(sf::RenderWindow& window)
 
 void PlayScreen::start()
 {
-	m_paused = false;
-	m_audioPlayScreen.updateMusic("Game");
-	m_active = true;
+	if (m_paused == false)
+	{
+		m_paused = false;
+		m_audioPlayScreen.updateMusic("Game");
+		m_active = true;
+	}
 }
 
 void PlayScreen::end()
 {
 	//Clears our level
-	m_level.clearLevel();
-	m_active = false;
+	if (m_paused == false)
+	{
+		m_level.clearLevel();
+		m_active = false;
+	}
 }
 
 std::string PlayScreen::handleInput(JoystickController& controller1, JoystickController& controller2)
@@ -85,19 +91,27 @@ std::string PlayScreen::handleInput(JoystickController& controller1, JoystickCon
 
 		if (controller1.isButtonPressed("A"))
 		{
+			m_audioPlayScreen.m_soundMap["SelectMenuItem"].play();
 			if (m_btnList.at(m_btnIndex)->getName() == "continue")
 				m_paused = false;
+			else if (m_btnList.at(m_btnIndex)->getName() == "main menu")
+			{
+				m_paused = false;
+				currentScreen = m_btnList.at(m_btnIndex)->getName(); //assign the current screen the name of our button
+			}
 			else
 				currentScreen = m_btnList.at(m_btnIndex)->getName(); //assign the current screen the name of our button
 		}
 
 		if (controller1.isButtonPressed("LeftThumbStickUp") || controller1.isButtonPressed("DpadUp"))
 		{
+			m_audioPlayScreen.m_soundMap["MoveMenu"].play();
 			navigated = true;
 			newIndex--;
 		}
 		if (controller1.isButtonPressed("LeftThumbStickDown") || controller1.isButtonPressed("DpadDown"))
 		{
+			m_audioPlayScreen.m_soundMap["MoveMenu"].play();
 			navigated = true;
 			newIndex++;
 		}

@@ -40,6 +40,7 @@ public:
 
 	void selectButton(int newIndex);
 
+
 	//Setters
 	void setIconSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position);
 	void setButtonText(OptionButton* btn, std::string text);

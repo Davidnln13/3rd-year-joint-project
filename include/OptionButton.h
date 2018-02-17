@@ -7,7 +7,7 @@ extern ResourceManager resourceManager;
 class OptionButton
 {
 public:
-	OptionButton(sf::Vector2f position, std::string name, sf::Font& font, std::string iconName);
+	OptionButton(sf::Vector2f position, std::string name, sf::Font& font, std::string iconName, std::string textureName);
 	void update();
 	void render(sf::RenderWindow& window);
 	void select();

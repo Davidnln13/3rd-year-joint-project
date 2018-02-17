@@ -1,5 +1,7 @@
 #pragma once
 #include "SFML\Graphics.hpp"
+#include "JoystickController.h"
+#include "ResourceManager.h"
 
 class Slider
 {
@@ -8,6 +10,7 @@ public:
 
 	void update();
 	void draw(sf::RenderWindow& window);
+	std::string handleInput(JoystickController& controller1, JoystickController& controller2);
 	//setter
 	void setSliderLevel(int level);
 	//getter

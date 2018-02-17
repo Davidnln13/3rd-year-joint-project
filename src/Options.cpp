@@ -7,7 +7,9 @@ Options::Options(std::string name, Audio& audio) :
 	m_previousScreen(name),
 	m_soundVolumeLabel("Sound", sf::Vector2f(640, 200), resourceManager.getFontHolder()["oxinFont"]),
 	m_musicVolumeLabel("Music", sf::Vector2f(640, 400), resourceManager.getFontHolder()["oxinFont"]),
-	m_audioRef(audio)
+	m_audioRef(audio),
+	m_soundVolumeButton(sf::Vector2f(640, 240), "", resourceManager.getFontHolder()["arialFont"], "Kill Icon", "Button Spritesheet Reversed"),
+	m_musicVolumeButton(sf::Vector2f(640, 440), "", resourceManager.getFontHolder()["arialFont"], "Kill Icon", "Button Spritesheet Reversed")
 {
 	//adding our buttons to our buttons map
 	m_buttons[m_back.getName()] = &m_back;
