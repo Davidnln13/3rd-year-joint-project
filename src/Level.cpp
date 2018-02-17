@@ -23,8 +23,12 @@ Level::Level(Audio& audio, int levelNum) :
 	m_blueFlag(resourceManager.getTextureHolder()["Blue Flag"]),
 	m_yellowFlag(resourceManager.getTextureHolder()["Yellow Flag"]),
 	m_yellowBase(sf::Vector2f(100, 100)),
-	m_blueBase(sf::Vector2f(100, 100))
+	m_blueBase(sf::Vector2f(100, 100)),
+	m_p1CapLabel("Captures", sf::Vector2f(-360, 720), resourceManager.getFontHolder()["oxinFont"]),
+	m_p2CapLabel("Captures", sf::Vector2f(1280 + 360, 720), resourceManager.getFontHolder()["oxinFont"])
 {
+	m_p1CapLabel.setColor(sf::Color::White);
+
 	m_players.push_back(&m_player2);
 	m_players.push_back(&m_player1);
 	m_viewVector.push_back(&m_bottomView);
@@ -55,8 +59,9 @@ Level::Level(Audio& audio, int levelNum) :
 	m_overlay.setPosition(640, 360);
 
 	//Create our white transition rectangle
-	m_transitionRect.setSize(sf::Vector2f(1280, 720));
-	m_transitionRect.setPosition(0, 0);
+	m_transitionRect.setSize(sf::Vector2f(4500, 1440));
+	m_transitionRect.setOrigin(m_transitionRect.getGlobalBounds().width / 2.0, m_transitionRect.getGlobalBounds().height / 2.0);
+	m_transitionRect.setPosition(640, 360);
 	m_transitionRect.setFillColor(m_transitionCol);
 
 	//Setup our animation for our win/lose icons
@@ -67,12 +72,12 @@ Level::Level(Audio& audio, int levelNum) :
 	m_yellowBase.setOutlineColor(sf::Color::Yellow);
 	m_yellowBase.setOutlineThickness(2);
 	m_yellowBase.setFillColor(sf::Color::Transparent);
-	m_yellowBase.setPosition(-500, 650);
+	m_yellowBase.setPosition(-590, 620);
 	m_blueBase.setOrigin(50, 50);
-	m_blueBase.setOutlineColor(sf::Color::Yellow);
+	m_blueBase.setOutlineColor(sf::Color::Cyan);
 	m_blueBase.setOutlineThickness(2);
 	m_blueBase.setFillColor(sf::Color::Transparent);
-	m_blueBase.setPosition(1280 + 500, 650);
+	m_blueBase.setPosition(1280 + 640 - 12.5f, 620);
 
 	//Setting up our split screen views
 	m_testView.setSize(1280, 720);
@@ -153,10 +158,12 @@ void Level::update()
 			checkFlagPickup(m_player1, m_blueFlag, m_blueFlagClock);	
 			checkFlagPickup(m_player2, m_yellowFlag, m_yellowFlagClock);
 
-			if (m_player1.hitBox().getGlobalBounds().intersects(m_yellowFlag.hitBox().getGlobalBounds()))
-			{
-				m_yellowFlag.reset();
-			}
+			//Check if any flags have been reset
+			checkFlagReset(m_player1, m_player2, m_yellowFlag, m_yellowBase);
+			checkFlagReset(m_player2, m_player1, m_blueFlag, m_blueBase);
+
+			//Check for any flag captures
+			checkFlagCapture(m_player1, m_blueFlag, m_yellowBase);
 		}
 
 
@@ -228,7 +235,7 @@ void Level::render(sf::RenderWindow & window)
 			drawIters = 2; //Make it draw our screen twice and set our view each time
 			m_viewVector.at(i)->setCenter(m_players.at(i)->position());
 			window.setView(*m_viewVector.at(i));
-			window.setView(m_testView); //TEMP!
+			//window.setView(m_testView); //TEMP!
 		}
 
 		//m_overlayTexture.setView(*m_viewVector.at(i));
@@ -249,12 +256,12 @@ void Level::render(sf::RenderWindow & window)
 
 		window.draw(m_bg); //draw the background
 
-		//Rendering our floor
-		for each (auto& tile in m_floorSprites)
-			window.draw(tile);
-
 		//Render our walls
 		for each (auto& tile in m_wallSprites)
+			window.draw(tile);
+
+		//Rendering our floor
+		for each (auto& tile in m_floorSprites)
 			window.draw(tile);
 
 		//Rendering our windows
@@ -295,6 +302,9 @@ void Level::render(sf::RenderWindow & window)
 			window.draw(m_draw1Sprite);
 			window.draw(m_draw2Sprite);
 		}
+
+		m_p1CapLabel.draw(window);
+		m_p2CapLabel.draw(window);
 
 		//Blend our lights into our overlay
 		window.draw(m_overlay, sf::BlendMultiply);
@@ -394,6 +404,30 @@ void Level::checkFlagPickup(Player & player, Flag & flag, sf::Clock & flagClock)
 
 		else
 			flag.setPosition(player.position().x - 10, player.position().y - 35, -1);
+	}
+}
+
+//Checks if a flag has been reset
+void Level::checkFlagReset(Player&  player1, Player&  player2, Flag & flag, sf::RectangleShape& base)
+{
+	if (player2.hasFlag() == false //If player 2 isnt holding player 1's flag
+		&& flag.hitBox().getGlobalBounds().intersects(base.getGlobalBounds()) == false //And the flag is not already at the flags base
+		&& player1.hitBox().getGlobalBounds().intersects(flag.hitBox().getGlobalBounds())) //And player 1 is intersecting the flag
+	{
+		//reset the flag
+		flag.reset();
+	}
+}
+
+void Level::checkFlagCapture(Player & player, Flag & flag, sf::RectangleShape & base)
+{
+	//If the player has a flag and we have dropped the flag at our base, reset the flag
+	if (player.hasFlag()
+		&& flag.hitBox().getGlobalBounds().intersects(base.getGlobalBounds()))
+	{
+		player.setHasFlag(false); //Set has flag to flase so the flag does not stick to the playe raftyer it has been captured
+		player.captureFlag(); //Increase our capture count
+		flag.reset(); //Reset the flag
 	}
 }
 
@@ -541,6 +575,15 @@ void Level::setUpLevel(std::string levelName)
 			//We create an obstacle (a box2d object) with the specified position and size and push it to our floor vector
 			m_walls.push_back(Obstacle(sf::Vector2f(wallData.at(i)["x"], (startY - 25) + (wallHeight / 2.0f)), sf::Vector2f(50, wallHeight), "Wall"));
 		}
+	}
+
+	//If the gamemdoe is CTF set our flags position
+	if (m_isCtf)
+	{
+		auto flagData = m_levelLoader.data()[levelName]["Flag Spawns"];
+
+		m_yellowFlag.startPos(flagData.at(0)["x"], flagData.at(0)["y"]);
+		m_blueFlag.startPos(flagData.at(1)["x"], flagData.at(1)["y"]);
 	}
 
 	//Set our bg texture
@@ -767,6 +810,14 @@ void Level::clearLevel()
 bool Level::gameOver()
 {
 	return m_gameOver;
+}
+
+float Level::gameOverTime()
+{
+	if (m_gameOver)
+		return m_gameOverClock.getElapsedTime().asSeconds();
+	else
+		return 0.0f;
 }
 
 sf::Vector2f Level::lerp(sf::Vector2f a, sf::Vector2f b, float t)

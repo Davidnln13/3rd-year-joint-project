@@ -3,7 +3,7 @@
 Flag::Flag(sf::Texture& texture) :
 	m_hitBox(sf::Vector2f(25, 60))
 {
-	m_startPos = sf::Vector2f(-500, 650);
+	m_startPos = sf::Vector2f(-590, 650);
 
 
 	//Set the properties of our hitbox
@@ -43,7 +43,7 @@ void Flag::draw(sf::RenderWindow & window)
 {
 	m_hitBox.setPosition(m_body->GetPosition().x * PPM, m_body->GetPosition().y * PPM);
 	m_sprite.setPosition(m_body->GetPosition().x * PPM, m_body->GetPosition().y * PPM);
-	window.draw(m_hitBox); //Draw our hitbox
+	//window.draw(m_hitBox); //Draw our hitbox
 	window.draw(m_sprite); //Draw our sprite
 }
 
@@ -51,9 +51,12 @@ void Flag::reset()
 {
 	m_hitBox.setScale(1, 1);
 	m_hitBox.setPosition(m_startPos.x, m_startPos.y);
-	m_sprite.setScale(-1, 1);
+	m_sprite.setScale(1, 1);
 	m_sprite.setPosition(m_startPos.x, m_startPos.y);
 	m_body->SetTransform(b2Vec2(m_startPos.x / PPM, m_startPos.y / PPM), 0);
+	m_body->SetAngularVelocity(0);
+	m_body->SetLinearVelocity(b2Vec2(0, 0));
+	m_body->GetFixtureList()->SetSensor(false); //Set our body as a sensor so no weird collision appears within 
 }
 
 sf::RectangleShape & Flag::hitBox()
@@ -90,6 +93,15 @@ void Flag::setPickedUp(bool pickedUp)
 	}
 	else
 	{
+		m_body->SetAngularVelocity(0);
+		m_body->SetLinearVelocity(b2Vec2(0, 0));
 		m_body->GetFixtureList()->SetSensor(false); //Set our body as a sensor so no weird collision appears within 
 	}
+}
+
+void Flag::startPos(float x, float y)
+{
+	m_startPos = sf::Vector2f(x, y); //Set our start pos
+	m_body->SetTransform(b2Vec2(x / PPM, y / PPM), 0); //Set our body's position
+	m_body->GetFixtureList()->SetSensor(false); //Set our body as a sensor so no weird collision appears within 
 }

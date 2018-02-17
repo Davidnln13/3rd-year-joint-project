@@ -26,6 +26,7 @@ public:
 	std::string getName() override;
 	bool paused();
 	bool gameOver();
+	float gameOverTime();
 
 	void setLevel(int maxKills, int maxTime, int levelNumber, bool ctf, std::map<int, std::string>& levelNames);
 private:

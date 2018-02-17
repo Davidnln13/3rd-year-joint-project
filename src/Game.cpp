@@ -40,8 +40,12 @@ void Game::run()
 
 		//if we are on the play screen and the game isnt paused then simiulate the box2d world physics
 		if (m_screenManager.getCurrentScreenName() == "play game"
-			&& m_screenManager.playScreen().paused() == false)
+			&& m_screenManager.playScreen().paused() == false
+			&& m_screenManager.playScreen().gameOverTime() < 0.25f)
+		{
 			world.Step(1 / 60.0f, 8, 3); //simulates the world
+		}
+
 
 
 		while (lag > MS_PER_UPDATE)

@@ -24,6 +24,8 @@ public:
 	void playAnimation();
 	void setUpAnimation();
 	void checkFlagPickup(Player&  player, Flag& flag, sf::Clock& flagClock);
+	void checkFlagReset(Player&  player1, Player&  player2, Flag& flag, sf::RectangleShape& base);
+	void checkFlagCapture(Player& player, Flag& flag, sf::RectangleShape& base);
 
 	b2Body* createKillBox(float x, float y, float w, float h);
 	std::string handleInput(JoystickController& controller1, JoystickController& controller2);
@@ -38,6 +40,7 @@ public:
 
 	//Getters
 	bool gameOver();
+	float gameOverTime();
 
 	//helper function
 	sf::Vector2f lerp(sf::Vector2f a, sf::Vector2f b, float t);
@@ -119,4 +122,5 @@ private:
 
 	std::vector<Label*> m_labels;
 	Label m_timeLabel, m_timeLabelValue;
+	Label m_p1CapLabel, m_p2CapLabel;
 };

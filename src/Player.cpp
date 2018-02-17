@@ -1020,6 +1020,7 @@ void Player::resetPlayerParameters()
 {
 	m_lives = 0;
 	m_kills = 0;
+	m_ctfCaptures = 0;
 	m_dead = false;
 
 	//if we are not holding our sword, pick it up
@@ -1093,6 +1094,10 @@ void Player::playAudio()
 void Player::setHasFlag(bool has)
 {
 	m_hasFlag = has;
+}
+void Player::captureFlag()
+{
+	m_ctfCaptures++; ///Increase our captures
 }
 void Player::setParried(bool parried)
 {

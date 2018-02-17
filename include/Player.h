@@ -95,6 +95,7 @@ public:
 	//play audio from contact listener
 	void playAudio();
 	void setHasFlag(bool has);
+	void captureFlag();
 
 private:
 	bool m_canMoveLeft, m_canMoveRight; //Booleans to hold wheter we can move left or right

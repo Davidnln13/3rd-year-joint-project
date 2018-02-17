@@ -137,9 +137,21 @@
       ],
       "Floors":[
         {
-          "StartX":-615,
+          "StartX":-665,
           "PosY":695,
-          "TileAmount":52,
+          "TileAmount":54,
+          "HasBody":true
+        },
+        {
+          "StartX":-615,
+          "PosY":545,
+          "TileAmount":8,
+          "HasBody":true
+        },
+        {
+          "StartX":1586.25,
+          "PosY":545,
+          "TileAmount":8,
           "HasBody":true
         },
         {
@@ -171,6 +183,20 @@
           "y":155
         }
       ],
+      "Walls":[
+        {
+          "x":-665,
+          "StartY":0,
+          "TileAmount":14,
+          "HasBody":true
+        },
+        {
+          "x":1985.625,
+          "StartY":0,
+          "TileAmount":14,
+          "HasBody":true
+        }
+      ],
       "Torches":[
         {
           "PosX":550,
@@ -183,6 +209,14 @@
         {
           "PosX":131,
           "PosY":234
+        },
+        {
+          "PosX":180,
+          "PosY":400
+        },
+        {
+          "PosX":1150,
+          "PosY":400
         },
         {
           "PosX":1151,
@@ -221,6 +255,14 @@
           "PosY":695
         },
         {
+          "PosX":1935,
+          "PosY":545
+        },
+        {
+          "PosX":1585,
+          "PosY":545
+        },
+        {
           "PosX":650,
           "PosY":550
         }
@@ -257,6 +299,16 @@
           "x": 1155,
           "y": 610,
           "facingLeft": true
+        }
+      ],
+      "Flag Spawns":[
+        {
+          "x":-596.25,
+          "y":625
+        },
+        {
+          "x":1901.25,
+          "y":625
         }
       ]
    }

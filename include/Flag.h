@@ -24,6 +24,7 @@ public:
 	//Setters
 	void setPosition(float x, float y, float xScale);
 	void setPickedUp(bool pickedUp);
+	void startPos(float x, float y);
 
 private:
 	b2Body* m_body;
