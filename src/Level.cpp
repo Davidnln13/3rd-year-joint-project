@@ -143,6 +143,26 @@ void Level::update()
 					m_draw2Sprite.setPosition(p1Pos.x, p1Pos.y - 75);
 				}
 			}
+			else if (m_isCtf)
+			{
+				if (m_player1.captures() > m_player2.captures())
+				{
+					m_winSprite.setPosition(p1Pos.x, p1Pos.y - 75);
+					m_loseSprite.setPosition(p2Pos.x, p2Pos.y - 75);
+					m_hasWinner = true;
+				}
+				else if (m_player2.captures() > m_player1.captures())
+				{
+					m_winSprite.setPosition(p2Pos.x, p2Pos.y - 75);
+					m_loseSprite.setPosition(p1Pos.x, p1Pos.y - 75);
+					m_hasWinner = true;
+				}
+				else //Else if the players had the same amount of kills
+				{
+					m_draw1Sprite.setPosition(p2Pos.x, p2Pos.y - 75);
+					m_draw2Sprite.setPosition(p1Pos.x, p1Pos.y - 75);
+				}
+			}
 			m_setWinner = true;
 			m_transitionClock.restart();
 		}
@@ -729,6 +749,7 @@ void Level::setLevelParameters(int maxKills, int maxTime, int levelNumber, bool 
 	m_p1CapLabel.setText(std::to_string(0), resourceManager.getFontHolder()["arialFont"], sf::Color::White, sf::Vector2f(0, 0));
 	m_p2CapLabel.setText(std::to_string(0), resourceManager.getFontHolder()["arialFont"], sf::Color::White, sf::Vector2f(0, 0));
 
+
 	//Reset our transition
 	m_transitionAlpha = 0;
 	m_transitionCol.a = m_transitionAlpha;
@@ -757,6 +778,12 @@ void Level::setLevelParameters(int maxKills, int maxTime, int levelNumber, bool 
 	//Setup our level and pass our level name to our method
 	setUpLevel(levelNames[m_levelNumber]);
 
+	//Reset our flags and player parameters
+	m_blueFlag.reset();
+	m_yellowFlag.reset();
+	m_player1.setHasFlag(false);
+	m_player2.setHasFlag(false);
+
 	m_player1.setParameters(m_killLimit);
 	m_player2.setParameters(m_killLimit);
 
@@ -764,6 +791,18 @@ void Level::setLevelParameters(int maxKills, int maxTime, int levelNumber, bool 
 	m_animationHolder.addAnimation("winAnimation", m_winAnimation, sf::seconds(.25f));
 	m_animationHolder.addAnimation("loseAnimation", m_loseAnimation, sf::seconds(.25f));
 	m_animationHolder.addAnimation("drawAnimation", m_drawAnimation, sf::seconds(.25f));
+
+	//Stop our animators
+	m_winAnimator.stop();
+	m_loseAnimator.stop();
+	m_draw1Animator.stop();
+	m_draw2Animator.stop();
+
+	//reset our win/lose/draw sprite texture rectangles
+	m_winSprite.setTextureRect(sf::IntRect(0, 0, 100, 0));
+	m_loseSprite.setTextureRect(sf::IntRect(0, 0, 100, 0));
+	m_draw1Sprite.setTextureRect(sf::IntRect(0, 0, 100, 0));
+	m_draw2Sprite.setTextureRect(sf::IntRect(0, 0, 100, 0));
 }
 
 //Distance between two points formula
