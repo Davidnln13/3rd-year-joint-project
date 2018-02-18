@@ -67,7 +67,7 @@
     <ClCompile Include="src\ParticleSystem.cpp">
       <Filter>Source Files\Particle Source</Filter>
     </ClCompile>
-    <ClCompile Include="Slider.cpp">
+    <ClCompile Include="src\Slider.cpp">
       <Filter>Source Files\Widget Source</Filter>
     </ClCompile>
     <ClCompile Include="src\Flag.cpp">
@@ -144,7 +144,7 @@
     <ClInclude Include="include\ParticleSystem.h">
       <Filter>Header Files\Particle Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Slider.h">
+    <ClInclude Include="include\Slider.h">
       <Filter>Header Files\Widget Headers</Filter>
     </ClInclude>
     <ClInclude Include="include\Flag.h">
