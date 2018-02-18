@@ -11,7 +11,7 @@ class Flag
 {
 
 public:
-	Flag(sf::Texture& texture);
+	Flag(sf::Texture& texture, sf::Texture& lightTexture);
 
 	void draw(sf::RenderWindow& window);
 
@@ -20,6 +20,7 @@ public:
 
 	//Getters
 	sf::RectangleShape& hitBox();
+	sf::Sprite& light();
 
 	//Setters
 	void setPosition(float x, float y, float xScale);
@@ -31,5 +32,5 @@ private:
 
 	sf::Vector2f m_startPos;
 	sf::RectangleShape m_hitBox;
-	sf::Sprite m_sprite;
+	sf::Sprite m_sprite, m_lightSprite;
 };

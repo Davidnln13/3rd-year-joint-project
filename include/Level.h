@@ -69,7 +69,7 @@ private:
 	Flag m_yellowFlag, m_blueFlag;
 	sf::Clock m_blueFlagClock, m_yellowFlagClock;
 	sf::RectangleShape m_yellowBase, m_blueBase;
-	sf::Sprite m_p1PosIndSprite, m_p2PosIndSprite;
+	sf::Sprite m_p1PosIndSprite, m_p2PosIndSprite, m_flagBase1, m_flagBase2;
 
 	sf::View m_testView, m_bottomView, m_topView;
 	std::vector<sf::View*> m_viewVector;

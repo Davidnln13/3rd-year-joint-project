@@ -20,22 +20,33 @@ Level::Level(Audio& audio, int levelNum) :
 	m_loseAnimator(m_animationHolder),
 	m_transitionAlpha(0),
 	m_transitionCol(255, 255, 255, m_transitionAlpha), //Make our transition color white with 0 alpha
-	m_blueFlag(resourceManager.getTextureHolder()["Blue Flag"]),
-	m_yellowFlag(resourceManager.getTextureHolder()["Yellow Flag"]),
+	m_blueFlag(resourceManager.getTextureHolder()["Blue Flag"], resourceManager.getTextureHolder()["playerLight"]),
+	m_yellowFlag(resourceManager.getTextureHolder()["Yellow Flag"], resourceManager.getTextureHolder()["playerLight"]),
 	m_yellowBase(sf::Vector2f(100, 100)),
 	m_blueBase(sf::Vector2f(100, 100)),
 	m_p1CapLabel("0", sf::Vector2f(-620, 690), resourceManager.getFontHolder()["arialFont"]),
 	m_p2CapLabel("0", sf::Vector2f(1280 + 360, 720), resourceManager.getFontHolder()["arialFont"])
 {
-	//Our players position indicator
+	//Our yellow base sprites
+	m_flagBase1.setTexture(resourceManager.getTextureHolder()["Flag Base"]);
+	m_flagBase1.setOrigin(m_flagBase1.getGlobalBounds().width / 2.0f, m_flagBase1.getGlobalBounds().height / 2.0f);
+	m_flagBase1.setColor(sf::Color::Yellow);
+	m_flagBase1.setPosition(-596, 665);
+
+	//Our blue base indicator
+	m_flagBase2.setTexture(resourceManager.getTextureHolder()["Flag Base"]);
+	m_flagBase2.setOrigin(m_flagBase2.getGlobalBounds().width / 2.0f, m_flagBase2.getGlobalBounds().height / 2.0f);
+	m_flagBase2.setColor(sf::Color::Cyan);
+	m_flagBase2.setPosition(1901.5f, 665);
+
+	//Our blue players position indicator
 	m_p2PosIndSprite.setTexture(resourceManager.getTextureHolder()["Player Pos Indicator"]);
 	m_p2PosIndSprite.setOrigin(m_p2PosIndSprite.getGlobalBounds().width / 2.0f, m_p2PosIndSprite.getGlobalBounds().height / 2.0f);
 	m_p2PosIndSprite.setColor(sf::Color::Cyan);
-
+	//Our yellow players position indicator
 	m_p1PosIndSprite.setTexture(resourceManager.getTextureHolder()["Player Pos Indicator"]);
 	m_p1PosIndSprite.setOrigin(m_p1PosIndSprite.getGlobalBounds().width / 2.0f, m_p1PosIndSprite.getGlobalBounds().height / 2.0f);
 	m_p1PosIndSprite.setColor(sf::Color::Yellow);
-
 
 	//Set our capture label for our first player
 	m_p1CapLabel.setSize(26);
@@ -97,7 +108,7 @@ Level::Level(Audio& audio, int levelNum) :
 	m_blueBase.setOutlineColor(sf::Color::Cyan);
 	m_blueBase.setOutlineThickness(2);
 	m_blueBase.setFillColor(sf::Color::Transparent);
-	m_blueBase.setPosition(1280 + 640 - 12.5f, 620);
+	m_blueBase.setPosition(1907.5f, 620);
 
 	//Setting up our split screen views
 	m_testView.setSize(1280, 720);
@@ -293,6 +304,12 @@ void Level::render(sf::RenderWindow & window)
 		drawToOverlay(m_player2.getLight());
 		drawToOverlay(m_player1.getSwordLight());
 		drawToOverlay(m_player2.getSwordLight());
+		//If its CTF draw our flag lights
+		if (m_isCtf)
+		{
+			drawToOverlay(m_yellowFlag.light());
+			drawToOverlay(m_blueFlag.light());
+		}
 
 		//Drawing our torch lights onto our overlay
 		for each (auto& light in m_torchLightSprites)
@@ -327,8 +344,8 @@ void Level::render(sf::RenderWindow & window)
 		{
 			m_blueFlag.draw(window);
 			m_yellowFlag.draw(window);
-			window.draw(m_yellowBase);
-			window.draw(m_blueBase);
+			//window.draw(m_yellowBase);
+			//window.draw(m_blueBase);
 		}
 
 		m_player1.render(window); //draw the first player	
@@ -349,11 +366,15 @@ void Level::render(sf::RenderWindow & window)
 			window.draw(m_draw2Sprite);
 		}
 
+		//Draw our captures labels
 		m_p1CapLabel.draw(window);
 		m_p2CapLabel.draw(window);
 		window.draw(m_p1CaptureSprite);
 		window.draw(m_p2CaptureSprite);
 
+		//Draw flag bases
+		window.draw(m_flagBase1);
+		window.draw(m_flagBase2);
 
 		//Blend our lights into our overlay
 		window.draw(m_overlay, sf::BlendMultiply);
@@ -361,6 +382,7 @@ void Level::render(sf::RenderWindow & window)
 		//Draw our transition rectangle
 		window.draw(m_transitionRect);
 
+		//Draw our players position indicator if the gamemode is ctf
 		if (m_isCtf && i == 1)
 			drawPlayerPosIndicator(m_player1, m_player2, m_p2PosIndSprite, window);
 		if(m_isCtf && i == 0)

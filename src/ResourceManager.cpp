@@ -53,6 +53,7 @@ ResourceManager::ResourceManager()
 		acquireResource("torchLight", m_torchLight);
 		acquireResource("Yellow Flag", m_yellowFlag);
 		acquireResource("Blue Flag", m_blueFlag);
+		acquireResource("Flag Base", m_flagBase);
 		acquireResource("Capture Indicator", m_captureIndicator);
 		acquireResource("Player Pos Indicator", m_playerPosIndicator);
 

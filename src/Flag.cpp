@@ -1,6 +1,6 @@
 #include "Flag.h"
 
-Flag::Flag(sf::Texture& texture) :
+Flag::Flag(sf::Texture& texture, sf::Texture& lightTexture) :
 	m_hitBox(sf::Vector2f(25, 60))
 {
 	m_startPos = sf::Vector2f(-590, 650);
@@ -13,10 +13,16 @@ Flag::Flag(sf::Texture& texture) :
 	m_hitBox.setOrigin(5, 30);
 	m_hitBox.setPosition(100, 100);
 
-	//Set the properties of our sprite
+	//Set the properties of our sprites
 	m_sprite.setTexture(texture);
-	m_sprite.setOrigin(2.5, 30);
+	m_sprite.setOrigin(2.5f, 30);
 	m_sprite.setPosition(100, 100);
+
+	//Set our light sprite
+	m_lightSprite.setTexture(lightTexture);
+	m_lightSprite.setOrigin(150, 150);
+	m_lightSprite.setScale(0.75f, 0.75f);
+	m_lightSprite.setPosition(100, 100);
 
 	//creating our Box2d body and fixture for the player
 	b2BodyDef bodyDef;
@@ -43,6 +49,7 @@ void Flag::draw(sf::RenderWindow & window)
 {
 	m_hitBox.setPosition(m_body->GetPosition().x * PPM, m_body->GetPosition().y * PPM);
 	m_sprite.setPosition(m_body->GetPosition().x * PPM, m_body->GetPosition().y * PPM);
+	m_lightSprite.setPosition(m_body->GetPosition().x * PPM, m_body->GetPosition().y * PPM); //Set our light position
 	//window.draw(m_hitBox); //Draw our hitbox
 	window.draw(m_sprite); //Draw our sprite
 }
@@ -53,6 +60,7 @@ void Flag::reset()
 	m_hitBox.setPosition(m_startPos.x, m_startPos.y);
 	m_sprite.setScale(1, 1);
 	m_sprite.setPosition(m_startPos.x, m_startPos.y);
+	m_lightSprite.setPosition(m_startPos.x, m_startPos.y);
 	m_body->SetTransform(b2Vec2(m_startPos.x / PPM, m_startPos.y / PPM), 0);
 	m_body->SetAngularVelocity(0);
 	m_body->SetLinearVelocity(b2Vec2(0, 0));
@@ -62,6 +70,11 @@ void Flag::reset()
 sf::RectangleShape & Flag::hitBox()
 {
 	return m_hitBox;
+}
+
+sf::Sprite & Flag::light()
+{
+	return m_lightSprite;
 }
 
 void Flag::setPosition(float x, float y, float xScale)
