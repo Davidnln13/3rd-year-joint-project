@@ -86,7 +86,7 @@ std::string Help::handleInput(JoystickController& controller1, JoystickControlle
 {
 	auto currentScreen = m_name; //the current screen we are on is m_name ie. "mainMenu"
 
-	if (controller1.isButtonPressed("A"))
+	if (controller1.isButtonPressed("A") || controller1.isButtonPressed("B"))
 	{
 		currentScreen = m_previousScreen;
 		m_audioRef.m_soundMap["SelectMenuItem"].play();
