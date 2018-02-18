@@ -6,8 +6,8 @@ Options::Options(std::string name, Audio& audio) :
 	m_soundVolumeLabel("Sound", sf::Vector2f(640, 200), resourceManager.getFontHolder()["oxinFont"]),
 	m_musicVolumeLabel("Music", sf::Vector2f(640, 400), resourceManager.getFontHolder()["oxinFont"]),
 	m_audioRef(audio),
-	m_soundSlider("soundSlider", sf::Vector2f(440,240), sf::IntRect(0, 0, 357, 50)),
-	m_musicSlider("musicSlider", sf::Vector2f(440,440), sf::IntRect(0, 0, 357, 50)),
+	m_soundSlider("soundSlider", "Sound Icon", sf::Vector2f(440,240), sf::IntRect(4000, 0, 400, 55)),
+	m_musicSlider("musicSlider", "Music Icon", sf::Vector2f(440,440), sf::IntRect(4000, 0, 400, 55)),
 	m_backLabel("back", sf::Vector2f(1180, 683), resourceManager.getFontHolder()["oxinFont"]),
 	m_sliderIndex(0),
 	m_navigationLabel("navigation and volume change", sf::Vector2f(300,683), resourceManager.getFontHolder()["oxinFont"])
@@ -24,8 +24,6 @@ Options::Options(std::string name, Audio& audio) :
 	m_highlight.setScale(sf::Vector2f(0.98, 1));
 
 	setIconSprite(m_bIcon, resourceManager.getTextureHolder()["B Icon"], sf::Vector2f(1141, 683));
-	setIconSprite(m_soundIcon, resourceManager.getTextureHolder()["Sound Icon"], sf::Vector2f(808,267.5));
-	setIconSprite(m_musicIcon, resourceManager.getTextureHolder()["Music Icon"], sf::Vector2f(808, 467.5));
 
 	m_sliders[m_soundSlider.getName()] = &m_soundSlider;
 	m_sliders[m_musicSlider.getName()] = &m_musicSlider;
@@ -66,8 +64,6 @@ void Options::render(sf::RenderWindow& window)
 	for (auto key : m_sliders)
 		key.second->draw(window);
 	window.draw(m_bIcon);
-	window.draw(m_soundIcon);
-	window.draw(m_musicIcon);
 	window.draw(m_navigationIcon);
 	m_backLabel.draw(window);
 }

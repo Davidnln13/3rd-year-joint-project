@@ -47,6 +47,4 @@ private:
 	sf::Sprite m_bIcon;
 	sf::Sprite m_navigationIcon;
 	sf::Sprite m_highlight;
-	sf::Sprite m_musicIcon;
-	sf::Sprite m_soundIcon;
 };

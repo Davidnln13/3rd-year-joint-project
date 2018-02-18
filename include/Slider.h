@@ -5,7 +5,7 @@
 class Slider
 {
 public:
-	Slider(std::string name, sf::Vector2f pos, sf::IntRect rect);
+	Slider(std::string name, std::string iconName, sf::Vector2f pos, sf::IntRect rect);
 
 	void update();
 	void draw(sf::RenderWindow& window);
@@ -21,7 +21,7 @@ public:
 
 private:
 	sf::Vector2f m_position; //the position of our slider
-	sf::Sprite m_sprite;
+	sf::Sprite m_sprite, m_iconSprite;
 	sf::IntRect m_rect;
 	std::string m_name;
 	int m_currentVal;
