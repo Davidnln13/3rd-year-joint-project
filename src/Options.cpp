@@ -14,6 +14,10 @@ Options::Options(std::string name, Audio& audio) :
 {
 	setIconSprite(m_navigationIcon, resourceManager.getTextureHolder()["Lanalog Icon"], sf::Vector2f(70, 683));
 
+	m_optionsIcon.setTexture(resourceManager.getTextureHolder()["Options Indicator"]);
+	m_optionsIcon.setOrigin(m_optionsIcon.getLocalBounds().width / 2.0f, m_optionsIcon.getLocalBounds().height / 2.0f);
+	m_optionsIcon.setPosition(640, 50);
+
 	m_highlight.setTextureRect(sf::IntRect(4152, 0, 410, 60));
 	m_highlight.setTexture(resourceManager.getTextureHolder()["Button Selected"]);
 	m_highlight.setPosition(435, 240);
@@ -52,16 +56,19 @@ void Options::setIconSprite(sf::Sprite & sprite, sf::Texture& texture, sf::Vecto
 void Options::render(sf::RenderWindow& window)
 {
 	window.clear(sf::Color::White);
+
+	window.draw(m_optionsIcon);
+
 	m_soundVolumeLabel.draw(window);
 	m_navigationLabel.draw(window);
 	m_musicVolumeLabel.draw(window);
+	window.draw(m_highlight);
 	for (auto key : m_sliders)
 		key.second->draw(window);
 	window.draw(m_bIcon);
 	window.draw(m_soundIcon);
 	window.draw(m_musicIcon);
 	window.draw(m_navigationIcon);
-	window.draw(m_highlight);
 	m_backLabel.draw(window);
 }
 

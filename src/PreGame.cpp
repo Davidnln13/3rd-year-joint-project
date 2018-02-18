@@ -1,5 +1,6 @@
 #include "PreGame.h"
 
+//Set the initial values of the static members of GameMode
 bool GameMode::isCtf = false;
 int GameMode::killLimit = 5;
 int GameMode::timeLimit = 1;
@@ -29,6 +30,10 @@ PreGameScreen::PreGameScreen(std::string name, Audio & audio) :
 {
 	setIconSprite(m_navigateIcon, resourceManager.getTextureHolder()["Lanalog Icon"], sf::Vector2f(70, 683));
 	setIconSprite(m_selectIcon, resourceManager.getTextureHolder()["A Icon"], sf::Vector2f(345, 683));
+
+	m_indicatorSprite.setTexture(resourceManager.getTextureHolder()["Pre Game Icon"]);
+	m_indicatorSprite.setOrigin(m_indicatorSprite.getLocalBounds().width /2.0f, m_indicatorSprite.getLocalBounds().height / 2.0f);
+	m_indicatorSprite.setPosition(640, 50);
 
 	//Set the position of the rectangle
 	m_transitionRect.setPosition(0, 0);
@@ -80,9 +85,13 @@ void PreGameScreen::render(sf::RenderWindow & window)
 {
 	window.clear(sf::Color::White);
 
-	//loop through our buttons map and update each one
+	window.draw(m_indicatorSprite);
+
+	//loop through our buttons map and draw each one
 	for (auto btn : m_buttons)
 		btn.second->render(window);
+
+	//Draw our labels and icons
 	window.draw(m_selectIcon);
 	window.draw(m_navigateIcon);
 	m_navigateLabel.draw(window);

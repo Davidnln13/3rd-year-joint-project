@@ -29,6 +29,9 @@ ResourceManager::ResourceManager()
 		acquireResource("Player Icons", m_playerIcons);
 		acquireResource("Plus Score Icon", m_plusScoreIcon);
 		acquireResource("Minus Score Icon", m_minusScoreIcon);
+		acquireResource("Pre Game Icon", m_preGameIcon);
+		acquireResource("Main Menu Indicator", m_mainMenuIndicator);
+		acquireResource("Options Indicator", m_optionsIndicator);
 
 		//controller icons
 		acquireResource("Start Icon", m_startIcon);

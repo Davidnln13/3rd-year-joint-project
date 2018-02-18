@@ -24,6 +24,9 @@ public:
 	std::string getName() override;
 
 private:
+	//Our menu icon
+	sf::Sprite m_menuIcon;
+
 	//Our buttons for our screen
 	Button m_playGameBtn;
 	Button m_optionsBtn;

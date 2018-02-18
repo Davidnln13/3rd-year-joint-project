@@ -15,6 +15,10 @@ MainMenu::MainMenu(std::string name, Audio& audio) :
 	setIconSprite(m_navigateIcon, resourceManager.getTextureHolder()["Lanalog Icon"], sf::Vector2f(70, 683));
 	setIconSprite(m_selectIcon, resourceManager.getTextureHolder()["A Icon"], sf::Vector2f(345, 683));
 
+	m_menuIcon.setTexture(resourceManager.getTextureHolder()["Main Menu Indicator"]);
+	m_menuIcon.setOrigin(m_menuIcon.getLocalBounds().width / 2.0f, m_menuIcon.getLocalBounds().height / 2.0f);
+	m_menuIcon.setPosition(640, 50);
+
 	//adding our buttons to our buttons map
 	m_buttons[m_playGameBtn.getName()] = &m_playGameBtn; 
 	m_buttons[m_optionsBtn.getName()] = &m_optionsBtn;
@@ -57,6 +61,9 @@ void MainMenu::update()
 void MainMenu::render(sf::RenderWindow& window)
 {
 	window.clear(sf::Color::White);
+
+	window.draw(m_menuIcon);
+
 	window.draw(m_selectIcon);
 	window.draw(m_navigateIcon);
 	m_navigateLabel.draw(window);

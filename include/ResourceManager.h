@@ -52,6 +52,10 @@ private:
 	thor::ResourceLoader<sf::Texture> m_particle = thor::Resources::fromFile<sf::Texture>("./resources/Textures/particle.png");
 	thor::ResourceLoader<sf::Texture> m_soundIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/Sound Icon.png");
 	thor::ResourceLoader<sf::Texture> m_musicIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/Music Icon.png");
+	thor::ResourceLoader<sf::Texture> m_preGameIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/setup game indicator.png");
+	thor::ResourceLoader<sf::Texture> m_mainMenuIndicator = thor::Resources::fromFile<sf::Texture>("./resources/GUI/main menu indicator.png");
+	thor::ResourceLoader<sf::Texture> m_optionsIndicator = thor::Resources::fromFile<sf::Texture>("./resources/GUI/options indicator.png");
+
 	//controller icons 
 	thor::ResourceLoader<sf::Texture> m_startIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI/Controller Icons/Start Icon.png");
 	thor::ResourceLoader<sf::Texture> m_bIcon = thor::Resources::fromFile<sf::Texture>("./resources/GUI//Controller Icons/B Icon.png");

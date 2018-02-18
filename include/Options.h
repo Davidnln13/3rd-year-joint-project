@@ -26,6 +26,9 @@ public:
 	void setIconSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position);
 
 private:
+
+	sf::Sprite m_optionsIcon;
+
 	Audio& m_audioRef;
 	std::string m_previousScreen;
 
