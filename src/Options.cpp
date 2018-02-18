@@ -9,8 +9,11 @@ Options::Options(std::string name, Audio& audio) :
 	m_soundSlider("soundSlider", sf::Vector2f(440,240), sf::IntRect(0, 0, 357, 50)),
 	m_musicSlider("musicSlider", sf::Vector2f(440,440), sf::IntRect(0, 0, 357, 50)),
 	m_backLabel("back", sf::Vector2f(1180, 683), resourceManager.getFontHolder()["oxinFont"]),
-	m_sliderIndex(0)
+	m_sliderIndex(0),
+	m_navigationLabel("navigation and volume change", sf::Vector2f(300,683), resourceManager.getFontHolder()["oxinFont"])
 {
+	setIconSprite(m_navigationIcon, resourceManager.getTextureHolder()["Lanalog Icon"], sf::Vector2f(70, 683));
+
 	m_highlight.setTextureRect(sf::IntRect(4152, 0, 410, 60));
 	m_highlight.setTexture(resourceManager.getTextureHolder()["Button Selected"]);
 	m_highlight.setPosition(435, 240);
@@ -50,12 +53,14 @@ void Options::render(sf::RenderWindow& window)
 {
 	window.clear(sf::Color::White);
 	m_soundVolumeLabel.draw(window);
+	m_navigationLabel.draw(window);
 	m_musicVolumeLabel.draw(window);
 	for (auto key : m_sliders)
 		key.second->draw(window);
 	window.draw(m_bIcon);
 	window.draw(m_soundIcon);
 	window.draw(m_musicIcon);
+	window.draw(m_navigationIcon);
 	window.draw(m_highlight);
 	m_backLabel.draw(window);
 }

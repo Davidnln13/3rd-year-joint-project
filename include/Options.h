@@ -36,11 +36,13 @@ private:
 	Label m_soundVolumeLabel;
 	Label m_musicVolumeLabel;
 	Label m_backLabel;
+	Label m_navigationLabel;
 
 	Slider m_soundSlider;
 	Slider m_musicSlider;
 
 	sf::Sprite m_bIcon;
+	sf::Sprite m_navigationIcon;
 	sf::Sprite m_highlight;
 	sf::Sprite m_musicIcon;
 	sf::Sprite m_soundIcon;
