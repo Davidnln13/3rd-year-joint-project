@@ -32,6 +32,10 @@ Level::Level(Audio& audio, int levelNum) :
 	m_p2PosIndSprite.setOrigin(m_p2PosIndSprite.getGlobalBounds().width / 2.0f, m_p2PosIndSprite.getGlobalBounds().height / 2.0f);
 	m_p2PosIndSprite.setColor(sf::Color::Cyan);
 
+	m_p1PosIndSprite.setTexture(resourceManager.getTextureHolder()["Player Pos Indicator"]);
+	m_p1PosIndSprite.setOrigin(m_p1PosIndSprite.getGlobalBounds().width / 2.0f, m_p1PosIndSprite.getGlobalBounds().height / 2.0f);
+	m_p1PosIndSprite.setColor(sf::Color::Yellow);
+
 
 	//Set our capture label for our first player
 	m_p1CapLabel.setSize(26);
@@ -350,41 +354,17 @@ void Level::render(sf::RenderWindow & window)
 		window.draw(m_p1CaptureSprite);
 		window.draw(m_p2CaptureSprite);
 
-		if (i == 1)
-		{
-			auto p1Pos = m_player1.position();
-			auto p2Pos = m_player2.position();
-			p1Pos.y = 0;
-			p2Pos.y = 0;
-			auto xDiff = distance(p1Pos, p2Pos);
-			p1Pos = m_player1.position();
-			p2Pos = m_player2.position();
-			p1Pos.x = 0;
-			p2Pos.x = 0;
-			auto yDiff = distance(p1Pos, p2Pos);
-
-			//TESTING THIS CURRENTLTY
-		/*	if (xDiff >= 820 || yDiff >= 260)
-			{				
-				
-				if (m_player1.position().x < m_player2.position().x)
-				{
-					window.getView().getCenter().x - 640 - 160 + m_p2PosIndSprite.getGlobalBounds().width / 2.0f
-				}
-
-
-			    m_p2PosIndSprite.setPosition(window.getView().getCenter().x + 640 + 160 - m_p2PosIndSprite.getGlobalBounds().width / 2.0f, window.getView().getCenter().y);
-				m_p2PosIndSprite.setRotation(angleBetweenVetors(m_player1.position(), m_player2.position()) + 90);
-
-				window.draw(m_p2PosIndSprite);
-			}*/
-		}
 
 		//Blend our lights into our overlay
 		window.draw(m_overlay, sf::BlendMultiply);
 
 		//Draw our transition rectangle
 		window.draw(m_transitionRect);
+
+		if (m_isCtf && i == 1)
+			drawPlayerPosIndicator(m_player1, m_player2, m_p2PosIndSprite, window);
+		if(m_isCtf && i == 0)
+			drawPlayerPosIndicator(m_player2, m_player1, m_p1PosIndSprite, window);
 	}
 
 	//Reset our windows view to the defualt view of the window(ie. the one giving to the window when it was created)
@@ -396,6 +376,59 @@ void Level::drawToOverlay(sf::Sprite sprite)
 	auto newSprite = sprite; //Get a copy of the original sprite
 	newSprite.setPosition(newSprite.getPosition().x + 990, newSprite.getPosition().y + 360); //Add an offset to it so our texture renders to the overlay at the correct position
 	m_overlayTexture.draw(newSprite, sf::BlendAdd); //Draw with the blend add render mode to our overlay texture
+}
+
+void Level::drawPlayerPosIndicator(Player & p1, Player & p2, sf::Sprite& indicator, sf::RenderWindow& window)
+{
+	auto p1Pos = p1.position();
+	auto p2Pos = p2.position();
+	p1Pos.y = 0;
+	p2Pos.y = 0;
+	auto xDiff = distance(p1Pos, p2Pos);
+	p1Pos = p1.position();
+	p2Pos = p2.position();
+	p1Pos.x = 0;
+	p2Pos.x = 0;
+	auto yDiff = distance(p1Pos, p2Pos);
+
+	if (xDiff >= 820 || yDiff >= 260)
+	{
+		if (xDiff >= 820)
+		{
+			if (p1.position().x < p2.position().x)
+			{
+				indicator.setPosition(window.getView().getCenter().x + 640 + 160 - indicator.getGlobalBounds().width / 2.0f, indicator.getPosition().y);
+			}
+			else if (p1.position().x > p2.position().x)
+			{
+				indicator.setPosition(window.getView().getCenter().x - 640 - 160 + indicator.getGlobalBounds().width / 2.0f, indicator.getPosition().y);
+			}
+		}
+		else if (xDiff < 820)
+		{
+			indicator.setPosition(p2.position().x, indicator.getPosition().y);
+		}
+		if (yDiff >= 260)
+		{
+			if (p1.position().y < p2.position().y)
+			{
+				indicator.setPosition(indicator.getPosition().x, window.getView().getCenter().y + 220 - indicator.getGlobalBounds().height / 2.0f);
+			}
+			else if (p1.position().y > p2.position().y)
+			{
+				indicator.setPosition(indicator.getPosition().x, window.getView().getCenter().y - 220 + indicator.getGlobalBounds().height / 2.0f);
+			}
+		}
+		else if (yDiff < 260)
+		{
+			indicator.setPosition(indicator.getPosition().x, p2.position().y);
+		}
+
+		//m_p2PosIndSprite.setPosition(window.getView().getCenter().x + 640 + 160 - m_p2PosIndSprite.getGlobalBounds().width / 2.0f, window.getView().getCenter().y);
+		indicator.setRotation(angleBetweenVetors(p1.position(), p2.position()) + 90);
+
+		window.draw(indicator);
+	}
 }
 
 void Level::playAnimation()

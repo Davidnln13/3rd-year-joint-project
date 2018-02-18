@@ -21,6 +21,7 @@ public:
 	void update();
 	void render(sf::RenderWindow& window);
 	void drawToOverlay(sf::Sprite sprite);
+	void drawPlayerPosIndicator(Player& p1, Player& p2, sf::Sprite& indicator, sf::RenderWindow& window);
 	void playAnimation();
 	void setUpAnimation();
 	void checkFlagPickup(Player&  player, Flag& flag, sf::Clock& flagClock);
