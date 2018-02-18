@@ -221,13 +221,15 @@ std::string PreGameScreen::handleInput(JoystickController & controller1, Joystic
 		if (navigated)
 		{
 
+			auto btnName = m_currentButton->getName();
+
 			//Checking our options bounds
 			if (currentOptionValue < 0)
 			{
 				//If the button we have slected is the level button then set our current option to max level num
-				if (m_currentButton->getName() == "level name")
+				if (btnName == "level name")
 					currentOptionValue = GameMode::maxLevels;
-				else if (m_currentButton->getName() == "game mode")
+				else if (btnName == "game mode")
 				{
 					GameMode::isCtf = false;
 					currentOptionValue = GameMode::maxGameModes;
@@ -241,25 +243,35 @@ std::string PreGameScreen::handleInput(JoystickController & controller1, Joystic
 			}
 			else
 			{
-				if (m_currentButton->getName() == "level name" && currentOptionValue > 1)
+				if (btnName == "level name" && currentOptionValue > 1)
 					currentOptionValue = 0;
-				else if (m_currentButton->getName() == "game mode" && currentOptionValue > 2)
+				else if (btnName == "game mode" && currentOptionValue > 2)
 					currentOptionValue = 0;
 			}
 
-			if (m_currentButton->getName() == "game mode")
+			if (btnName == "game mode")
 			{
-				//If our game mode is Capture the flag, set the parameters of our game mode
-				if (currentOptionValue == 2)
+				//If the gamemdoe is sandbox set the parameters for sandbox
+				if (currentOptionValue == 3)
 				{
 					GameMode::isCtf = true;
+					GameMode::levelNum = 0; //Set the level to normal Castle
 					GameMode::killLimit = 0; //set kill limit to infinite
-					GameMode::timeLimit = 3; //set time limit to 3 minutes
+					GameMode::timeLimit = 0; //set time limit to infinite
+				}
+				//elseIf our game mode is Capture the flag, set the parameters of our game mode
+				else if (currentOptionValue == 2)
+				{
+					GameMode::isCtf = true;
+					GameMode::levelNum = 1; //Set the level to Castle CTF
+					GameMode::killLimit = 0; //set kill limit to infinite
+					GameMode::timeLimit = 2; //set time limit to 2 minutes
 				}
 				//else If our game mode is Sudden death, set the parameters of our game mode
 				else if (currentOptionValue == 1)
 				{
 					GameMode::isCtf = false;
+					GameMode::levelNum = 0; //Set the level to normal Castle
 					GameMode::killLimit = 1; //set kill limit to 1
 					GameMode::timeLimit = 0; //set time limit to infinite
 				}
@@ -267,14 +279,23 @@ std::string PreGameScreen::handleInput(JoystickController & controller1, Joystic
 				else if (currentOptionValue == 0)
 				{
 					GameMode::isCtf = false;
+					GameMode::levelNum = 0; //Set the level to normal Castle
 					GameMode::killLimit = 5; //set kill limit to 5
 					GameMode::timeLimit = 1; //set time limit to 1 minute
 				}
 			}
 
+			//If the current button is the level and the game mode is CTF, dont allow the map to change from CTF
+			if (btnName == "level name" && GameMode::isCtf)
+				GameMode::levelNum = 1;
+			else if(btnName == "level name" && GameMode::isCtf == false)
+				GameMode::levelNum = 0;
+			else
+			{
+				//Set our current option to our new option value
+				*m_currentOption = currentOptionValue;
+			}
 
-			//Set our current option to our new option value
-			*m_currentOption = currentOptionValue;
 
 			//Set the text for all of our butttons
 			setButtonText(m_killLimitBtn, GameMode::killLimit, "infinite", std::to_string(GameMode::killLimit), resourceManager.getFontHolder()["arialFont"], resourceManager.getFontHolder()["oxinFont"]);
@@ -348,6 +369,7 @@ GameMode::GameMode() :
 	GameMode::gameModes[0] = "Deathmatch";
 	GameMode::gameModes[1] = "Sudden Death";
 	GameMode::gameModes[2] = "Capture the Flag";
+	GameMode::gameModes[3] = "Sandbox";
 	GameMode::levelNames[0] = "Castle";
 	GameMode::levelNames[1] = "Castle CTF";
 }
