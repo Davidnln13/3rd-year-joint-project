@@ -76,4 +76,8 @@ private:
 	sf::Sprite m_startIcon;
 	Label m_backLabel;
 	Label m_startLabel;
+	sf::Sprite m_navigateIcon;
+	sf::Sprite m_selectIcon;
+	Label m_navigateLabel;
+	Label m_selectLabel;
 };

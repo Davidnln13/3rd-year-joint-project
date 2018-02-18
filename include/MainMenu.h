@@ -20,6 +20,7 @@ public:
 	void selectButton(int newIndex);
 
 	//getters
+	void setIconSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position);
 	std::string getName() override;
 
 private:
@@ -34,4 +35,9 @@ private:
 	std::vector<Button*> m_btnList; //we will use this to select/deselect buttons in our menu
 	int m_btnIndex; //the index of the button we are currently focused on
 	int m_btnToFadeIn; //the index of the button to fade in
+
+	sf::Sprite m_navigateIcon;
+	sf::Sprite m_selectIcon;
+	Label m_navigateLabel;
+	Label m_selectLabel;
 };

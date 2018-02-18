@@ -8,8 +8,13 @@ MainMenu::MainMenu(std::string name, Audio& audio) :
 	m_exitBtn(sf::Vector2f(640, 576), "exit", "Exit Icon"),
 	m_audioMainScreen(audio),
 	m_btnIndex(0),
-	m_btnToFadeIn(0)
+	m_btnToFadeIn(0),
+	m_navigateLabel("navigation",sf::Vector2f(150, 683), resourceManager.getFontHolder()["oxinFont"]),
+	m_selectLabel("select", sf::Vector2f(400,683), resourceManager.getFontHolder()["oxinFont"])
 {
+	setIconSprite(m_navigateIcon, resourceManager.getTextureHolder()["Lanalog Icon"], sf::Vector2f(70, 683));
+	setIconSprite(m_selectIcon, resourceManager.getTextureHolder()["A Icon"], sf::Vector2f(345, 683));
+
 	//adding our buttons to our buttons map
 	m_buttons[m_playGameBtn.getName()] = &m_playGameBtn; 
 	m_buttons[m_optionsBtn.getName()] = &m_optionsBtn;
@@ -52,7 +57,10 @@ void MainMenu::update()
 void MainMenu::render(sf::RenderWindow& window)
 {
 	window.clear(sf::Color::White);
-
+	window.draw(m_selectIcon);
+	window.draw(m_navigateIcon);
+	m_navigateLabel.draw(window);
+	m_selectLabel.draw(window);
 	//loop through our buttons map and render each one
 	for (auto key : m_buttons)
 		key.second->render(window);
@@ -139,6 +147,13 @@ void MainMenu::selectButton(int newIndex)
 
 		m_btnList.at(m_btnIndex)->select(); //select the button at the new index
 	}
+}
+
+void MainMenu::setIconSprite(sf::Sprite & sprite, sf::Texture & texture, sf::Vector2f position)
+{
+	sprite.setTexture(texture);
+	sprite.setOrigin(sprite.getGlobalBounds().left + sprite.getGlobalBounds().width / 2.0f, sprite.getGlobalBounds().top + sprite.getGlobalBounds().height / 2.0f);
+	sprite.setPosition(position);
 }
 
 std::string MainMenu::getName()

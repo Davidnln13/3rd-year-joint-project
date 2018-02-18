@@ -23,8 +23,13 @@ PreGameScreen::PreGameScreen(std::string name, Audio & audio) :
 	m_backLabel("back", sf::Vector2f(1180, 683), resourceManager.getFontHolder()["oxinFont"]),
 	m_transitionCol(255, 255, 255, 255),
 	m_transitionRect(sf::Vector2f(1280, 720)),
-	m_audioRef(audio)
+	m_audioRef(audio),
+	m_navigateLabel("navigation", sf::Vector2f(150, 683), resourceManager.getFontHolder()["oxinFont"]),
+	m_selectLabel("select", sf::Vector2f(400, 683), resourceManager.getFontHolder()["oxinFont"])
 {
+	setIconSprite(m_navigateIcon, resourceManager.getTextureHolder()["Lanalog Icon"], sf::Vector2f(70, 683));
+	setIconSprite(m_selectIcon, resourceManager.getTextureHolder()["A Icon"], sf::Vector2f(345, 683));
+
 	//Set the position of the rectangle
 	m_transitionRect.setPosition(0, 0);
 
@@ -78,7 +83,10 @@ void PreGameScreen::render(sf::RenderWindow & window)
 	//loop through our buttons map and update each one
 	for (auto btn : m_buttons)
 		btn.second->render(window);
-
+	window.draw(m_selectIcon);
+	window.draw(m_navigateIcon);
+	m_navigateLabel.draw(window);
+	m_selectLabel.draw(window);
 	window.draw(m_startIcon);
 	window.draw(m_bIcon);
 	m_backLabel.draw(window);
