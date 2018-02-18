@@ -5,7 +5,7 @@ int GameMode::killLimit = 5;
 int GameMode::timeLimit = 1;
 int GameMode::levelNum = 0;
 int GameMode::gameModeNum = 0;
-int GameMode::maxGameModes = 2;
+int GameMode::maxGameModes = 3;
 int GameMode::maxLevels = 1;
 std::map<int, std::string> GameMode::levelNames;
 
@@ -245,7 +245,7 @@ std::string PreGameScreen::handleInput(JoystickController & controller1, Joystic
 			{
 				if (btnName == "level name" && currentOptionValue > 1)
 					currentOptionValue = 0;
-				else if (btnName == "game mode" && currentOptionValue > 2)
+				else if (btnName == "game mode" && currentOptionValue > 3)
 					currentOptionValue = 0;
 			}
 
@@ -254,7 +254,7 @@ std::string PreGameScreen::handleInput(JoystickController & controller1, Joystic
 				//If the gamemdoe is sandbox set the parameters for sandbox
 				if (currentOptionValue == 3)
 				{
-					GameMode::isCtf = true;
+					GameMode::isCtf = false;
 					GameMode::levelNum = 0; //Set the level to normal Castle
 					GameMode::killLimit = 0; //set kill limit to infinite
 					GameMode::timeLimit = 0; //set time limit to infinite
