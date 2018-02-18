@@ -27,6 +27,12 @@ Level::Level(Audio& audio, int levelNum) :
 	m_p1CapLabel("0", sf::Vector2f(-620, 690), resourceManager.getFontHolder()["arialFont"]),
 	m_p2CapLabel("0", sf::Vector2f(1280 + 360, 720), resourceManager.getFontHolder()["arialFont"])
 {
+	//Our players position indicator
+	m_p2PosIndSprite.setTexture(resourceManager.getTextureHolder()["Player Pos Indicator"]);
+	m_p2PosIndSprite.setOrigin(m_p2PosIndSprite.getGlobalBounds().width / 2.0f, m_p2PosIndSprite.getGlobalBounds().height / 2.0f);
+	m_p2PosIndSprite.setColor(sf::Color::Cyan);
+
+
 	//Set our capture label for our first player
 	m_p1CapLabel.setSize(26);
 	m_p1CapLabel.setOrigin(sf::Vector2f(0,0));
@@ -343,6 +349,36 @@ void Level::render(sf::RenderWindow & window)
 		m_p2CapLabel.draw(window);
 		window.draw(m_p1CaptureSprite);
 		window.draw(m_p2CaptureSprite);
+
+		if (i == 1)
+		{
+			auto p1Pos = m_player1.position();
+			auto p2Pos = m_player2.position();
+			p1Pos.y = 0;
+			p2Pos.y = 0;
+			auto xDiff = distance(p1Pos, p2Pos);
+			p1Pos = m_player1.position();
+			p2Pos = m_player2.position();
+			p1Pos.x = 0;
+			p2Pos.x = 0;
+			auto yDiff = distance(p1Pos, p2Pos);
+
+			//TESTING THIS CURRENTLTY
+		/*	if (xDiff >= 820 || yDiff >= 260)
+			{				
+				
+				if (m_player1.position().x < m_player2.position().x)
+				{
+					window.getView().getCenter().x - 640 - 160 + m_p2PosIndSprite.getGlobalBounds().width / 2.0f
+				}
+
+
+			    m_p2PosIndSprite.setPosition(window.getView().getCenter().x + 640 + 160 - m_p2PosIndSprite.getGlobalBounds().width / 2.0f, window.getView().getCenter().y);
+				m_p2PosIndSprite.setRotation(angleBetweenVetors(m_player1.position(), m_player2.position()) + 90);
+
+				window.draw(m_p2PosIndSprite);
+			}*/
+		}
 
 		//Blend our lights into our overlay
 		window.draw(m_overlay, sf::BlendMultiply);
@@ -891,4 +927,10 @@ sf::Vector2f Level::lerp(sf::Vector2f a, sf::Vector2f b, float t)
 	float y = (1 - t) * a.y + t*b.y;
 
 	return sf::Vector2f(x, y);
+}
+
+float Level::angleBetweenVetors(sf::Vector2f a, sf::Vector2f b)
+{
+
+	return thor::toDegree(atan2(b.y - a.y, b.x - a.x));
 }

@@ -44,6 +44,8 @@ public:
 
 	//helper function
 	sf::Vector2f lerp(sf::Vector2f a, sf::Vector2f b, float t);
+	float angleBetweenVetors(sf::Vector2f a, sf::Vector2f b);
+
 private:
 	//Variables for starting our match
 	bool m_isCtf; //Bool to hold wheter the game mod eis capture the flag or not
@@ -66,6 +68,7 @@ private:
 	Flag m_yellowFlag, m_blueFlag;
 	sf::Clock m_blueFlagClock, m_yellowFlagClock;
 	sf::RectangleShape m_yellowBase, m_blueBase;
+	sf::Sprite m_p1PosIndSprite, m_p2PosIndSprite;
 
 	sf::View m_testView, m_bottomView, m_topView;
 	std::vector<sf::View*> m_viewVector;
