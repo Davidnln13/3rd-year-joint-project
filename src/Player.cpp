@@ -446,6 +446,7 @@ void Player::throwSword()
 
 void Player::jump()
 {
+	m_audioRef.m_soundMap["Jump"].play();
 	m_playerBody->ApplyForceToCenter(b2Vec2(0, -6200),true);
 	m_canJump = false;
 
@@ -1097,6 +1098,7 @@ void Player::setHasFlag(bool has)
 }
 void Player::captureFlag()
 {
+	m_audioRef.m_soundMap["CTFSound"].play();
 	m_ctfCaptures++; ///Increase our captures
 }
 void Player::setParried(bool parried)
