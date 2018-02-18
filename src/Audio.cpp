@@ -9,7 +9,7 @@ Audio::Audio()
 	m_musicMap["GameMusic"].openFromFile("./resources/Audio/GameMusic.ogg");
 	//loading sounds
 	setSounds("CTFSound", "./resources/Audio/CTFSound.wav");
-	setSounds("Jump", "./resources/Audio/Jump.wav");
+	setSounds("JumpLanding", "./resources/Audio/JumpLanding.wav");
 	setSounds("Death", "./resources/Audio/Death.wav");
 	setSounds("MoveMenu", "./resources/Audio/MoveMenu.wav");
 	setSounds("SelectMenuItem", "./resources/Audio/SelectMenuItem.wav");

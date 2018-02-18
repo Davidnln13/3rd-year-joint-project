@@ -446,7 +446,7 @@ void Player::throwSword()
 
 void Player::jump()
 {
-	m_audioRef.m_soundMap["Jump"].play();
+	m_audioRef.m_soundMap["JumpLanding"].play();
 	m_playerBody->ApplyForceToCenter(b2Vec2(0, -6200),true);
 	m_canJump = false;
 
@@ -1088,9 +1088,9 @@ void Player::setClashed(bool clashed)
 		m_sword.getBody()->SetLinearVelocity(b2Vec2(0, m_sword.getBody()->GetLinearVelocity().y));
 	}
 }
-void Player::playAudio()
+void Player::playAudio(std::string soundName)
 {
-	m_audioRef.m_soundMap["SwordCollide"].play();
+	m_audioRef.m_soundMap[soundName].play();
 }
 void Player::setHasFlag(bool has)
 {

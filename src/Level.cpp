@@ -520,6 +520,7 @@ void Level::checkFlagPickup(Player & player, Flag & flag, sf::Clock & flagClock)
 	{
 		if (player.hitBox().getGlobalBounds().intersects(flag.hitBox().getGlobalBounds()))
 		{
+			m_audioRef.m_soundMap["CTFSound"].play();
 			flag.setPickedUp(true);
 			player.setHasFlag(true);
 			std::cout << "Picked up flag" << std::endl;

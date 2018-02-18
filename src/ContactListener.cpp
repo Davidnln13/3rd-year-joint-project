@@ -47,11 +47,19 @@ void ContactListener::BeginContact(b2Contact * contact)
 	checkIfSwordHitWall(*m_player2, *fixA, *fixB);
 
 	//invoking our canPlayerJump method to check if each player is not making contact with an invalid surface that they can jump on such as a sword
-	if(canPlayerJump(m_player1, m_player2, *fixA, *fixB))
+	if (canPlayerJump(m_player1, m_player2, *fixA, *fixB))
+	{
+		m_player1->playAudio("JumpLanding");
 		m_player1->setCanJump(true);
+	}
+		
 
 	else if (canPlayerJump(m_player2, m_player1, *fixA, *fixB))
+	{
 		m_player2->setCanJump(true);
+		m_player2->playAudio("JumpLanding");
+	}
+		
 
 	//checking if a sword has collided with a player, if so, reset the player
 	else if (hasSwordHitPlayer(m_player1, m_player2, *fixA, *fixB)) //if a sword has hit the first player then respawn them
@@ -171,7 +179,7 @@ void ContactListener::haveTwoSwordsCollided(Player * player1, Player* player2, b
 	if (fixA.GetBody() == player1->getSwordBody() && fixB.GetBody() == m_player2->getSwordBody()
 		|| fixB.GetBody() == player1->getSwordBody() && fixA.GetBody() == m_player2->getSwordBody())
 	{ 
-		player1->playAudio();
+		player1->playAudio("SwordCollide");
 		if (player1->holdingSword() == false) //so if we are not holding a sword
 			player1->setSwordThrown();
 		if(player2->holdingSword() == false) //if the the other player is also not holding a sword

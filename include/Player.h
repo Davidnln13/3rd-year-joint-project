@@ -93,7 +93,7 @@ public:
 	void setParameters(int killLimit);
 	void increaseKills();
 	//play audio from contact listener
-	void playAudio();
+	void playAudio(std::string soundName);
 	void setHasFlag(bool has);
 	void captureFlag();
 
