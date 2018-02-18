@@ -35,8 +35,8 @@ private:
 	int m_btnIndex; //the index of the button we are currently focused on
 	int m_btnToFadeIn; //the index of the button to fade in
 
-	sf::Sprite m_navigateIcon;
-	sf::Sprite m_selectIcon;
-	Label m_navigateLabel;
-	Label m_selectLabel;
+	//sf::Sprite m_navigateIcon;
+	//sf::Sprite m_selectIcon;
+	//Label m_navigateLabel;
+	//Label m_selectLabel;
 };

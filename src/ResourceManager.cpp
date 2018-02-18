@@ -14,6 +14,8 @@ ResourceManager::ResourceManager()
 		//load GUI
 		acquireResource("Button Spritesheet Reversed", m_buttonLayoutReversed);
 		acquireResource("Button Spritesheet", m_buttonLayout);
+		acquireResource("Sound Icon", m_soundIcon);
+		acquireResource("Music Icon", m_musicIcon);
 		acquireResource("Button Selected", m_buttonSelected);
 		acquireResource("Options Icon", m_optionsIcon);
 		acquireResource("Exit Icon", m_exitIcon);

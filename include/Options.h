@@ -16,8 +16,8 @@ public:
 	void start() override;
 	void end() override;
 	std::string handleInput(JoystickController& controller1, JoystickController& controller2) override;
-
-
+	void moveHighlight();
+	void selectSlider(int newIndex);
 	//getters
 	std::string getName() override;
 
@@ -29,6 +29,10 @@ private:
 	Audio& m_audioRef;
 	std::string m_previousScreen;
 
+	std::map<std::string, Slider*> m_sliders; //our map of buttons
+	std::vector<Slider*> m_sliderList; //we will use this to select/deselect buttons in our menu
+	int m_sliderIndex; //the index of the button we are currently focused on
+
 	Label m_soundVolumeLabel;
 	Label m_musicVolumeLabel;
 	Label m_backLabel;
@@ -37,4 +41,7 @@ private:
 	Slider m_musicSlider;
 
 	sf::Sprite m_bIcon;
+	sf::Sprite m_highlight;
+	sf::Sprite m_musicIcon;
+	sf::Sprite m_soundIcon;
 };

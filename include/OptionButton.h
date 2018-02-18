@@ -26,7 +26,7 @@ public:
 	void setText(std::string text, sf::Font& font);
 
 private:
-	bool m_selected; //bool to hold wheter a button is selected or not
+	bool m_selected; //bool to hold whether a button is selected or not
 	bool m_pressed; //bool to hold wheter the button was pressed or not
 	sf::Vector2f m_position; //position that we want to draw at
 	sf::Sprite m_sprite; //our button sprite
